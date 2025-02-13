@@ -201,7 +201,7 @@ export default function Mainpage() {
                         {new Date(notification.timestamp).toLocaleString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
-                          hour12: true, // AM/PM format
+                          hour12: true, 
                           month: "short",
                           day: "numeric",
                           year: "numeric",
