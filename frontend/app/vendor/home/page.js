@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
@@ -7,8 +6,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 16; // Changed to 16
-  const router = useRouter();
+  const itemsPerPage = 16;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,8 +40,7 @@ export default function Home() {
           selectedProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer"
-              onClick={() => router.push(`/showproduct/${product.id}`)}
+              className="bg-slate-100 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105"
             >
               <div className="relative">
                 <img
@@ -69,6 +66,7 @@ export default function Home() {
           <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
+            className="bg-blue-500 text-white hover:bg-black"
           >
             Previous
           </Button>
@@ -76,8 +74,12 @@ export default function Home() {
           {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
             <Button
               key={page}
-              variant={page === currentPage ? "default" : "outline"}
               onClick={() => setCurrentPage(page)}
+              className={`${
+                page === currentPage
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
+              }`}
             >
               {page}
             </Button>
@@ -86,6 +88,7 @@ export default function Home() {
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
+            className="bg-blue-500 text-white hover:bg-black"
           >
             Next
           </Button>

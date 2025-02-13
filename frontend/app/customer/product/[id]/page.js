@@ -38,21 +38,13 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     addToCart(product);
-    toast.success("🛒 Product added to cart!", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "colored",
-    });
+    toast.success("Product added to cart!"); // Show success notification
   };
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={2000} />
       <Navbar />
-      <ToastContainer />
       <div className="max-w-6xl mx-auto p-6 pt-24">
         <div className="flex flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px]">
           <div className="relative w-full md:w-1/2 flex flex-col items-center md:pr-6">

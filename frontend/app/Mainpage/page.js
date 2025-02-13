@@ -102,7 +102,7 @@ export default function Mainpage() {
         </ul>
       </div>
 
-      <div className={`flex-1 bg-slate-50 flex flex-col min-h-screen transition-[margin-left] duration-500 ease-in-out ${isOpen ? "ml-[16rem]" : "ml-[4rem]"}`}>
+      <div className={`flex-1 bg-slate-50 flex flex-col min-h-screen transition-all duration-500 ease-in-out ${isOpen ? "ml-[16rem]" : "ml-[4rem]"}`}>
         <div className="flex justify-between items-center bg-white p-4 shadow-md sticky top-0 z-10">
           <h1 className="text-xl font-bold">
             {selectedPage === "home" && "Home"}

@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/app/customer/components/Navbar";
-import Link from "next/link";
 import ProductCard from "@/app/customer/components/ProductCard"; // ✅ Import ProductCard
 
 const PRODUCTS_PER_PAGE = 20; // ✅ 4 rows × 5 columns (20 products per page)
@@ -100,32 +99,38 @@ const ProductsPage = () => {
         )}
       </div>
 
-     {/* ✅ Pagination Controls with Page Numbers */}
-{totalPages > 1 && (
-  <div className="flex justify-center items-center mt-6 space-x-2">
-    <Button
-      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-    >
-      Previous
-    </Button>
+      {/* ✅ Pagination Controls with Page Numbers */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-6 space-x-2">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="bg-blue-500 text-white hover:bg-black"
+          >
+            Previous
+          </Button>
 
-    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-      <Button
-        key={page}
-        variant={page === currentPage ? "default" : "outline"}
-        onClick={() => setCurrentPage(page)}
-      >
-        {page}
-      </Button>
-    ))}
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <Button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`${
+                page === currentPage
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
+              }`}
+            >
+              {page}
+            </Button>
+          ))}
 
-    <Button
-      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-      disabled={currentPage === totalPages}
-    >
-      Next
-    </Button>
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="bg-blue-500 text-white hover:bg-black"
+          >
+            Next
+          </Button>
         </div>
       )}
     </div>

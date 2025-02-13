@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div 
-      className="border p-4 rounded-lg shadow-md flex flex-col h-[370px] w-full transition transform hover:scale-105 hover:z-10" // ✅ Increased height
+      className="bg-slate-100 border p-4 rounded-lg shadow-md flex flex-col h-[330px] w-full transition transform hover:scale-105 hover:z-10 bg-slate-80" // ✅ Increased height
     >
       <Link href={`/customer/product/${product.id}`} passHref>
         
@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
             onError={(e) => (e.target.src = "https://via.placeholder.com/250?text=No+Image")}
           />
         </div>
-      </Link>
+      
 
       <div className="flex flex-col flex-grow text-center mt-1"> 
   
@@ -32,12 +32,13 @@ const ProductCard = ({ product }) => {
       <p className="text-xl font-bold mt-1">₹{product.price}</p>  
 
  
-      <Link href={`/customer/product/${product.id}`}>
+      {/* <Link href={`/customer/product/${product.id}`}>
       <button className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-black transition">
           View
       </button>
-      </Link>
+      </Link> */}
       </div>
+      </Link>
 
     </div>
   );
