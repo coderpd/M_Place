@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Make sure to import the CSS file for React Toastify
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function AddProduct({ setProducts, products }) {
   const [formData, setFormData] = useState({
@@ -51,7 +51,7 @@ export default function AddProduct({ setProducts, products }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success("Product added successfully!"); // Add toast success notification
+      toast.success("Product added successfully!"); 
       setProducts([...products, response.data]);
 
       // Reset form fields
@@ -68,7 +68,7 @@ export default function AddProduct({ setProducts, products }) {
       setPreviewImage(null);
     } catch (error) {
       console.error("Error adding product:", error);
-      toast.error("Error adding product."); // Add toast error notification
+      toast.error("Error adding product."); 
     }
   };
 
@@ -98,7 +98,7 @@ export default function AddProduct({ setProducts, products }) {
             type="text"
             name="brand"
             id="brand"
-            placeholder="Enter product brand"
+            placeholder="Enter model name"
             className="w-3/4 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
             value={formData.brand}
             onChange={handleInputChange}

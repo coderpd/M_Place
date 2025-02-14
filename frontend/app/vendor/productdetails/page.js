@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Trash2 } from "lucide-react";
+
 export default function ProductDetails({ setSelectedPage, setEditProduct }) {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,7 +60,7 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
     <div className="p-6 bg-gray-100 min-h-screen">
       <ToastContainer />
       <div className="flex justify-center mb-6">
-        <div className="flex items-center bg-white border rounded-full shadow-md p-3 w-96">
+        <div className="flex items-center bg-white border rounded-full shadow-md p-3 w-full sm:w-96">
           <FaSearch className="text-gray-500 mr-2" />
           <input
             type="text"

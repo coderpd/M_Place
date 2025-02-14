@@ -8,12 +8,12 @@ const cors = require("cors");
 const app = express();
 const port = 5000;
 
-// Middleware
+
 app.use(express.json());
 app.use(cors());
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve images
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
 
-// MySQL connection
+
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -29,7 +29,7 @@ db.connect((err) => {
   console.log("Connected to MySQL database.");
 });
 
-// Ensure the uploads directory exists
+
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -42,13 +42,13 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    cb(null, Date.now() + path.extname(file.originalname)); 
   },
 });
 
 const upload = multer({ storage });
 
-// ✅ Add a new product
+
 app.post("/api/products", upload.single("image"), (req, res) => {
   const { name, price, brand, company, category, description, stock } = req.body;
   const image = req.file ? req.file.filename : null;
@@ -76,7 +76,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
   });
 });
 
-// ✅ Get all products
+
 app.get("/api/products", (req, res) => {
   const query = "SELECT * FROM products";
   db.query(query, (err, result) => {
@@ -88,7 +88,7 @@ app.get("/api/products", (req, res) => {
   });
 });
 
-// ✅ Get a single product by ID
+
 app.get("/api/products/:id", (req, res) => {
   const { id } = req.params;
   const query = "SELECT * FROM products WHERE id = ?";
@@ -103,17 +103,17 @@ app.get("/api/products/:id", (req, res) => {
       return res.status(404).json({ error: "Product not found." });
     }
 
-    res.status(200).json(result[0]); // Send single product details
+    res.status(200).json(result[0]);
   });
 });
 
-// ✅ Update a product (Keeps existing image if no new one is uploaded)
+
 app.put("/api/products/:id", upload.single("image"), (req, res) => {
   const { id } = req.params;
   const { name, price, brand, company, category, description, stock } = req.body;
   const newImage = req.file ? req.file.filename : null;
 
-  // Fetch the existing product to retain the old image if no new one is uploaded
+  
   db.query("SELECT image FROM products WHERE id = ?", [id], (err, result) => {
     if (err) {
       console.error("Error fetching product:", err);
@@ -125,7 +125,7 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
     }
 
     const oldImage = result[0].image;
-    const finalImage = newImage || oldImage; // Keep the old image if no new image is uploaded
+    const finalImage = newImage || oldImage; 
 
     const query = `UPDATE products SET name = ?, price = ?, brand = ?, company = ?, category = ?, description = ?, image = ?, stock = ? WHERE id = ?`;
 
@@ -139,11 +139,11 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
   });
 });
 
-// ✅ Delete a product (Removes image file too)
+
 app.delete("/api/products/:id", (req, res) => {
   const { id } = req.params;
 
-  // Fetch product image before deleting
+  
   db.query("SELECT image FROM products WHERE id = ?", [id], (err, result) => {
     if (err) {
       console.error("Error fetching product:", err);
@@ -163,7 +163,7 @@ app.delete("/api/products/:id", (req, res) => {
         return res.status(500).json({ error: "Error deleting product." });
       }
 
-      // Delete image file if it exists
+      
       if (imagePath && fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
@@ -174,7 +174,7 @@ app.delete("/api/products/:id", (req, res) => {
 });
 
 app.post("/api/send-cart", (req, res) => {
-  const { cart, userId } = req.body; // Extract data from the request
+  const { cart, userId } = req.body; 
 
   console.log("Received cart:", cart);
   console.log("User ID:", userId);
@@ -206,7 +206,7 @@ app.post("/api/send-cart", (req, res) => {
 });
 
 
-// ✅ Start the server
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
