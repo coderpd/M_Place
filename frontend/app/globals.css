@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 body {
-  font-family: "GilroyMedium", Arial, Helvetica, sans-serif;
+  font-family: GilroyMedium, Arial, Helvetica, sans-serif;
 }
-
+  
 @layer base {
   :root {
     --background: 0 0% 100%;

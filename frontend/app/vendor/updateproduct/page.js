@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 export default function UpdateProduct({ product }) {
   const [formData, setFormData] = useState({ ...product });
@@ -60,59 +60,70 @@ export default function UpdateProduct({ product }) {
       );
       toast.success("Product updated successfully!");
 
+      // Clear form fields and image preview
+      setFormData({
+        category: "",
+        brand: "",
+        name: "",
+        price: "",
+        description: "",
+        company: "",
+        image: null,
+      });
+      setPreviewImage("");
+
       setTimeout(() => {
-        router.push("/");
-      }, 1500);
+        router.push("/Mainpage");
+      }, 2000);
     } catch (error) {
       toast.error("Error updating product.");
     }
   };
 
   return (
-    <div className="p-6">
-      <ToastContainer position="top-right" autoClose={2000} />
-      <h2 className="text-xl font-semibold mb-4">Update Product</h2>
-      <form className="space-y-4" onSubmit={handleFormSubmit}>
+    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Update Product</h2>
+      <form className="space-y-6" onSubmit={handleFormSubmit}>
         <input
           type="text"
           name="category"
           value={formData.category || ""}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="text"
           name="brand"
           value={formData.brand || ""}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="text"
           name="name"
           value={formData.name || ""}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="text"
           name="price"
           value={formData.price || ""}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
         <textarea
           name="description"
           value={formData.description || ""}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         ></textarea>
         <input
           type="text"
           name="company"
           value={formData.company || ""}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
 
         <input
@@ -120,14 +131,14 @@ export default function UpdateProduct({ product }) {
           name="image"
           accept="image/*"
           onChange={handleImageChange}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
 
         {previewImage && (
           <img
             src={previewImage}
             alt="Preview"
-            className="mt-2 w-32 h-32 object-cover border rounded"
+            className="mt-2 w-32 h-32 object-cover border rounded-md shadow-md"
           />
         )}
 
@@ -138,6 +149,7 @@ export default function UpdateProduct({ product }) {
           Update Product
         </button>
       </form>
+      <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );
 }

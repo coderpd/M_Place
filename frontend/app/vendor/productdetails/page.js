@@ -5,7 +5,7 @@ import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { Trash2 } from "lucide-react";
 export default function ProductDetails({ setSelectedPage, setEditProduct }) {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -96,7 +96,7 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
               <td className="px-6 py-4">{product.category}</td>
               <td className="px-12 py-10 flex space-x-4 justify-center">
                 <button
-                  className="text-green-600 hover:text-green-800 text-lg transition"
+                  className="text-grey-600 hover:text-grey-800 text-lg transition"
                   onClick={() => handleEditClick(product)}
                 >
                   <FaEdit />
@@ -105,7 +105,7 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
                   className="text-red-600 hover:text-red-800 text-lg transition"
                   onClick={() => handleDeleteClick(product.id)}
                 >
-                  <FaTrash />
+                  <Trash2 size={20} />
                 </button>
               </td>
             </tr>

@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 
+
+
+
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +30,11 @@ export default function Home() {
   const selectedProducts = products.slice(startIndex, startIndex + itemsPerPage);
 
   return (
+    <>
+    
     <div className="p-8 bg-gray-100 min-h-screen">
+      
+    
       <h2 className="text-3xl font-bold text-center text-[#FF4500] mb-4">
         🛒 Premium Products, Maximum Impact
       </h2>
@@ -94,6 +101,7 @@ export default function Home() {
           </Button>
         </div>
       )}
-    </div>
+    </div></>
+    
   );
 }

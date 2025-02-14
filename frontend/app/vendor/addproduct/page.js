@@ -157,7 +157,7 @@ export default function AddProduct({ setProducts, products }) {
             type="text"
             name="company"
             id="company"
-            placeholder="Enter company name"
+            placeholder="Enter seller name"
             className="w-3/4 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
             value={formData.company}
             onChange={handleInputChange}
@@ -191,9 +191,9 @@ export default function AddProduct({ setProducts, products }) {
           </div>
         )}
 
-        <button
+<button
           type="submit"
-          className="w-100 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-black focus:ring-4 focus:ring-blue-500"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Add Product
         </button>

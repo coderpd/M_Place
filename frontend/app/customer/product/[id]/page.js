@@ -70,6 +70,7 @@ const ProductDetail = () => {
             <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
             <p className="text-gray-600 text-lg mt-4">{product.description}</p>
             <p className="text-2xl font-semibold text-gray-800 mt-6">Price: ₹{product.price}</p>
+            <p className="text-lg font-normal text-gray-800 mt-6">Seller: {product.company}</p>
           </div>
         </div>
       </div>
