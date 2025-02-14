@@ -9,8 +9,8 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
 
   const handleSearch = (e) => {
     const query = e.target.value;
-    setSearch(query); // Update local state
-    setSearchQuery(query); // Send search query to ProductsPage.js
+    setSearch(query);
+    setSearchQuery(query);
   };
 
   return (
@@ -31,7 +31,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
           placeholder="Search for products..."
           className="w-full bg-transparent outline-none text-sm"
           value={search}
-          onChange={handleSearch} // Trigger search function
+          onChange={handleSearch}
         />
       </div>
 
@@ -43,10 +43,12 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
           className="p-2 rounded-md border bg-white text-sm"
         >
           <option value="">All Categories</option>
-          <option value="men's clothing">Men's Clothing</option>
-          <option value="women's clothing">Women's Clothing</option>
-          <option value="electronics">Electronics</option>
-          <option value="jewelery">Jewelry</option>
+          <option value="laptop">Laptop</option>
+          <option value="keyboard">Keyboard</option>
+          <option value="mouse">Mouse</option>
+          <option value="cpu">CPU</option>
+          <option value="monitor">Monitor</option>
+          <option value="hard disk">Hard Disk</option>
         </select>
 
         {/* Price Filter */}

@@ -1,6 +1,7 @@
-"use client";
 import React, { useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Make sure to import the CSS file for React Toastify
 
 export default function AddProduct({ setProducts, products }) {
   const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ export default function AddProduct({ setProducts, products }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Product added successfully!");
+      toast.success("Product added successfully!"); // Add toast success notification
       setProducts([...products, response.data]);
 
       // Reset form fields
@@ -65,10 +66,9 @@ export default function AddProduct({ setProducts, products }) {
       });
 
       setPreviewImage(null);
-      window.location.reload();
     } catch (error) {
       console.error("Error adding product:", error);
-      alert("Error adding product.");
+      toast.error("Error adding product."); // Add toast error notification
     }
   };
 
@@ -93,7 +93,7 @@ export default function AddProduct({ setProducts, products }) {
 
         {/* Brand */}
         <div className="flex items-center space-x-4">
-          <label htmlFor="brand" className="w-1/4 text-lg font-medium text-gray-600">Make and Model:</label>
+          <label htmlFor="brand" className="w-1/4 text-lg font-medium text-gray-600">Make and model:</label>
           <input
             type="text"
             name="brand"
@@ -193,11 +193,12 @@ export default function AddProduct({ setProducts, products }) {
 
         <button
           type="submit"
-          className="w-full px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-black focus:ring-4 focus:ring-blue-500"
+          className="w-100 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-black focus:ring-4 focus:ring-blue-500"
         >
           Add Product
         </button>
       </form>
+      <ToastContainer /> {/* Add ToastContainer here */}
     </div>
   );
 }

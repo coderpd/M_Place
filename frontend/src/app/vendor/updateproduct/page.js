@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UpdateProduct({ product }) {
   const [formData, setFormData] = useState({ ...product });
@@ -11,7 +13,6 @@ export default function UpdateProduct({ product }) {
 
   const router = useRouter();
 
-  // Update the preview image if product changes (in case we are editing an existing product)
   useEffect(() => {
     if (product) {
       setFormData({ ...product });
@@ -19,22 +20,19 @@ export default function UpdateProduct({ product }) {
     }
   }, [product]);
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle image file change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormData({ ...formData, image: file });
-      setPreviewImage(URL.createObjectURL(file)); // Preview the newly selected image
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
-  // Handle form submission
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -46,15 +44,13 @@ export default function UpdateProduct({ product }) {
     formDataToSend.append("description", formData.description);
     formDataToSend.append("company", formData.company);
 
-    // If a new image is selected, send it; if not, send the existing image
     if (formData.image instanceof File) {
       formDataToSend.append("image", formData.image);
     } else {
-      formDataToSend.append("image", product.image); // Use the existing image if none selected
+      formDataToSend.append("image", product.image);
     }
 
     try {
-      // Wait for the request to complete before navigating
       await axios.put(
         `http://localhost:5000/api/products/${formData.id}`,
         formDataToSend,
@@ -62,23 +58,19 @@ export default function UpdateProduct({ product }) {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      alert("Product updated successfully!");
+      toast.success("Product updated successfully!");
 
-      // Reset form fields
-      setFormData({});
-      setPreviewImage("");
-
-      // Use setTimeout to simulate a smooth transition before navigating
       setTimeout(() => {
-        router.push("/"); // Navigate to the home page after the update
-      }, 500); // 500ms delay before navigation
+        router.push("/");
+      }, 1500);
     } catch (error) {
-      alert("Error updating product.");
+      toast.error("Error updating product.");
     }
   };
 
   return (
     <div className="p-6">
+      <ToastContainer position="top-right" autoClose={2000} />
       <h2 className="text-xl font-semibold mb-4">Update Product</h2>
       <form className="space-y-4" onSubmit={handleFormSubmit}>
         <input
@@ -122,8 +114,7 @@ export default function UpdateProduct({ product }) {
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded"
         />
-        
-        {/* Image input */}
+
         <input
           type="file"
           name="image"
@@ -132,18 +123,17 @@ export default function UpdateProduct({ product }) {
           className="w-full p-2 border border-gray-300 rounded"
         />
 
-        {/* Display image preview */}
         {previewImage && (
           <img
             src={previewImage}
             alt="Preview"
-            className="mt-2 w-35 h-35 object-cover border rounded"
+            className="mt-2 w-32 h-32 object-cover border rounded"
           />
         )}
 
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Update Product
         </button>

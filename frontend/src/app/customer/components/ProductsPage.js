@@ -2,10 +2,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/app/customer/components/Navbar";
-import Link from "next/link";
-import ProductCard from "@/app/customer/components/ProductCard"; // ✅ Import ProductCard
+import ProductCard from "@/app/customer/components/ProductCard";
 
-const PRODUCTS_PER_PAGE = 20; // ✅ 4 rows × 5 columns (20 products per page)
+const PRODUCTS_PER_PAGE = 20; // 4 rows × 5 columns
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -52,15 +51,16 @@ const ProductsPage = () => {
     // Apply search filter
     if (query) {
       const searchWords = query.toLowerCase().split(" ");
-      filteredProducts = filteredProducts.filter((product) => {
-        const productTitle = product.name.toLowerCase();
-        return searchWords.every((word) => productTitle.includes(word));
-      });
+      filteredProducts = filteredProducts.filter((product) =>
+        searchWords.every((word) => product.name.toLowerCase().includes(word))
+      );
     }
 
     // Apply category filter
     if (category) {
-      filteredProducts = filteredProducts.filter((product) => product.category === category);
+      filteredProducts = filteredProducts.filter((product) => 
+        product.category.toLowerCase() === category.toLowerCase()
+      );
     }
 
     // Apply price sorting filter
@@ -90,7 +90,7 @@ const ProductsPage = () => {
       {error && <p className="text-center text-red-500">{error}</p>}
 
       {/* ✅ Product Grid - 4 Rows × 5 Columns */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"> {/* ✅ Reduced gap */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         {displayedProducts.length > 0 ? (
           displayedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -102,17 +102,33 @@ const ProductsPage = () => {
 
       {/* ✅ Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center mt-6 space-x-4">
+        <div className="flex justify-center items-center mt-6 space-x-2">
           <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
+            className="bg-blue-500 text-white hover:bg-black"
           >
             Previous
           </Button>
-          <span className="text-lg">Page {currentPage} of {totalPages}</span>
+
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <Button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`${
+                page === currentPage
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
+              }`}
+            >
+              {page}
+            </Button>
+          ))}
+
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
+            className="bg-blue-500 text-white hover:bg-black"
           >
             Next
           </Button>

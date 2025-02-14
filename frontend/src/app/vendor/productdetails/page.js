@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Trash2 } from "lucide-react";
 export default function ProductDetails({ setSelectedPage, setEditProduct }) {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +19,7 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products.", error);
+        toast.error("Error fetching products.");
       }
     };
 
@@ -34,17 +37,18 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
       try {
         await axios.delete(`http://localhost:5000/api/products/${id}`);
         setProducts(products.filter((product) => product.id !== id));
-        alert("Product deleted successfully.");
+        toast.success("Product deleted successfully.");
       } catch (error) {
         console.error("Error deleting product.", error);
-        alert("Error deleting product.");
+        toast.error("Failed to delete product.");
       }
     }
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -53,6 +57,7 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      <ToastContainer />
       <div className="flex justify-center mb-6">
         <div className="flex items-center bg-white border rounded-full shadow-md p-3 w-96">
           <FaSearch className="text-gray-500 mr-2" />
@@ -89,7 +94,7 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
               <td className="px-6 py-4">{product.name}</td>
               <td className="px-6 py-4">₹{product.price}</td>
               <td className="px-6 py-4">{product.category}</td>
-              <td className="px-6 py-4 flex space-x-4 justify-center">
+              <td className="px-12 py-10 flex space-x-4 justify-center">
                 <button
                   className="text-grey-600 hover:text-grey-800 text-lg transition"
                   onClick={() => handleEditClick(product)}
@@ -97,10 +102,10 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
                   <FaEdit />
                 </button>
                 <button
-                  className="text-grey-600 hover:text-grey-800 text-lg transition"
+                  className="text-red-600 hover:text-red-800 text-lg transition"
                   onClick={() => handleDeleteClick(product.id)}
                 >
-                  <FaTrash />
+                  <Trash2 size={20} />
                 </button>
               </td>
             </tr>
@@ -111,9 +116,9 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-6 space-x-2">
           <Button
-            className="bg-blue-500 text-white hover:bg-black"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
+            className="bg-blue-500 text-white hover:bg-black"
           >
             Previous
           </Button>
@@ -121,17 +126,21 @@ export default function ProductDetails({ setSelectedPage, setEditProduct }) {
           {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
             <Button
               key={page}
-              className={`bg-blue-500 text-white hover:bg-black ${page === currentPage ? "bg-blue-700" : "bg-blue-500"}`}
               onClick={() => setCurrentPage(page)}
+              className={`${
+                page === currentPage
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
+              }`}
             >
               {page}
             </Button>
           ))}
 
           <Button
-            className="bg-blue-500 text-white hover:bg-black"
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
+            className="bg-blue-500 text-white hover:bg-black"
           >
             Next
           </Button>
