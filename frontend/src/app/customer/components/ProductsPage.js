@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/app/customer/components/Navbar";
 import ProductCard from "@/app/customer/components/ProductCard";
 
-const PRODUCTS_PER_PAGE = 20; // 4 rows × 5 columns
-
+const PRODUCTS_PER_PAGE = 20; 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -16,7 +15,7 @@ const ProductsPage = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
 
-  // Fetch products from backend
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -39,16 +38,15 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
-  // Update displayed products when filters change
+  
   useEffect(() => {
     updateDisplayedProducts(products, searchQuery, categoryFilter, priceFilter, currentPage);
   }, [searchQuery, categoryFilter, priceFilter, currentPage, products]);
 
-  // Function to filter and paginate products
   const updateDisplayedProducts = (allProducts, query, category, price, page) => {
     let filteredProducts = allProducts;
 
-    // Apply search filter
+    
     if (query) {
       const searchWords = query.toLowerCase().split(" ");
       filteredProducts = filteredProducts.filter((product) =>
@@ -56,21 +54,21 @@ const ProductsPage = () => {
       );
     }
 
-    // Apply category filter
+
     if (category) {
       filteredProducts = filteredProducts.filter((product) => 
         product.category.toLowerCase() === category.toLowerCase()
       );
     }
 
-    // Apply price sorting filter
+    
     if (price === "low") {
       filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
     } else if (price === "high") {
       filteredProducts = filteredProducts.sort((a, b) => b.price - a.price);
     }
 
-    // Pagination logic
+    
     const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
     setDisplayedProducts(filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE));
   };
@@ -79,7 +77,7 @@ const ProductsPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 pt-24 lg:pt-28">
-      {/* Navbar with filters */}
+      
       <Navbar
         setSearchQuery={setSearchQuery}
         setCategoryFilter={setCategoryFilter}
@@ -89,7 +87,7 @@ const ProductsPage = () => {
       {loading && <p className="text-center text-blue-500">Loading products...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
 
-      {/* ✅ Product Grid - 4 Rows × 5 Columns */}
+      
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         {displayedProducts.length > 0 ? (
           displayedProducts.map((product) => (
@@ -100,7 +98,7 @@ const ProductsPage = () => {
         )}
       </div>
 
-      {/* ✅ Pagination Controls */}
+     
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-6 space-x-2">
           <Button

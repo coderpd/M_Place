@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 16; // Changed to 16
+  const itemsPerPage = 16; 
   const router = useRouter();
 
   useEffect(() => {

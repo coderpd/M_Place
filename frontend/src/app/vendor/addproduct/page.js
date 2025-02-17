@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Make sure to import the CSS file for React Toastify
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function AddProduct({ setProducts, products }) {
   const [formData, setFormData] = useState({
@@ -51,7 +51,7 @@ export default function AddProduct({ setProducts, products }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success("Product added successfully!"); // Add toast success notification
+      toast.success("Product added successfully!"); 
       setProducts([...products, response.data]);
 
       // Reset form fields

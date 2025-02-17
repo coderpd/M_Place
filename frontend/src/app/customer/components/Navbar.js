@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Search, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
-import { useCart } from "@/app/customer/context/CartContext"; // Import cart context
-
+import { useCart } from "@/app/customer/context/CartContext"; 
 const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
   const [search, setSearch] = useState("");
-  const { cart } = useCart(); // Get cart data
+  const { cart } = useCart(); 
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -66,7 +65,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
       <div className="flex items-center space-x-5">
         <User className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
 
-        {/* Cart Icon with Link */}
+        
         <Link href="/customer/cart" className="relative">
           <ShoppingCart className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
           {cart.length > 0 && (

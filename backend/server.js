@@ -26,17 +26,17 @@ db.connect((err) => {
     console.error("Database connection error: ", err);
     return;
   }
-  console.log("Connected to MySQL database.");
+  console.log("✅ Connected to MySQL database.");
 });
 
-// Ensure the uploads directory exists
+//uploads directory 
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("Uploads directory created.");
+  console.log("✅ Uploads directory created.");
 }
 
-// Multer setup for image uploads
+//  image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
@@ -48,7 +48,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ✅ Add a new product
+/* ========================= PRODUCTS API ========================= */
+
+//Add a new one
 app.post("/api/products", upload.single("image"), (req, res) => {
   const { name, price, brand, company, category, description } = req.body;
   const image = req.file ? req.file.filename : null;
@@ -58,7 +60,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
 
   db.query(query, [name, price, brand, company, category, description, image], (err, result) => {
     if (err) {
-      console.error("Database insertion error: ", err);
+      console.error("❌ Database insertion error:", err);
       return res.status(500).json({ error: "Error adding product." });
     }
 
@@ -75,26 +77,26 @@ app.post("/api/products", upload.single("image"), (req, res) => {
   });
 });
 
-// ✅ Get all products
+//  Get all products
 app.get("/api/products", (req, res) => {
   const query = "SELECT * FROM products";
   db.query(query, (err, result) => {
     if (err) {
-      console.error("Error fetching products:", err);
+      console.error("❌ Error fetching products:", err);
       return res.status(500).json({ error: "Error fetching products." });
     }
     res.status(200).json(result);
   });
 });
 
-// ✅ Get a single product by ID
+// Get 
 app.get("/api/products/:id", (req, res) => {
   const { id } = req.params;
   const query = "SELECT * FROM products WHERE id = ?";
 
   db.query(query, [id], (err, result) => {
     if (err) {
-      console.error("Error fetching product:", err);
+      console.error("❌ Error fetching product:", err);
       return res.status(500).json({ error: "Error fetching product." });
     }
 
@@ -106,16 +108,15 @@ app.get("/api/products/:id", (req, res) => {
   });
 });
 
-// ✅ Update a product (Keeps existing image if no new one is uploaded)
+// Update
 app.put("/api/products/:id", upload.single("image"), (req, res) => {
   const { id } = req.params;
   const { name, price, brand, company, category, description } = req.body;
   const newImage = req.file ? req.file.filename : null;
 
-  // Fetch the existing product to retain the old image if no new one is uploaded
   db.query("SELECT image FROM products WHERE id = ?", [id], (err, result) => {
     if (err) {
-      console.error("Error fetching product:", err);
+      console.error("❌ Error fetching product:", err);
       return res.status(500).json({ error: "Error fetching product." });
     }
 
@@ -124,28 +125,27 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
     }
 
     const oldImage = result[0].image;
-    const finalImage = newImage || oldImage; // Keep the old image if no new image is uploaded
+    const finalImage = newImage || oldImage;
 
     const query = `UPDATE products SET name = ?, price = ?, brand = ?, company = ?, category = ?, description = ?, image = ? WHERE id = ?`;
 
     db.query(query, [name, price, brand, company, category, description, finalImage, id], (err) => {
       if (err) {
-        console.error("Error updating product:", err);
+        console.error("❌ Error updating product:", err);
         return res.status(500).json({ error: "Error updating product." });
       }
-      res.status(200).json({ message: "Product updated successfully!" });
+      res.status(200).json({ message: "✅ Product updated successfully!" });
     });
   });
 });
 
-// ✅ Delete a product (Removes image file too)
+//  Delete 
 app.delete("/api/products/:id", (req, res) => {
   const { id } = req.params;
 
-  // Fetch product image before deleting
   db.query("SELECT image FROM products WHERE id = ?", [id], (err, result) => {
     if (err) {
-      console.error("Error fetching product:", err);
+      console.error("❌ Error fetching product:", err);
       return res.status(500).json({ error: "Error fetching product." });
     }
 
@@ -155,24 +155,63 @@ app.delete("/api/products/:id", (req, res) => {
 
     const imagePath = result[0].image ? path.join(__dirname, "uploads", result[0].image) : null;
 
-    const deleteQuery = "DELETE FROM products WHERE id = ?";
-    db.query(deleteQuery, [id], (err) => {
+    db.query("DELETE FROM products WHERE id = ?", [id], (err) => {
       if (err) {
-        console.error("Error deleting product:", err);
+        console.error("❌ Error deleting product:", err);
         return res.status(500).json({ error: "Error deleting product." });
       }
 
-      // Delete image file if it exists
       if (imagePath && fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
 
-      res.status(200).json({ message: "Product deleted successfully!" });
+      res.status(200).json({ message: "✅ Product deleted successfully!" });
     });
   });
 });
 
-// ✅ Start the server
+/* ========================= NOTIFICATIONS API ========================= */
+
+// ✅ Notify Vendor
+app.post("/api/notifyVendor", (req, res) => {
+  const { cart } = req.body;
+
+  if (!cart || cart.length === 0) {
+    return res.status(400).json({ error: "Cart is empty" });
+  }
+
+  const query = "INSERT INTO notifications (product_id, company, message, read_status) VALUES ?";
+  const values = cart.map((item) => [
+    item.id,
+    item.company,
+    `Customer is interested in buying ${item.name}.`,
+    false,
+  ]);
+
+  db.query(query, [values], (err) => {
+    if (err) {
+      console.error("❌ Error inserting notification:", err);
+      return res.status(500).json({ error: "Error sending notification." });
+    }
+    res.status(200).json({ message: "✅ Vendor notified successfully!" });
+  });
+});
+
+// ✅ Fetch Vendor Notifications
+app.get("/api/notifications/:company", (req, res) => {
+  const { company } = req.params.trim();
+  const query = "SELECT * FROM notifications WHERE LOWER(company) = LOWER(?) ORDER BY created_at DESC";
+
+  db.query(query, [company], (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching notifications:", err);
+      return res.status(500).json({ error: "Error fetching notifications." });
+    }
+    res.status(200).json(results);
+  });
+});
+
+// ✅ Start Server
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`🚀 Server running on http://localhost:${port}`);
 });
