@@ -110,7 +110,7 @@ app.get("/api/products/:id", (req, res) => {
 
 // ========================= NOTIFICATIONS API =========================
 
-// Notify Vendor
+// ✅ Notify Vendor
 app.post("/api/notifyVendor", (req, res) => {
   const { cart } = req.body;
 
@@ -136,9 +136,9 @@ app.post("/api/notifyVendor", (req, res) => {
   });
 });
 
-// Fetch Vendor Notifications
+// ✅ Fetch Vendor Notifications
 app.get("/api/notifications/:company", (req, res) => {
-  const { company } = req.params; // Fixing issue with .trim() method
+  const { company } = req.params;
   const query = "SELECT * FROM notifications WHERE LOWER(company) = LOWER(?) ORDER BY created_at DESC";
 
   db.query(query, [company], (err, results) => {
@@ -150,7 +150,21 @@ app.get("/api/notifications/:company", (req, res) => {
   });
 });
 
-// Start Server
+// ✅ Dismiss (Delete) a Notification
+app.delete("/api/notifications/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE FROM notifications WHERE id = ?";
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error("❌ Error deleting notification:", err);
+      return res.status(500).json({ error: "Error deleting notification." });
+    }
+    res.status(200).json({ message: "✅ Notification dismissed successfully!" });
+  });
+});
+
+// ✅ Start Server
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
 });

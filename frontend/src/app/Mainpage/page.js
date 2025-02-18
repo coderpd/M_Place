@@ -17,6 +17,7 @@ export default function Mainpage() {
   const [notifications, setNotifications] = useState([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState([]);
+  const [filter, setFilter] = useState("all");  // Filter for "read" or "unread"
 
   const router = useRouter();
   const currentDate = new Date().toLocaleDateString("en-US", {
@@ -36,9 +37,12 @@ export default function Mainpage() {
     };
   }, [notificationOpen]);
 
+  // Fetch notifications based on the selected company
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/notifications/${encodeURIComponent(company)}`);
+      const response = await fetch(
+        `http://localhost:5000/api/notifications/${encodeURIComponent(company)}?read_status=${filter}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch notifications");
       }
@@ -54,7 +58,7 @@ export default function Mainpage() {
     if (company) {
       fetchNotifications();
     }
-  }, [company]);
+  }, [company, filter]);
 
   const handleSidebarToggle = () => {
     setIsOpen(!isOpen);
@@ -64,8 +68,69 @@ export default function Mainpage() {
     setNotificationOpen(!notificationOpen);
   };
 
-  const dismissNotification = (id) => {
-    setNotifications(notifications.filter((notification) => notification.id !== id));
+  // const dismissNotification = (id) => {
+  //   setNotifications(notifications.filter((notification) => notification.id !== id));
+  // };
+  const dismissNotification = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/notifications/${id}`, {
+        method: "DELETE",
+      });
+  
+      const data = await response.json();
+      if (data.message) {
+        // Remove the dismissed notification from state
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter((notification) => notification.id !== id)
+        );
+      } else {
+        alert("Failed to dismiss notification.");
+      }
+    } catch (error) {
+      console.error("Error dismissing notification:", error);
+    }
+  };
+  
+  
+
+  // const markAsRead = async (id) => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/markNotification", {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ notificationId: id }),
+  //     });
+
+  //     const data = await response.json();
+  //     if (data.message) {
+  //       alert("Notification marked as read.");
+  //       fetchNotifications(); // Refresh notifications after marking as read
+  //     } else {
+  //       alert("Failed to mark notification as read.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error marking notification as read:", error);
+  //   }
+  // };
+
+  const markAllAsRead = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/markAllNotificationsAsRead/${encodeURIComponent(company)}`, {
+        method: "PUT",
+      });
+
+      const data = await response.json();
+      if (data.message) {
+        alert("All notifications marked as read.");
+        fetchNotifications(); // Refresh notifications after marking all as read
+      } else {
+        alert("Failed to mark all notifications as read.");
+      }
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+    }
   };
 
   const handleNotifyVendor = async (product) => {
@@ -85,7 +150,7 @@ export default function Mainpage() {
       const data = await response.json();
       if (data.message) {
         alert("Vendor has been notified successfully!");
-        fetchNotifications(); // Fetch new notifications after notifying the vendor
+        fetchNotifications();  // Fetch new notifications after notifying the vendor
       } else {
         alert("Failed to notify the vendor. Try again!");
       }
@@ -93,6 +158,25 @@ export default function Mainpage() {
       console.error("Error notifying vendor:", error);
       alert("Something went wrong!");
     }
+  };
+
+  // Filter notifications based on "read" or "unread"
+  const filteredNotifications = filter === "all"
+    ? notifications
+    : notifications.filter((notification) =>
+        filter === "read" ? notification.read_status : !notification.read_status
+      );
+
+  // Function to format the date
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -144,20 +228,20 @@ export default function Mainpage() {
             <option value="SG retail">SG retail</option>
             <option value="IP dealers">IP dealers</option>
             <option value="RM dealers">RM dealers</option>
+            <option value="MP Electronics">MP Electronics</option>
           </select>
 
+          {/* Notification Icon (Bell) */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-100">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-100">
               <Calendar size={28} />
               <p className="text-sm text-gray-600 font-medium">{currentDate}</p>
             </div>
-            <div className="relative">
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-100 cursor-pointer" onClick={toggleNotification}>
-                <BellRing size={28} />
-                {unreadNotifications.length > 0 && (
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-                )}
-              </div>
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-100 cursor-pointer" onClick={toggleNotification}>
+              <BellRing size={28} />
+              {unreadNotifications.length > 0 && (
+                <span className="absolute top-4 right-4 w-2 h-2 bg-red-500 rounded-full" />
+              )}
             </div>
           </div>
         </div>
@@ -172,14 +256,39 @@ export default function Mainpage() {
 
             <hr className="mb-4" />
 
-            {notifications.length === 0 ? (
-              <p className="text-gray-500">No new notifications</p>
+            {/* Filter and Mark All as Read Button */}
+            <div className="flex justify-between mb-4">
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="p-2 border rounded-md"
+              >
+                <option value="all">All</option>
+                <option value="read">Read</option>
+                <option value="unread">Unread</option>
+              </select>
+
+              <button
+                onClick={markAllAsRead}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+              >
+                Mark all as Read
+              </button>
+            </div>
+
+            {filteredNotifications.length === 0 ? (
+              <p className="text-gray-500">No notifications</p>
             ) : (
               <ul>
-                {notifications.map((notification) => (
+                {filteredNotifications.map((notification) => (
                   <li key={notification.id} className={`p-3 mb-2 rounded-md bg-gray-100 flex justify-between`}>
                     <span>{notification.message}</span>
-                    <button onClick={() => dismissNotification(notification.id)} className="text-red-500 text-sm">
+                    <span className="text-xs text-gray-500">{formatDate(notification.created_at)}</span>
+                    
+                    <button
+                      onClick={() => dismissNotification(notification.id)}
+                      className="text-red-500 text-sm"
+                    >
                       Dismiss
                     </button>
                   </li>
