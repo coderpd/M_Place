@@ -167,11 +167,10 @@ const CustomerSignup = () => {
   
       let companyName = formValues.companyName
         ?.toLowerCase()
-        .replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "") 
+        .replace(/\s?(pvt|ltd|limited|inc |llp|corp|co)\b/gi, "") 
         .replace(/\./g, "") 
         .trim()
-        .replace(/\s+/g, ""); 
-  
+        .replace(/\s+/g, "");  
       const expectedDomain = `@${companyName}.com`;
   
       if (!formValues.email.endsWith(expectedDomain)) {

@@ -68,8 +68,6 @@ router.post("/customer-sendotp", async (req, res) => {
     
     await sendOTP(email, otp);
     console.log(`Generated OTP: ${otp}`);
-
-    
     otpStore[email] = otp;
     
     res.json({ success: true, message: "OTP sent successfully!" });

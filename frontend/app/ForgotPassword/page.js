@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,6 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ImageSlider from "../SignIn/ImageSlider";
 import * as yup from "yup";
-
 import { useRouter } from "next/navigation";
 
 // Define validation schema using Yup
@@ -16,7 +15,9 @@ const schema = yup.object().shape({
 });
 
 export default function ForgotPassword() {
-  const router=useRouter();
+  const [otpMessage, setOtpMessage] = useState("");
+  const [otpSent, setOtpSent] = useState(false); // Flag to track OTP sent status
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -25,12 +26,37 @@ export default function ForgotPassword() {
     resolver: yupResolver(schema),
   });
 
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch("http://localhost:5000/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email }),
+      });
   
-  const onSubmit = (data) => {
-    router.push("./ForgotPassOtp")
-    console.log(data); 
+      if (!response.ok) {
+        const errorData = await response.json();
+        setOtpMessage(errorData.error || errorData.message || "Unknown error.");
+        return;
+      }
+  
+      const result = await response.json();
+      if (result.success) {
+        setOtpSent(true);
+        setOtpMessage("OTP sent successfully!");
+  
+        // Pass the email in the URL query parameters
+        router.push("./ForgotPassOtp");
+      } else {
+        setOtpMessage(result.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      setOtpMessage("Error sending OTP. Try again.");
+    }
   };
-
+  
+   
+  
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       {/* Left Side - Image Slider */}
@@ -71,6 +97,11 @@ export default function ForgotPassword() {
                 Submit
               </Button>
             </form>
+
+            {/* OTP Message */}
+            {otpMessage && (
+              <p className={`mt-4 ${otpSent ? 'text-green-500' : 'text-red-500'}`}>{otpMessage}</p>
+            )}
           </CardContent>
         </Card>
       </div>

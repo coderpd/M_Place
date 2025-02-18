@@ -84,18 +84,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              {/* <div>
-                <label htmlFor="userType" className="text-sm text-gray-700">User Type</label>
-                <select
-                  id="userType"
-                  value={userType}
-                  onChange={(e) => setUserType(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                >
-                  <option value="customer">Customer</option>
-                  <option value="vendor">Vendor</option>
-                </select>
-              </div> */}
+            
 
               <div className="flex justify-between items-center text-sm">
                 <label className="flex items-center">

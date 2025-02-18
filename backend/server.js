@@ -19,6 +19,9 @@ app.use("/auth",VendorAuthRouter)
 const SigninAuthRouter=require("./routes/SigninAuth")
 app.use("/auth",SigninAuthRouter)
 
+const ForgotPassword=require("./routes/forgotPasswordOtp")
+app.use("/auth",ForgotPassword)
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
