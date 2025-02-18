@@ -15,7 +15,7 @@ export default function Home() {
     <div>
       {/* Hero Section with Background Image */}
       <section className="relative h-screen flex items-center justify-center text-center bg-cover bg-center"
-        style={{ backgroundImage: "url('/marketplace-bg.jpg')" }}> 
+        style={{ }}> 
         {/* Overlay for better readability */}
         <div className="absolute inset-0 bg-black opacity-50"></div>
 

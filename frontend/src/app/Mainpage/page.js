@@ -1,27 +1,24 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaBars, FaHome, FaClipboardList, FaPlus } from "react-icons/fa";
-import { CircleUserRound, BellRing, Calendar, UserRoundPen, LogOut, Bolt, X } from "lucide-react";
+import { BellRing, Calendar, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import AddProduct from "../vendor/addproduct/page";
 import UpdateProduct from "../vendor/updateproduct/page";
 import ProductDetails from "../vendor/productdetails/page";
 import Home from "../vendor/home/page";
-import { useRouter } from "next/navigation";
 
 export default function Mainpage() {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedPage, setSelectedPage] = useState("home");
   const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [company, setCompany] = useState("RnD Technologies");
   const [notifications, setNotifications] = useState([]);
-  const [filter, setFilter] = useState("all");
-  const [company, setCompany] = useState("RnD Technologies"); 
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState([]);
 
   const router = useRouter();
-  const user = { name: "Balaji", role: "Vendor" };
-
   const currentDate = new Date().toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -39,7 +36,6 @@ export default function Mainpage() {
     };
   }, [notificationOpen]);
 
-  // ✅ Fetch Notifications from Backend
   const fetchNotifications = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/notifications/${encodeURIComponent(company)}`);
@@ -47,8 +43,8 @@ export default function Mainpage() {
         throw new Error("Failed to fetch notifications");
       }
       const data = await response.json();
-      console.log(data)
       setNotifications(data);
+      setUnreadNotifications(data.filter((notification) => !notification.read_status));
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
@@ -64,10 +60,6 @@ export default function Mainpage() {
     setIsOpen(!isOpen);
   };
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-
   const toggleNotification = () => {
     setNotificationOpen(!notificationOpen);
   };
@@ -76,7 +68,32 @@ export default function Mainpage() {
     setNotifications(notifications.filter((notification) => notification.id !== id));
   };
 
-  const unreadNotifications = notifications.filter((notification) => !notification.read_status);
+  const handleNotifyVendor = async (product) => {
+    const message = `A customer is interested in buying ${product.name}.`;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/notifyVendor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cart: [{ id: product.id, company, name: product.name }],
+        }),
+      });
+
+      const data = await response.json();
+      if (data.message) {
+        alert("Vendor has been notified successfully!");
+        fetchNotifications(); // Fetch new notifications after notifying the vendor
+      } else {
+        alert("Failed to notify the vendor. Try again!");
+      }
+    } catch (error) {
+      console.error("Error notifying vendor:", error);
+      alert("Something went wrong!");
+    }
+  };
 
   return (
     <div className="flex min-h-screen">

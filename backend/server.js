@@ -29,14 +29,14 @@ db.connect((err) => {
   console.log("✅ Connected to MySQL database.");
 });
 
-//uploads directory 
+// Uploads directory
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
   console.log("✅ Uploads directory created.");
 }
 
-//  image uploads
+// Image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
@@ -48,9 +48,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-/* ========================= PRODUCTS API ========================= */
+// ========================= PRODUCTS API =========================
 
-//Add a new one
+// Add a new product
 app.post("/api/products", upload.single("image"), (req, res) => {
   const { name, price, brand, company, category, description } = req.body;
   const image = req.file ? req.file.filename : null;
@@ -77,7 +77,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
   });
 });
 
-//  Get all products
+// Get all products
 app.get("/api/products", (req, res) => {
   const query = "SELECT * FROM products";
   db.query(query, (err, result) => {
@@ -89,7 +89,7 @@ app.get("/api/products", (req, res) => {
   });
 });
 
-// Get 
+// Get product by ID
 app.get("/api/products/:id", (req, res) => {
   const { id } = req.params;
   const query = "SELECT * FROM products WHERE id = ?";
@@ -104,75 +104,13 @@ app.get("/api/products/:id", (req, res) => {
       return res.status(404).json({ error: "Product not found." });
     }
 
-    res.status(200).json(result[0]); // Send single product details
+    res.status(200).json(result[0]);
   });
 });
 
-// Update
-app.put("/api/products/:id", upload.single("image"), (req, res) => {
-  const { id } = req.params;
-  const { name, price, brand, company, category, description } = req.body;
-  const newImage = req.file ? req.file.filename : null;
+// ========================= NOTIFICATIONS API =========================
 
-  db.query("SELECT image FROM products WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.error("❌ Error fetching product:", err);
-      return res.status(500).json({ error: "Error fetching product." });
-    }
-
-    if (result.length === 0) {
-      return res.status(404).json({ error: "Product not found." });
-    }
-
-    const oldImage = result[0].image;
-    const finalImage = newImage || oldImage;
-
-    const query = `UPDATE products SET name = ?, price = ?, brand = ?, company = ?, category = ?, description = ?, image = ? WHERE id = ?`;
-
-    db.query(query, [name, price, brand, company, category, description, finalImage, id], (err) => {
-      if (err) {
-        console.error("❌ Error updating product:", err);
-        return res.status(500).json({ error: "Error updating product." });
-      }
-      res.status(200).json({ message: "✅ Product updated successfully!" });
-    });
-  });
-});
-
-//  Delete 
-app.delete("/api/products/:id", (req, res) => {
-  const { id } = req.params;
-
-  db.query("SELECT image FROM products WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.error("❌ Error fetching product:", err);
-      return res.status(500).json({ error: "Error fetching product." });
-    }
-
-    if (result.length === 0) {
-      return res.status(404).json({ error: "Product not found." });
-    }
-
-    const imagePath = result[0].image ? path.join(__dirname, "uploads", result[0].image) : null;
-
-    db.query("DELETE FROM products WHERE id = ?", [id], (err) => {
-      if (err) {
-        console.error("❌ Error deleting product:", err);
-        return res.status(500).json({ error: "Error deleting product." });
-      }
-
-      if (imagePath && fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
-
-      res.status(200).json({ message: "✅ Product deleted successfully!" });
-    });
-  });
-});
-
-/* ========================= NOTIFICATIONS API ========================= */
-
-// ✅ Notify Vendor
+// Notify Vendor
 app.post("/api/notifyVendor", (req, res) => {
   const { cart } = req.body;
 
@@ -180,7 +118,8 @@ app.post("/api/notifyVendor", (req, res) => {
     return res.status(400).json({ error: "Cart is empty" });
   }
 
-  const query = "INSERT INTO notifications (product_id, company, message, read_status) VALUES ?";
+  const query =
+    "INSERT INTO notifications (product_id, company, message, read_status) VALUES ?";
   const values = cart.map((item) => [
     item.id,
     item.company,
@@ -197,9 +136,9 @@ app.post("/api/notifyVendor", (req, res) => {
   });
 });
 
-// ✅ Fetch Vendor Notifications
+// Fetch Vendor Notifications
 app.get("/api/notifications/:company", (req, res) => {
-  const { company } = req.params.trim();
+  const { company } = req.params; // Fixing issue with .trim() method
   const query = "SELECT * FROM notifications WHERE LOWER(company) = LOWER(?) ORDER BY created_at DESC";
 
   db.query(query, [company], (err, results) => {
@@ -211,7 +150,7 @@ app.get("/api/notifications/:company", (req, res) => {
   });
 });
 
-// ✅ Start Server
+// Start Server
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
 });
