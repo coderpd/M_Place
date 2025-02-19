@@ -2,11 +2,12 @@
 import { useCart } from "@/app/customer/context/CartContext";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import CSS
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
-  const [company] = useState("RnD Technologies"); // Ensure the company is set correctly
-  const [error, setError] = useState(null); // Handle errors
+  const [company] = useState("RnD Technologies");
 
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -17,9 +18,6 @@ const CartPage = () => {
   const handleDecrement = (id) => {
     updateQuantity(id, "decrement");
   };
-
-  // ✅ Remove Fetching Notifications in the Cart Page
-  // No need for fetchNotifications()
 
   const handleNotifyVendor = async () => {
     try {
@@ -33,18 +31,29 @@ const CartPage = () => {
 
       const data = await response.json();
       if (data.message) {
-        alert("Vendor has been notified successfully!");
+        toast.success("Vendor has been notified successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       } else {
-        alert("Failed to notify the vendor. Try again!");
+        toast.error("Failed to notify the vendor. Try again!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
       console.error("Error notifying vendor:", error);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6 md:p-6 pt-17 lg:pt-19">
+      <ToastContainer /> 
+
       <h1 className="text-2xl font-bold text-center mb-6">Your Cart</h1>
 
       {cart.length === 0 ? (
@@ -115,9 +124,6 @@ const CartPage = () => {
               Notify Vendor
             </button>
           </div>
-
-          {/* Error Handling */}
-          {error && <div className="text-red-500 text-center mt-4">{error}</div>}
         </>
       )}
     </div>

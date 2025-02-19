@@ -150,6 +150,33 @@ app.get("/api/notifications/:company", (req, res) => {
   });
 });
 
+
+// app.get("/api/notifications/")
+
+// ✅ Mark All Notifications as Read for a Company
+app.put('/api/markAllNotificationsAsRead/:company', (req, res) => {
+  const { company } = req.params; // Get the company from URL parameter
+
+  // Query to update all notifications for the given company where read_status is 0 (unread)
+  const query = "UPDATE notifications SET read_status = 1 WHERE company = ? AND read_status = 0";
+
+  db.query(query, [company], (err, result) => {
+    if (err) {
+      console.error("❌ Error marking notifications as read:", err);
+      return res.status(500).json({ error: "Error updating notifications." });
+    }
+
+    // If no rows were affected, that means there were no unread notifications to mark as read
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "No unread notifications found." });
+    }
+
+    // Return success message with the number of notifications marked as read
+    res.status(200).json({ message: `${result.affectedRows} notifications marked as read!` });
+  });
+});
+
+
 // ✅ Dismiss (Delete) a Notification
 app.delete("/api/notifications/:id", (req, res) => {
   const { id } = req.params;

@@ -68,9 +68,7 @@ export default function Mainpage() {
     setNotificationOpen(!notificationOpen);
   };
 
-  // const dismissNotification = (id) => {
-  //   setNotifications(notifications.filter((notification) => notification.id !== id));
-  // };
+  
   const dismissNotification = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/notifications/${id}`, {
@@ -93,34 +91,18 @@ export default function Mainpage() {
   
   
 
-  // const markAsRead = async (id) => {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/api/markNotification", {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ notificationId: id }),
-  //     });
-
-  //     const data = await response.json();
-  //     if (data.message) {
-  //       alert("Notification marked as read.");
-  //       fetchNotifications(); // Refresh notifications after marking as read
-  //     } else {
-  //       alert("Failed to mark notification as read.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error marking notification as read:", error);
-  //   }
-  // };
-
+  
   const markAllAsRead = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/markAllNotificationsAsRead/${encodeURIComponent(company)}`, {
         method: "PUT",
       });
-
+  
+      // Check if the response is successful (status 200)
+      if (!response.ok) {
+        throw new Error("Failed to mark all notifications as read.");
+      }
+  
       const data = await response.json();
       if (data.message) {
         alert("All notifications marked as read.");
@@ -130,8 +112,10 @@ export default function Mainpage() {
       }
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
+  
 
   const handleNotifyVendor = async (product) => {
     const message = `A customer is interested in buying ${product.name}.`;
@@ -229,6 +213,7 @@ export default function Mainpage() {
             <option value="IP dealers">IP dealers</option>
             <option value="RM dealers">RM dealers</option>
             <option value="MP Electronics">MP Electronics</option>
+            <option value="AM retail pvt lmt">AM retail pvt lmt</option>
           </select>
 
           {/* Notification Icon (Bell) */}
