@@ -209,7 +209,7 @@ const VendorSignup = () => {
     }
     try {
       const response = await fetch(
-        "http://localhost:5000/auth/vendor-sendotp",
+        "http://localhost:5000/auth/vendor/vendor-sendotp",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

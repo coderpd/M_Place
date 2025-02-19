@@ -208,7 +208,7 @@ const CustomerSignup = () => {
     }
     try {
       const response = await fetch(
-        "http://localhost:5000/auth/customer-sendotp",
+        "http://localhost:5000/auth/customer/customer-sendotp",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -237,7 +237,7 @@ const CustomerSignup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/auth/customer-signup", {
+      const response = await fetch("http://localhost:5000/auth/customer/customer-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues), // Ensure OTP is included

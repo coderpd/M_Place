@@ -1,3 +1,4 @@
+
 "use client";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -19,7 +20,7 @@ const schema = yup.object().shape({
 });
 
 export default function ForgotPassOtp() {
-  const router=useRouter();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -28,7 +29,7 @@ export default function ForgotPassOtp() {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      otp: "", 
+      otp: "",
     },
   });
 
@@ -36,37 +37,52 @@ export default function ForgotPassOtp() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-
   const onSubmit = async (data) => {
     setLoading(true);
-    setErrorMessage(""); 
-    setSuccessMessage("");   
-
+    setErrorMessage("");
+    setSuccessMessage("");
+  
     try {
-      // Simulate OTP validation API request
-      const response = await validateOtp(data.otp); 
-
-      setSuccessMessage(response); 
+      const email = localStorage.getItem("userEmail"); // ✅ Retrieve email from localStorage
+  
+      if (!email) {
+        setErrorMessage("Email is missing. Please request a new OTP.");
+        setLoading(false);
+        return;
+      }
+  
+      const response = await fetch("http://localhost:5000/forgotpassword/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,  
+          otp: data.otp,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Invalid OTP");
+      }
+  
+      const result = await response.json();
+      setSuccessMessage(result.message || "OTP validated successfully.");
+      
+      // Clear email from localStorage after verification
+      // localStorage.removeItem("userEmail");
+  
+      router.push("/ResetPassword");
     } catch (error) {
-      setErrorMessage(error.message || "Failed to validate OTP"); 
+      setErrorMessage(error.message || "Failed to validate OTP");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-
-  // Simulated OTP validation API call
-  const validateOtp = (otp) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (otp === "1234") {
-          router.push("./ResetPassword")
-          resolve("OTP is valid. You can now reset your password.");
-        } else {
-          reject(new Error("Invalid OTP"));
-        }
-      }, 2000);
-    });
-  };
+  
+  
+  
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
@@ -76,19 +92,13 @@ export default function ForgotPassOtp() {
         <Card className="w-full max-w-md space-y-6 shadow-lg rounded-lg p-6">
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 rounded-xl bg-black flex items-center justify-center text-white text-3xl font-semibold">
-                M
-              </div>
-              <span className="text-4xl font-sans font-semibold text-gray-900">
-                M-Place
-              </span>
+              <div className="w-14 h-14 rounded-xl bg-black flex items-center justify-center text-white text-3xl font-semibold">M</div>
+              <span className="text-4xl font-sans font-semibold text-gray-900">M-Place</span>
             </div>
           </CardHeader>
 
           <CardContent>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Forgot Password
-            </h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Forgot Password</h2>
             <p className="text-gray-600 mb-6">Please Enter Your OTP</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -118,16 +128,9 @@ export default function ForgotPassOtp() {
                   </div>
                 ))}
               </div>
-              {errors.otp && (
-                <p className="text-red-500 text-sm mt-1">{errors.otp.message}</p>
-              )}
-
-              {errorMessage && (
-                <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-              )}
-              {successMessage && (
-                <p className="text-green-500 text-sm mt-2">{successMessage}</p>
-              )}
+              {errors.otp && <p className="text-red-500 text-sm mt-1">{errors.otp.message}</p>}
+              {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
+              {successMessage && <p className="text-green-500 text-sm mt-2">{successMessage}</p>}
 
               <Button
                 type="submit"
@@ -143,3 +146,4 @@ export default function ForgotPassOtp() {
     </div>
   );
 }
+

@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("http://localhost:5000/auth/signin", {
+      const response = await fetch("http://localhost:5000/auth/signin/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

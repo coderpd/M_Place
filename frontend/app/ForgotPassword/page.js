@@ -28,7 +28,7 @@ export default function ForgotPassword() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("http://localhost:5000/auth/forgot-password", {
+      const response = await fetch("http://localhost:5000/forgotpassword/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data.email }),
@@ -45,7 +45,9 @@ export default function ForgotPassword() {
         setOtpSent(true);
         setOtpMessage("OTP sent successfully!");
   
-        // Pass the email in the URL query parameters
+        // ✅ Store the email in localStorage before redirecting
+        localStorage.setItem("userEmail", data.email);
+  
         router.push("./ForgotPassOtp");
       } else {
         setOtpMessage(result.message || "Failed to send OTP");
@@ -54,6 +56,7 @@ export default function ForgotPassword() {
       setOtpMessage("Error sending OTP. Try again.");
     }
   };
+  
   
    
   
