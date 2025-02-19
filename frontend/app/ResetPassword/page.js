@@ -8,7 +8,10 @@ import * as yup from "yup";
 import ImageSlider from "../SignIn/ImageSlider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import { Eye, EyeOff } from "lucide-react";
 
+// Validation schema
 const schema = yup.object().shape({
   newPassword: yup
     .string()
@@ -26,8 +29,9 @@ const schema = yup.object().shape({
 
 export default function ResetPassword() {
   const router = useRouter();
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -36,39 +40,52 @@ export default function ResetPassword() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {  
+  const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+
+  const onSubmit = async (data) => {
     const email = localStorage.getItem("userEmail");
+
     try {
       const response = await fetch("http://localhost:5000/forgotpassword/reset-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email,
           newPassword: data.newPassword,
           confirmPassword: data.confirmPassword,
         }),
       });
-  
+
       const responseData = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(responseData.message || "Failed to reset password");
       }
-  
-      setSuccessMessage("Password reset successful!");
-      setErrorMessage("");
-      
-      setTimeout(() => {
-        router.push("/Home");
-      }, 2000);
+
+      Swal.fire({
+        title: "Password Reset Successful!",
+        text: "You can now log in with your new password.",
+        icon: "success",
+        confirmButtonColor: "#4BB543",
+        confirmButtonText: "Go to Home",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/Home");
+        }
+      });
+
     } catch (error) {
-      setErrorMessage(error.message);
-      setSuccessMessage("");
+      Swal.fire({
+        title: "Error!",
+        text: error.message || "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#D9534F",
+        confirmButtonText: "Try Again",
+      });
     }
   };
-  
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       <ImageSlider />
@@ -84,29 +101,49 @@ export default function ResetPassword() {
           <CardContent>
             <h2 className="text-2xl font-semibold text-gray-800">Reset Your Password</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-             
-              <div>
+              
+              {/* New Password Field */}
+              <div className="relative">
                 <label htmlFor="newPassword" className="text-sm text-gray-700">New Password</label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  placeholder="Enter new password"
-                  {...register("newPassword")}
-                />
+                <div className="relative">
+                  <Input
+                    id="newPassword"
+                    type={showNewPassword ? "text" : "password"}
+                    placeholder="Enter new password"
+                    {...register("newPassword")}
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleNewPasswordVisibility}
+                    className="absolute right-3 top-3 text-gray-500"
+                  >
+                    {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
                 <p className="text-red-500 text-sm">{errors.newPassword?.message}</p>
               </div>
-              <div>
+
+              {/* Confirm Password Field */}
+              <div className="relative">
                 <label htmlFor="confirmPassword" className="text-sm text-gray-700">Confirm Password</label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm new password"
-                  {...register("confirmPassword")}
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm new password"
+                    {...register("confirmPassword")}
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    className="absolute right-3 top-3 text-gray-500"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
                 <p className="text-red-500 text-sm">{errors.confirmPassword?.message}</p>
               </div>
-              {successMessage && <p className="text-green-600 text-sm text-center">{successMessage}</p>}
-              {errorMessage && <p className="text-red-600 text-sm text-center">{errorMessage}</p>}
+
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"

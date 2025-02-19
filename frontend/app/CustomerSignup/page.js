@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const API_KEY="MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
 
@@ -42,6 +44,7 @@ const CustomerSignup = () => {
 
   const selectedCountry = formValues.country;
   const selectedState = formValues.state;
+  const Router=useRouter();
 
   // Fetch Countries
   useEffect(() => {
@@ -230,32 +233,56 @@ const CustomerSignup = () => {
   // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Before Submission:", formValues); // Log the form data to check
-
+    console.log("Form Data Before Submission:", formValues); 
+  
     if (!validateForm()) return;
-
+  
     setLoading(true);
-
+  
     try {
       const response = await fetch("http://localhost:5000/auth/customer/customer-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formValues), // Ensure OTP is included
+        body: JSON.stringify(formValues), 
       });
-
+  
       const result = await response.json();
+  
+     
       if (response.ok) {
-        alert("Signup successful!");
+        Swal.fire({
+          title: "Signup Successful!",
+          text: "You have successfully signed up.",
+          icon: "success",  
+          confirmButtonColor: "#4BB543", 
+          confirmButtonText: "Okay",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Router.push('./SignIn')
+          }
+        });;
       } else {
-        alert(`Signup failed: ${result.message}`);
+        Swal.fire({
+          title: "Signup Failed",
+          text: result.message || "Please try again later.",
+          icon: "error", 
+          confirmButtonColor: "#D9534F", 
+          confirmButtonText: "Try Again",
+        });
       }
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      Swal.fire({
+        title: "Error Occurred",
+        text: error.message || "Something went wrong. Please try again.",
+        icon: "error", 
+        confirmButtonColor: "#D9534F", 
+        confirmButtonText: "Close",
+      });
     } finally {
       setLoading(false);
     }
   };
-
+  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

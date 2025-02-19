@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import Swal from "sweetalert2";
+import Router, { useRouter } from "next/navigation";
 
 const API_KEY="MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
 
@@ -42,10 +44,11 @@ const VendorSignup = () => {
 
   const selectedCountry = formValues.country;
   const selectedState = formValues.state;
+  const Router=useRouter();
 
   // Fetch Countries
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchCountries = async () => { 
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
         const data = await response.json();
@@ -238,7 +241,7 @@ const VendorSignup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/auth/vendor-signup", {
+      const response = await fetch("http://localhost:5000/auth/vendor/vendor-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues), // Ensure OTP is included
@@ -246,15 +249,37 @@ const VendorSignup = () => {
 
       const result = await response.json();
       if (response.ok) {
-        alert("Signup successful!");
-      } else {
-        alert(`Signup failed: ${result.message}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
+             Swal.fire({
+               title: "Signup Successful!",
+               text: "You have successfully signed up.",
+               icon: "success",  
+               confirmButtonColor: "#4BB543", 
+               confirmButtonText: "Okay",
+             }).then((result) => {
+               if (result.isConfirmed) {
+                 Router.push('./SignIn')
+               }
+             });;
+           } else {
+             Swal.fire({
+               title: "Signup Failed",
+               text: result.message || "Please try again later.",
+               icon: "error", 
+               confirmButtonColor: "#D9534F", 
+               confirmButtonText: "Try Again",
+             });
+           }
+         } catch (error) {
+           Swal.fire({
+             title: "Error Occurred",
+             text: error.message || "Something went wrong. Please try again.",
+             icon: "error", 
+             confirmButtonColor: "#D9534F", 
+             confirmButtonText: "Close",
+           });
+         } finally {
+           setLoading(false);
+         }
   };
 
   const togglePasswordVisibility = () => {
