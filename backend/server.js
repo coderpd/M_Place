@@ -12,16 +12,15 @@ app.use(express.json());
 
 // Routes
 const CustomerAuthRouter = require("./routes/CustomerSignupAuth");
-app.use("/auth/customer", CustomerAuthRouter);  // Now it's a distinct route for customers
-
+app.use("/auth/customer", CustomerAuthRouter); 
 const VendorAuthRouter = require("./routes/VendorSignupAuth");
-app.use("/auth/vendor", VendorAuthRouter);  // Now it's a distinct route for vendors
+app.use("/auth/vendor", VendorAuthRouter);  
 
 const SigninAuthRouter = require("./routes/SigninAuth");
-app.use("/auth/signin", SigninAuthRouter);  // Separate signin route
+app.use("/auth/signin", SigninAuthRouter);  
 
 const ForgotPassword = require("./routes/forgotPasswordOtp");
-app.use("/forgotpassword", ForgotPassword);  // Forgot password routes are independent
+app.use("/forgotpassword", ForgotPassword);  
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

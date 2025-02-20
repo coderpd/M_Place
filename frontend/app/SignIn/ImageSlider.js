@@ -4,12 +4,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const images = [
-  { src: "/desktop.jpg", alt: "Desktop", title: "Powerful Desktops", description: "Explore high-performance desktops for work." },
-  { src: "/keyboard.jpg", alt: "Keyboard", title: "Mechanical Keyboards", description: "Experience smooth and fast typing with our keyboards." },
-  { src: "/printer.jpg", alt: "Printer", title: "Smart Printers", description: "Reliable and high-quality printing for every need." },
   { src: "/lap.jpg", alt: "Laptop", title: "Modern Laptops", description: "Sleek, fast, and lightweight laptops for professionals." },
   { src: "/c-class.jpg", alt: "C-Class Items", title: "Essential Accessories", description: "Affordable IT accessories for everyday use." },
   { src: "/Server.jpg", alt: "Server", title: "Powerful Server Solutions", description: "High-performance servers designed for seamless data processing, reliability, and scalability for modern businesses." },
+  { src: "/desktop.jpg", alt: "Desktop", title: "Powerful Desktops", description: "Explore high-performance desktops for work." },
+  { src: "/keyboard.jpg", alt: "Keyboard", title: "Mechanical Keyboards", description: "Experience smooth and fast typing with our keyboards." },
+  { src: "/printer.jpg", alt: "Printer", title: "Smart Printers", description: "Reliable and high-quality printing for every need." }
 ];
 
 export default function ImageSlider() {
@@ -40,7 +40,7 @@ export default function ImageSlider() {
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{ duration: 1, ease: "linear" }}
           >
             <img src={images[index].src} alt={images[index].alt} className="w-full h-full object-cover" />
             <div className="absolute bottom-10 left-10 bg-black bg-opacity-60 p-5 rounded-lg max-w-sm">
