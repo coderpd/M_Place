@@ -22,6 +22,9 @@ app.use("/auth/signin", SigninAuthRouter);
 const ForgotPassword = require("./routes/forgotPasswordOtp");
 app.use("/forgotpassword", ForgotPassword);  
 
+const contactUsRouter = require("./routes/ContactUs");
+app.use("/contact", contactUsRouter);
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -16,7 +16,6 @@ export default function Navbar() {
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
-    console.log(`Active link is now: ${link}`);
     setSidebarOpen(false);
   };
 
@@ -39,40 +38,45 @@ export default function Navbar() {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4 lg:px-10">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-16 bg-black text-white text-2xl font-semibold rounded-xl flex items-center justify-center">
-            M
+        <div className="flex items-center gap-4">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner transition-transform duration-300 hover:scale-105">
+              <img
+                src="/Logo.png"
+                alt="M-Place Logo"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+              />
+            </div>
           </div>
-          <span className="text-2xl font-semibold text-black">M-Place</span>
         </div>
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-8">
           {["Home", "Features", "Contact Us"].map((link) => (
             <Link
-            key={link}
-            href={`#${link.toLowerCase().replace(" ", "-")}`}
-            className={`text-base font-medium transition duration-200 ease-in-out ${
-              activeLink === link
-                ? "text-blue-600" 
-                : "text-gray-600 hover:text-blue-600"
-            }`}
-            onClick={() => handleLinkClick(link)} 
-          >
-            {link}
-          </Link>
+              key={link}
+              href={`#${link.toLowerCase().replace(" ", "-")}`}
+              className={`text-base font-medium transition duration-200 ease-in-out ${
+                activeLink === link
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
+              onClick={() => handleLinkClick(link)}
+            >
+              {link}
+            </Link>
           ))}
 
           <Button
             variant="outline"
             onClick={openSignupCard}
-            className="rounded-full text-base px-6 py-3 hover:bg-blue-500 hover:text-white transition duration-300"
+            className="rounded-full text-base px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
           >
             SIGNUP
           </Button>
           <Button
             variant="outline"
-            className="rounded-full text-base px-6 py-3 hover:bg-blue-500 hover:text-white transition duration-300"
+            className="rounded-full text-base px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
           >
             <Link href="./SignIn">SIGNIN</Link>
           </Button>
@@ -98,14 +102,6 @@ export default function Navbar() {
         } transition-transform duration-300 ease-in-out lg:hidden z-40`}
       >
         <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center">
-            <div className="w-12 h-12 bg-black text-white text-xl font-semibold rounded-xl flex items-center justify-center">
-              M
-            </div>
-            <span className="ml-2 text-xl font-semibold text-black">
-              M-Place
-            </span>
-          </div>
           <button
             className="p-2 text-gray-700 hover:text-blue-600"
             onClick={() => setSidebarOpen(false)}
@@ -126,7 +122,7 @@ export default function Navbar() {
           ))}
           <Button
             variant="outline"
-            className="w-full rounded-full mt-4 px-6 py-3 hover:bg-blue-500 hover:text-white transition duration-300"
+            className="w-full rounded-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
             onClick={openSignupCard}
           >
             SIGNUP
@@ -135,13 +131,12 @@ export default function Navbar() {
             variant="outline"
             className="w-full rounded-full px-6 py-3 hover:bg-blue-500 hover:text-white transition duration-300"
           >
-            <Link href="./SignIn">LOGIN</Link>
+            <Link href="./SignIn">SIGNIN</Link>
           </Button>
         </nav>
       </div>
-
-      {/* Signup Role Selection Modal */}
-      {isSignupCardOpen && (
+ {/* Signup Role Selection Modal */}
+ {isSignupCardOpen && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 p-4" onClick={closeSignupCard}>
     <div className="bg-white rounded-xl p-8 max-w-lg w-full shadow-xl relative transition-all transform hover:scale-[1.02]" onClick={(e) => e.stopPropagation()}>
       
@@ -192,7 +187,6 @@ export default function Navbar() {
     </div>
   </div>
 )}
-
 
     </header>
   );
