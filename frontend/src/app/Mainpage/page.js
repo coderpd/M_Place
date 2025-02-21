@@ -210,7 +210,7 @@ export default function Mainpage() {
             <option value="cv technologies">cv technologies</option>
             <option value="UB tech">UB tech</option>
             <option value="SG retail">SG retail</option>
-            <option value="IP dealers">IP dealers</option>
+            <option value="IP logistics">IP logistics</option>
             <option value="RM dealers">RM dealers</option>
             <option value="MP Electronics">MP Electronics</option>
             <option value="AM retail pvt lmt">AM retail pvt lmt</option>

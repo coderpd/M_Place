@@ -18,7 +18,7 @@ const ProductDetail = () => {
 
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        const res = await fetch(`http://localhost:5000/products/products/${id}`);
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
         setProduct(data);
@@ -51,7 +51,7 @@ const ProductDetail = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar disableFilters={true} disableSearch={true} /> {/* Disable both filters and search bar on Product Detail page */}
       <ToastContainer />
       <div className="max-w-6xl mx-auto p-6 pt-24">
         <div className="flex flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px]">
@@ -79,7 +79,6 @@ const ProductDetail = () => {
             <p className="text-gray-600 text-lg mt-4">{product.description}</p>
             <p className="text-2xl font-semibold text-gray-800 mt-6">Price: ₹{product.price}</p>
             <p className="text-lg font-normal text-gray-800 mt-6">Seller: {product.company}</p>
-
           </div>
         </div>
       </div>

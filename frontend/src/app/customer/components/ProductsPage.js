@@ -22,7 +22,7 @@ const ProductsPage = () => {
       setError("");
 
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch("http://localhost:5000/products/products");
         if (!response.ok) throw new Error(`API error: ${response.status}`);
 
         const data = await response.json();

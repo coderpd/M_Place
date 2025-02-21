@@ -1,14 +1,15 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 
+
+
+
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 16; 
-  const router = useRouter();
+  const itemsPerPage = 16;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,7 +30,11 @@ export default function Home() {
   const selectedProducts = products.slice(startIndex, startIndex + itemsPerPage);
 
   return (
+    <>
+    
     <div className="p-8 bg-gray-100 min-h-screen">
+      
+    
       <h2 className="text-3xl font-bold text-center text-[#FF4500] mb-4">
         🛒 Premium Products, Maximum Impact
       </h2>
@@ -42,8 +47,7 @@ export default function Home() {
           selectedProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-slate-100 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer "
-              onClick={() => router.push(`/showproduct/${product.id}`)}
+              className="bg-slate-100 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105"
             >
               <div className="relative">
                 <img
@@ -97,6 +101,7 @@ export default function Home() {
           </Button>
         </div>
       )}
-    </div>
+    </div></>
+    
   );
 }
