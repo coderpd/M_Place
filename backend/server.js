@@ -27,6 +27,10 @@ const productsRouter = require("./routes/products");
 app.use("/auth/products", productsRouter);
 
 
+const vendorRouter = require("./routes/vendor"); // Ensure the correct path
+app.use("/auth/vendor", vendorRouter); // Use the same variable name
+
+
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
