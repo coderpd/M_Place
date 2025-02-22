@@ -122,10 +122,10 @@ export default function ProductDetails() {
                 <td className="px-6 py-4">₹{product.price}</td>
                 <td className="px-6 py-4">{product.seller}</td>
                 <td className="px-6 py-4 flex space-x-3">
-                  <button onClick={() => handleEdit(product.id)} className="text-blue-600">
+                  <button onClick={() => handleEdit(product.id)} className="text-blue-600 mt-5">
                     <FaEdit />
                   </button>
-                  <button onClick={() => handleDelete(product.id)} className="text-red-600">
+                  <button onClick={() => handleDelete(product.id)} className="text-red-600 mt-4">
                     <Trash2 />
                   </button>
                 </td>

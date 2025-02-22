@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from "sweetalert2";
+
 
 export default function AddProduct() {
   const { id } = useParams(); // vendor_id
@@ -33,7 +35,7 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formDataToSend = new FormData();
     formDataToSend.append("productName", formData.productName);
     formDataToSend.append("brand", formData.brand);
@@ -45,19 +47,27 @@ export default function AddProduct() {
     if (productImage) {
       formDataToSend.append("productImage", productImage);
     }
-
+  
     try {
       const response = await fetch("http://localhost:5000/auth/products/add-product", {
         method: "POST",
         body: formDataToSend,
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to add product");
       }
-
-      toast.success("Product added successfully!");
-
+  
+      // ✅ Show SweetAlert2 success popup
+      Swal.fire({
+        title: "Success!",
+        text: "Product added successfully!",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      });
+  
+      // ✅ Reset form after successful submission
       setFormData({
         category: "",
         brand: "",
@@ -69,10 +79,16 @@ export default function AddProduct() {
       setProductImage(null);
       setPreviewImage(null);
     } catch (error) {
-      toast.error(error.message);
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        confirmButtonColor: "#d33",
+        confirmButtonText: "OK",
+      });
     }
   };
-
+  
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-2">
       {/* <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Add New Product</h2> */}

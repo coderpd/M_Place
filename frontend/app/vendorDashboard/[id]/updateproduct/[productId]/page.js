@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 export default function UpdateProduct() {
   const { id, productId } = useParams();
@@ -16,7 +15,6 @@ export default function UpdateProduct() {
     price: "",
     seller: "",
     description: "",
-    image: "",
   });
 
   const [previewImage, setPreviewImage] = useState("");
@@ -37,12 +35,10 @@ export default function UpdateProduct() {
         setProduct(data.product);
 
         if (data.product.productImage) {
-          setPreviewImage(
-            `http://localhost:5000/uploads/${data.product.productImage}`
-          );
+          setPreviewImage(`http://localhost:5000/uploads/${data.product.productImage}`);
         }
       } catch (error) {
-        toast.error(error.message);
+        Swal.fire("Error", error.message, "error");
       } finally {
         setLoading(false);
       }
@@ -69,6 +65,7 @@ export default function UpdateProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUpdating(true);
 
     const formData = new FormData();
     formData.append("productName", product.productName);
@@ -77,12 +74,10 @@ export default function UpdateProduct() {
     formData.append("price", product.price);
     formData.append("seller", product.seller);
     formData.append("description", product.description);
-
+    
     if (selectedImage) {
       formData.append("productImage", selectedImage);
     }
-
-    setUpdating(true);
 
     try {
       const response = await fetch(
@@ -97,10 +92,18 @@ export default function UpdateProduct() {
         throw new Error("Failed to update product");
       }
 
-      toast.success("Product updated successfully!");
+      // Show SweetAlert for success
+      Swal.fire({
+        title: "Success!",
+        text: "Product updated successfully!",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
       setTimeout(() => router.push(`/vendorDashboard/${id}/productdetails`), 1500);
     } catch (error) {
-      toast.error(error.message);
+      Swal.fire("Error", error.message, "error");
     } finally {
       setUpdating(false);
     }
@@ -108,7 +111,6 @@ export default function UpdateProduct() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <ToastContainer />
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 shadow-md rounded-lg"
@@ -204,10 +206,17 @@ export default function UpdateProduct() {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50 flex items-center justify-center"
           disabled={updating}
         >
-          {updating ? "Updating..." : "Update Product"}
+          {updating ? (
+            <>
+              <svg className="animate-spin h-5 w-5 mr-2 border-4 border-white border-t-transparent rounded-full" viewBox="0 0 24 24"></svg>
+              Updating...
+            </>
+          ) : (
+            "Update Product"
+          )}
         </button>
       </form>
     </div>

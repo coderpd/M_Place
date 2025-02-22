@@ -49,10 +49,7 @@ export default function DashboardLayout({ id, children }) {
   const handleSidebarToggle = () => setIsOpen(!isOpen);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const toggleNotification = () => setNotificationOpen(!notificationOpen);
-
-  const handleLogout = () => {
-    router.push("/");
-  };
+  const handleLogout = () => router.push("/");
 
   const unreadNotifications = notifications.filter((n) => !n.read).length;
 
@@ -61,42 +58,43 @@ export default function DashboardLayout({ id, children }) {
     if (pathname.includes("productdetails")) return "Product Details";
     if (pathname.includes("productcards")) return "Product Portal";
     if (pathname.includes("updateproduct")) return "Update Product";
+    if (pathname.includes("profile")) return "My Profile";
     return "Vendor Dashboard";
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className={`${isOpen ? "w-64" : "w-16"} bg-[#1C92D2] text-white transition-all duration-300 flex flex-col min-h-screen fixed h-screen`}>
-        <div className="p-3 flex justify-between items-center">
+      <div className={`${isOpen ? "w-64" : "w-16"} bg-gradient-to-r from-blue-700 to-blue-500 text-white transition-all duration-300 flex flex-col min-h-screen fixed h-screen shadow-lg`}>
+        <div className="p-4 flex justify-between items-center">
           {isOpen && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-black text-white text-2xl font-semibold rounded-xl flex items-center justify-center">
                 M
               </div>
-              <span className="text-2xl font-semibold text-white">M-Place</span>
+              <span className="text-2xl font-semibold">M-Place</span>
             </div>
           )}
-          <FaBars className="cursor-pointer" onClick={handleSidebarToggle} />
+          <FaBars className="cursor-pointer text-xl" onClick={handleSidebarToggle} />
         </div>
-        <ul className="space-y-4 p-6 text-xl mt-6">
+        <ul className="space-y-4 p-4 text-lg">
           <li>
-            <button onClick={() => router.push(`/vendorDashboard/${id}/productcards`)} className="flex items-center gap-3">
+            <button onClick={() => router.push(`/vendorDashboard/${id}/productcards`)} className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-md transition">
               <FaShoppingBag /> {isOpen && "Product Portal"}
             </button>
           </li>
           <li>
-            <button onClick={() => router.push(`/vendorDashboard/${id}/addproducts`)} className="flex items-center gap-3">
+            <button onClick={() => router.push(`/vendorDashboard/${id}/addproducts`)} className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-md transition">
               <FaPlus /> {isOpen && "Add Product"}
             </button>
           </li>
           <li>
-            <button onClick={() => router.push(`/vendorDashboard/${id}/productdetails`)} className="flex items-center gap-3">
+            <button onClick={() => router.push(`/vendorDashboard/${id}/productdetails`)} className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-md transition">
               <FaClipboardList /> {isOpen && "Product Details"}
             </button>
           </li>
           <li>
-            <button onClick={() => router.push(`/vendorDashboard/${id}/updateproduct`)} className="flex items-center gap-3">
+            <button onClick={() => router.push(`/vendorDashboard/${id}/updateproduct`)} className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-md transition">
               <FaPen /> {isOpen && "Update Product"}
             </button>
           </li>
@@ -106,19 +104,19 @@ export default function DashboardLayout({ id, children }) {
       {/* Main Content */}
       <div className={`flex-1 flex flex-col ${isOpen ? "ml-64" : "ml-16"} transition-all duration-300`}>
         {/* Header */}
-        <div className="bg-white shadow px-6 py-5 flex justify-between items-center border-b fixed top-0 left-0 right-0 z-10"
+        <div className="bg-white shadow px-9 py-4 flex justify-between items-center border-b fixed top-0 left-0 right-0 z-10"
           style={{ left: isOpen ? "16rem" : "4rem", right: "0" }}
         >
           <h1 className="text-xl font-bold">{getPageTitle()}</h1>
           <div className="flex items-center space-x-6">
             {/* Date */}
-            <div className="flex items-center bg-gray-100 p-3 rounded-md">
+            <div className="flex items-center bg-gray-100 p-3 rounded-md shadow-sm">
               <Calendar className="text-gray-600" />
               <span className="ml-2">{currentDate}</span>
             </div>
 
             {/* Notifications */}
-            <div className="relative cursor-pointer bg-gray-100 p-3 rounded-md" onClick={toggleNotification}>
+            <div className="relative cursor-pointer bg-gray-100 p-3 rounded-md shadow-sm" onClick={toggleNotification}>
               <BellRing className="text-gray-600" />
               {unreadNotifications > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
@@ -128,7 +126,7 @@ export default function DashboardLayout({ id, children }) {
             </div>
 
             {/* User Dropdown */}
-            <div className="relative flex items-center cursor-pointer bg-gray-100 p-3 rounded-md" onClick={toggleDropdown}>
+            <div className="relative flex items-center cursor-pointer bg-gray-100 p-3 rounded-md shadow-sm" onClick={toggleDropdown}>
               <CircleUserRound className="text-gray-600" />
               <div className="ml-2 hidden sm:block">
                 {vendor && <span>{vendor.firstName} {vendor.lastName}</span>}
@@ -138,11 +136,18 @@ export default function DashboardLayout({ id, children }) {
             </div>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-16 bg-white shadow-lg rounded-md w-60 z-50 p-3 border">
+              <div className="absolute right-0 top-16 bg-white shadow-lg rounded-md w-56 z-50 p-3 border">
                 <ul className="text-lg">
-                  <li className="p-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3">
-                    <UserRoundPen size={20} /> My Profile
-                  </li>
+                <li
+  onClick={() => {
+    router.push(`/vendorDashboard/${id}/myprofile`);
+    setDropdownOpen(false); // Close the dropdown after navigation
+  }}
+  className="p-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
+>
+  <UserRoundPen size={20} /> My Profile
+</li>
+
                   <li className="p-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3">
                     <Bolt size={20} /> Settings
                   </li>
