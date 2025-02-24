@@ -16,28 +16,28 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
   const handleLogin = async () => {
     setLoading(true);
     setError("");
+  
     try {
-      const response = await fetch("http://localhost:5000/auth/signin/signin", {
+      const response = await fetch("http://localhost:5000/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
-
-      if (response.ok) {
-        const { userType, user } = data;
-        localStorage.setItem(userType, JSON.stringify(user));
-        router.push(userType === "vendor" ? "/vendor-dashboard" : "/customer-dashboard");
-      } else {
-        setError(data.message || "Login failed");
+  
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed. Please try again.");
+      }
+  
+      if (data.userType === "vendor") {
+        router.push(`/vendorDashboard/${data.user.id}`);
       }
     } catch (err) {
-      setError("Something went wrong. Please try again later.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
