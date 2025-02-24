@@ -33,8 +33,17 @@ export default function LoginPage() {
         throw new Error(data.message || "Login failed. Please try again.");
       }
   
+      console.log("Login Response:", data);
+  
       if (data.userType === "vendor") {
         router.push(`/vendorDashboard/${data.user.id}`);
+      } else if (data.userType === "customer") {
+        
+        localStorage.setItem("customer", JSON.stringify(data.user));
+  
+        router.push(`/customer/products`);
+      } else {
+        throw new Error("Invalid user type.");
       }
     } catch (err) {
       setError(err.message);
@@ -42,7 +51,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       <ImageSlider />
