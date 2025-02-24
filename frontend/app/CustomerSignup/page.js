@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-
+ 
 const API_KEY="MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
 
 const CustomerSignup = () => {
@@ -145,12 +145,6 @@ const CustomerSignup = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-
-  // const handleOtpChange = (e, index) => {
-  //   const newOtp = [...otp];
-  //   newOtp[index] = e.target.value;
-  //   setOtp(newOtp);
-  // };
 
   const validateForm = () => {
     let newErrors = {};
