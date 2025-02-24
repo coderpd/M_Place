@@ -69,16 +69,18 @@ export default function ForgotPassword() {
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white px-6 py-12">
         <Card className="w-full max-w-md space-y-6 shadow-lg rounded-lg p-6">
           <CardHeader>
-            <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 rounded-xl bg-black flex items-center justify-center text-white text-3xl font-semibold">
-                M
-              </div>
-              <span className="text-4xl font-sans font-semibold text-gray-900">M-Place</span>
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+              <img
+                src="/Logo.png"
+                alt="M-Place Logo"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+              />
             </div>
+          </div>
           </CardHeader>
-
           <CardContent>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Forgot Password</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-3">Forgot Password</h2>
             <p className="text-gray-600 mb-6">Please enter your registered email ID to receive an OTP.</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

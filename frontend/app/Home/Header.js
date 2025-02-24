@@ -40,7 +40,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner transition-transform duration-300 hover:scale-105">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner ">
               <img
                 src="/Logo.png"
                 alt="M-Place Logo"

@@ -68,12 +68,15 @@ export default function DashboardLayout({ id, children }) {
       <div className={`${isOpen ? "w-64" : "w-16"} bg-gradient-to-r from-blue-700 to-blue-500 text-white transition-all duration-300 flex flex-col min-h-screen fixed h-screen shadow-lg`}>
         <div className="p-4 flex justify-between items-center">
           {isOpen && (
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-black text-white text-2xl font-semibold rounded-xl flex items-center justify-center">
-                M
-              </div>
-              <span className="text-2xl font-semibold">M-Place</span>
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+              <img
+                src="/Logo.png"
+                alt="M-Place Logo"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+              />
             </div>
+          </div>
           )}
           <FaBars className="cursor-pointer text-xl" onClick={handleSidebarToggle} />
         </div>
@@ -93,11 +96,7 @@ export default function DashboardLayout({ id, children }) {
               <FaClipboardList /> {isOpen && "Product Details"}
             </button>
           </li>
-          {/* <li>
-            <button onClick={() => router.push(`/vendorDashboard/${id}/updateproduct`)} className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-md transition">
-              <FaPen /> {isOpen && "Update Product"}
-            </button>
-          </li> */}
+         
         </ul>
       </div>
 

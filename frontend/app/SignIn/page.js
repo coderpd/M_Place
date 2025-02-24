@@ -49,12 +49,17 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-100 px-6 py-10">
         <Card className="w-full max-w-md shadow-lg p-6 bg-white">
           <CardHeader>
-            <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 rounded-xl bg-black flex items-center justify-center text-white text-3xl font-semibold">
-                M
-              </div>
-              <CardTitle className="text-4xl font-sans font-semibold text-gray-900">M-Place</CardTitle>
+          
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+              <img
+                src="/Logo.png"
+                alt="M-Place Logo"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+              />
             </div>
+          </div>
+      
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-semibold text-gray-800">Welcome Back</h2>
