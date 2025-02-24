@@ -1,7 +1,8 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { UserCircle } from "lucide-react";
+import Navbar from "../components/Navbar";
 
 const CustomerProfile = () => {
   const [customer, setCustomer] = useState(null);
@@ -11,13 +12,12 @@ const CustomerProfile = () => {
 
   useEffect(() => {
     const storedCustomer = localStorage.getItem("customer");
-
     if (!storedCustomer) {
       router.push("/login");
     } else {
       const customerData = JSON.parse(storedCustomer);
       setCustomer(customerData);
-      setFormData(customerData); // Initialize form data
+      setFormData(customerData);
     }
   }, [router]);
 
@@ -34,7 +34,7 @@ const CustomerProfile = () => {
       const updatedFormData = { ...formData, id: customer.id };
 
       const response = await fetch("http://localhost:5000/customer-edit/update-profile", {
-        method: "POST", // Changed to POST for profile update
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedFormData),
       });
@@ -43,15 +43,13 @@ const CustomerProfile = () => {
         const updatedCustomer = await response.json();
         console.log("Profile updated:", updatedCustomer);
 
-        // Update localStorage with the updated form data
+        // Update localStorage
         localStorage.setItem("customer", JSON.stringify(formData));
-        setCustomer(formData); // This triggers a re-render with the updated data
-
-        setIsEditing(false); // Switch to non-edit mode
+        setCustomer(formData);
+        setIsEditing(false);
         alert("Profile updated successfully!");
       } else {
         const errorData = await response.json();
-        console.log("Error details:", errorData);
         alert(errorData.message || "Failed to update profile. Try again.");
       }
     } catch (error) {
@@ -65,20 +63,29 @@ const CustomerProfile = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-semibold mb-6">Customer Profile</h1>
-
-      <div className="bg-white shadow-lg p-6 rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Personal Information</h2>
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? "Cancel" : "Edit Profile"}
-          </button>
+    <>
+    <Navbar disableFilters={true} disableSearch={true} />
+    <div className="max-w-4xl  mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+      {/* Profile Card */}
+      <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
+        <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
+          <UserCircle className="w-20 h-20 text-gray-500" />
         </div>
+        {isEditing ? (
+          <input
+            type="text"
+            name="companyName"
+            value={formData.companyName || ""}
+            onChange={handleChange}
+            className="mt-4 text-3xl font-semibold text-black p-1 border rounded"
+          />
+        ) : (
+          <h2 className="text-3xl font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
+        )}
+      </div>
 
+      {/* Profile Details Section */}
+      <div className="bg-white p-6 rounded-xl shadow-md mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         {isEditing ? (
           // Editable form
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -87,7 +94,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="companyName"
-                value={formData.companyName}
+                value={formData.companyName || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -97,7 +104,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="registrationNumber"
-                value={formData.registrationNumber}
+                value={formData.registrationNumber || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -107,7 +114,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="gstNumber"
-                value={formData.gstNumber}
+                value={formData.gstNumber || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -117,7 +124,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="firstName"
-                value={formData.firstName}
+                value={formData.firstName || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -127,7 +134,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="lastName"
-                value={formData.lastName}
+                value={formData.lastName || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -137,7 +144,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="phoneNumber"
-                value={formData.phoneNumber}
+                value={formData.phoneNumber || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -147,7 +154,7 @@ const CustomerProfile = () => {
               <input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={formData.email || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -157,7 +164,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="address"
-                value={formData.address}
+                value={formData.address || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -167,7 +174,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="country"
-                value={formData.country}
+                value={formData.country || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -177,7 +184,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="state"
-                value={formData.state}
+                value={formData.state || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -187,7 +194,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="city"
-                value={formData.city}
+                value={formData.city || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -197,7 +204,7 @@ const CustomerProfile = () => {
               <input
                 type="text"
                 name="postalCode"
-                value={formData.postalCode}
+                value={formData.postalCode || ""}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
               />
@@ -212,12 +219,10 @@ const CustomerProfile = () => {
             </div>
           </div>
         ) : (
-          // Display profile info (exclude id, password, created_at)
+          // Display profile info
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Object.entries(customer)
-              .filter(
-                ([key]) => !["id", "password", "createdAt", "created_at"].includes(key)
-              )
+              .filter(([key]) => !["id", "password", "created_at"].includes(key))
               .map(([key, value]) => (
                 <div key={key}>
                   <p className="font-semibold capitalize">{key.replace(/([A-Z])/g, " $1")}</p>
@@ -227,7 +232,37 @@ const CustomerProfile = () => {
           </div>
         )}
       </div>
+
+      <div className="flex justify-center mt-6 space-x-4">
+        {isEditing ? (
+          <>
+            <button
+              onClick={handleSave}
+              className="bg-green-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-green-600"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setFormData(customer); // Reset changes
+                setIsEditing(false); // Exit edit mode
+              }}
+              className="bg-gray-400 text-white px-6 py-2 rounded-md shadow-md hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600"
+          >
+            Edit Profile
+          </button>
+        )}
+      </div>
     </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 5000;
 
+
 // app.use(cors());
 // const cors = require("cors");
 app.use(cors({ 
@@ -39,10 +40,6 @@ app.use("/notification", VendorNotification);
 
 const ProfileRouter = require("./routes/CustomerProfileFetch");  
 app.use("/customer-profile", ProfileRouter);
-
-// const ProfileRouter = require("./routes/CustomerProfileFetch");
-// app.use("/auth/update-profile", ProfileRouter); // Ensure this is correctly set up
-
 
 
 const CustomerEdit = require("./routes/customer");

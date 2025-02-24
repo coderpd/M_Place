@@ -3,45 +3,6 @@ const db = require("../db");
 
 const router = express.Router();
 
-// Get customer details by ID
-// router.get("/get-customer/:id", async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const [customerRows] = await db.query(
-//       "SELECT * FROM customersignup WHERE id = ?",
-//       [id]
-//     );
-
-//     if (customerRows.length === 0) {
-//       return res.status(404).json({ message: "Customer not found" });
-//     }
-
-//     const customer = customerRows[0];
-
-//     res.status(200).json({
-//       customer: {
-//         id: customer.id,
-//         companyName: customer.companyName,
-//         registrationNumber: customer.registrationNumber,
-//         gstNumber: customer.gstNumber,
-//         firstName: customer.firstName,
-//         lastName: customer.lastName,
-//         phoneNumber: customer.phoneNumber,
-//         email: customer.email,
-//         address: customer.address,
-//         country: customer.country,
-//         state: customer.state,
-//         city: customer.city,
-//         postalCode: customer.postalCode,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error fetching customer details:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
-
 // Update customer profile
 router.post("/update-profile", async (req, res) => {
   const {
@@ -51,8 +12,13 @@ router.post("/update-profile", async (req, res) => {
   } = req.body;
 
   try {
+    // Log the received request body
+    console.log("Received data:", req.body);
+
     // Ensure all required fields are provided
-    if (!id || !firstName || !lastName || !email) {
+    if (!id || !firstName || !lastName || !email || !phoneNumber || !address || !country ||!state || !city || !postalCode
+      || !companyName ||!registrationNumber || !gstNumber
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -63,20 +29,38 @@ router.post("/update-profile", async (req, res) => {
           phoneNumber = ?, email = ?, address = ?, country = ?, state = ?, city = ?, postalCode = ?
       WHERE id = ?
     `;
-    
-    const result = await db.query(updateQuery, [
+
+    console.log("Executing SQL Query:", updateQuery);
+    console.log("Query Values:", [
       companyName, registrationNumber, gstNumber, firstName, lastName, 
       phoneNumber, email, address, country, state, city, postalCode, id
     ]);
 
+    // Execute query
+    const [result] = await db.query(updateQuery, [
+      companyName, registrationNumber, gstNumber, firstName, lastName, 
+      phoneNumber, email, address, country, state, city, postalCode, id
+    ]);
+
+    console.log("Update result:", result);
+
     if (result.affectedRows > 0) {
-      return res.status(200).json({ message: "Profile updated successfully" });
+      // Fetch the updated customer details
+      const [rows] = await db.query("SELECT * FROM customersignup WHERE id = ?", [id]);
+      const updatedCustomer = rows.length > 0 ? rows[0] : null;
+
+      console.log("Updated customer data:", updatedCustomer);
+
+      return res.status(200).json({
+        message: "Profile updated successfully",
+        customer: updatedCustomer,
+      });
     } else {
       return res.status(400).json({ message: "Failed to update profile" });
     }
   } catch (error) {
     console.error("Update profile error:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
