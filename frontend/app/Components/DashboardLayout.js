@@ -65,7 +65,7 @@ export default function DashboardLayout({ id, children }) {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className={`${isOpen ? "w-64" : "w-16"} bg-gradient-to-r from-blue-700 to-blue-500 text-white transition-all duration-300 flex flex-col min-h-screen fixed h-screen shadow-lg`}>
+      <div className={`${isOpen ? "w-64" : "w-16"} bg-[#549DA9] text-white transition-all duration-300 flex flex-col min-h-screen fixed h-screen shadow-lg`}>
         <div className="p-4 flex justify-between items-center">
           {isOpen && (
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
