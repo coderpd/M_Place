@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -38,7 +37,7 @@ const CustomerSignup = () => {
     postalCode: "",
     password: "",
     confirmPassword: "",
-    terms: true,
+    terms: false,
   });
 
   const selectedCountry = formValues.country;
@@ -189,6 +188,8 @@ const CustomerSignup = () => {
     if (!formValues.city) newErrors.city = "City is required";
     if (!formValues.postalCode)
       newErrors.postalCode = "Postal Code is required";
+    if(!formValues.terms ) newErrors.terms="You must agree the terms and condition to continue"
+    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -583,22 +584,23 @@ const CustomerSignup = () => {
               </div>
             </Section>
 
-            {/* Terms and Conditions */}
-            <div className="flex items-start pl-2 gap-2 ml-1 relative">
-              <Checkbox
-                className=""
+            <div className="flex items-center pl-2 gap-2 ml-1 relative">
+              <input
+                type="checkbox"
                 id="terms"
                 checked={formValues.terms}
                 onChange={(e) =>
                   setFormValues((prev) => ({
                     ...prev,
                     terms: e.target.checked,
+                   
                   }))
                 }
+                className="absolute left-0 cursor-pointer"
               />
               <label
                 htmlFor="terms"
-                className="text-sm text-gray-700 cursor-pointer"
+                className="text-sm text-gray-700 cursor-pointer ml-3" 
               >
                 By Signing Up, you must agree to our
                 <a href="#" className="text-teal-500 hover:underline ml-1">
@@ -615,6 +617,7 @@ const CustomerSignup = () => {
                 .
               </label>
             </div>
+            {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
 
             <Button
               type="submit"
