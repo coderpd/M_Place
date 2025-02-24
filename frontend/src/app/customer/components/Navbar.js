@@ -1,7 +1,6 @@
-"use client"; // ✅ Ensure this is at the very top
-
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // ✅ Correct import for Next.js 13+
+"use client"; 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Search, ShoppingCart, User, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/app/customer/context/CartContext";
@@ -10,7 +9,16 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   const [search, setSearch] = useState("");
   const { cart } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [customerName, setCustomerName] = useState(""); // State to store customer name
   const router = useRouter(); // ✅ No more errors
+
+  useEffect(() => {
+    // Fetch customer data from local storage if available
+    const customerData = JSON.parse(localStorage.getItem("customer"));
+    if (customerData) {
+      setCustomerName(customerData.firstName + " " + customerData.lastName); // Adjust based on the structure of customer data
+    }
+  }, []);
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -22,6 +30,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?");
     if (confirmLogout) {
+      localStorage.removeItem("customer"); // Clear customer data from local storage
       router.push("/"); // Redirect to home page
     }
   };
@@ -119,6 +128,9 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
             </div>
           )}
         </div>
+
+        {/* Display Customer Name if logged in */}
+        {customerName && <span className="text-gray-700">{customerName}</span>}
 
         {/* Cart Icon */}
         <Link href="/customer/cart" className="relative">

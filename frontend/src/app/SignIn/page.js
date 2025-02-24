@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,11 +6,12 @@ import { useState } from "react";
 import ImageSlider from "./ImageSlider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("customer");
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,8 +31,8 @@ export default function LoginPage() {
 
       if (response.ok) {
         const { userType, user } = data;
-        localStorage.setItem(userType, JSON.stringify(user));
-        router.push(userType === "vendor" ? "./Mainpage" : "./customer/products");
+        localStorage.setItem(userType, JSON.stringify(user)); // Store user data in localStorage
+        router.push(userType === "vendor" ? "/vendor-dashboard" : "/customer/products");
       } else {
         setError(data.message || "Login failed");
       }
@@ -75,16 +76,23 @@ export default function LoginPage() {
 
               <div>
                 <label htmlFor="password" className="text-sm text-gray-700">Password</label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
-
-            
 
               <div className="flex justify-between items-center text-sm">
                 <label className="flex items-center">

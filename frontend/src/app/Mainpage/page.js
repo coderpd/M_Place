@@ -17,7 +17,7 @@ export default function Mainpage() {
   const [notifications, setNotifications] = useState([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState([]);
-  const [filter, setFilter] = useState("all");  // Filter for "read" or "unread"
+  const [filter, setFilter] = useState("all");  
 
   const router = useRouter();
   const currentDate = new Date().toLocaleDateString("en-US", {
