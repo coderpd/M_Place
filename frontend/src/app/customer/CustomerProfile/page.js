@@ -43,7 +43,6 @@ const CustomerProfile = () => {
         const updatedCustomer = await response.json();
         console.log("Profile updated:", updatedCustomer);
 
-        // Update localStorage
         localStorage.setItem("customer", JSON.stringify(formData));
         setCustomer(formData);
         setIsEditing(false);
@@ -64,204 +63,101 @@ const CustomerProfile = () => {
 
   return (
     <>
-    <Navbar disableFilters={true} disableSearch={true} />
-    <div className="max-w-4xl  mx-auto p-6 md:p-6 pt-20 lg:pt-20">
-      {/* Profile Card */}
-      <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
-        <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
-          <UserCircle className="w-20 h-20 text-gray-500" />
-        </div>
-        {isEditing ? (
-          <input
-            type="text"
-            name="companyName"
-            value={formData.companyName || ""}
-            onChange={handleChange}
-            className="mt-4 text-3xl font-semibold text-black p-1 border rounded"
-          />
-        ) : (
-          <h2 className="text-3xl font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
-        )}
-      </div>
-
-      {/* Profile Details Section */}
-      <div className="bg-white p-6 rounded-xl shadow-md mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {isEditing ? (
-          // Editable form
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="font-semibold">Company Name</label>
-              <input
-                type="text"
-                name="companyName"
-                value={formData.companyName || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Registration Number</label>
-              <input
-                type="text"
-                name="registrationNumber"
-                value={formData.registrationNumber || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">GST Number</label>
-              <input
-                type="text"
-                name="gstNumber"
-                value={formData.gstNumber || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Phone Number</label>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={formData.phoneNumber || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Country</label>
-              <input
-                type="text"
-                name="country"
-                value={formData.country || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">State</label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">City</label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Postal Code</label>
-              <input
-                type="text"
-                name="postalCode"
-                value={formData.postalCode || ""}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div className="col-span-2 flex justify-end">
-              <button
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                onClick={handleSave}
-              >
-                Save Changes
-              </button>
-            </div>
+      <Navbar disableFilters={true} disableSearch={true} />
+      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+        {/* Profile Card */}
+        <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
+          <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
+            <UserCircle className="w-20 h-20 text-gray-500" />
           </div>
-        ) : (
-          // Display profile info
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Object.entries(customer)
-              .filter(([key]) => !["id", "password", "created_at"].includes(key))
-              .map(([key, value]) => (
-                <div key={key}>
-                  <p className="font-semibold capitalize">{key.replace(/([A-Z])/g, " $1")}</p>
-                  <p>{value}</p>
+          {isEditing ? (
+            <input
+              type="text"
+              name="companyName"
+              value={formData.companyName || ""}
+              onChange={handleChange}
+              className="mt-4 text-3xl font-semibold text-black p-1 border rounded w-full text-center"
+            />
+          ) : (
+            <h2 className="text-3xl font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
+          )}
+        </div>
+
+        {/* Profile Details Section */}
+        <div className="bg-white p-6 rounded-xl shadow-md mt-6">
+          {isEditing ? (
+            <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+              {[
+                { label: "Company Name", name: "companyName" },
+                { label: "Registration Number", name: "registrationNumber" },
+                { label: "GST Number", name: "gstNumber" },
+                { label: "First Name", name: "firstName" },
+                { label: "Last Name", name: "lastName" },
+                { label: "Phone Number", name: "phoneNumber" },
+                { label: "Email", name: "email", type: "email" },
+                { label: "Address", name: "address" },
+                { label: "Country", name: "country" },
+                { label: "State", name: "state" },
+                { label: "City", name: "city" },
+                { label: "Postal Code", name: "postalCode" },
+              ].map(({ label, name, type = "text" }) => (
+                <div key={name} className="bg-gray-100 p-4 rounded-lg">
+                  <label className="text-xs text-gray-600 uppercase font-semibold">{label}</label>
+                  <input
+                    type={type}
+                    name={name}
+                    value={formData[name] || ""}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded-md mt-1"
+                  />
                 </div>
               ))}
-          </div>
-        )}
-      </div>
+              <div className="col-span-2 flex justify-end mt-4">
+                <button
+                  className="px-6 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600"
+                  onClick={handleSave}
+                >
+                  Save Changes
+                </button>
+                <button
+                  onClick={() => {
+                    setFormData(customer);
+                    setIsEditing(false);
+                  }}
+                  className="ml-4 px-6 py-2 bg-gray-400 text-white rounded-md shadow-md hover:bg-gray-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+              {Object.entries(customer)
+                .filter(([key]) => !["id", "password", "created_at"].includes(key))
+                .map(([key, value]) => (
+                  <div key={key} className="bg-gray-100 p-4 rounded-lg">
+                    <p className="text-xs text-gray-600 uppercase font-semibold">
+                      {key.replace(/([A-Z])/g, " $1")}
+                    </p>
+                    <p className="text-lg font-bold text-gray-900 mt-1">{value || "N/A"}</p>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
 
-      <div className="flex justify-center mt-6 space-x-4">
-        {isEditing ? (
-          <>
+        {/* Edit Button */}
+        <div className="flex justify-center mt-6">
+          {!isEditing && (
             <button
-              onClick={handleSave}
-              className="bg-green-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-green-600"
+              onClick={() => setIsEditing(true)}
+              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600"
             >
-              Save
+              Edit Profile
             </button>
-            <button
-              onClick={() => {
-                setFormData(customer); // Reset changes
-                setIsEditing(false); // Exit edit mode
-              }}
-              className="bg-gray-400 text-white px-6 py-2 rounded-md shadow-md hover:bg-gray-500"
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600"
-          >
-            Edit Profile
-          </button>
-        )}
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };
