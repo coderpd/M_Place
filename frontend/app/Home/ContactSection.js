@@ -55,7 +55,7 @@ export default function ContactSection() {
   };
 
   return (
-    <div id="contact-us" className="bg-gradient-to-r from-teal-100 to-teal-200 py-16 px-6 md:px-10 lg:px-16 flex flex-col gap-16 md:flex-row justify-center items-center space-y-8 md:space-y-0">
+    <div id="contact-us" className="bg-[#FBF6F0] to-teal-200 py-16 px-6 md:px-10 lg:px-16 flex flex-col gap-16 md:flex-row justify-center items-center space-y-8 md:space-y-0">
       {/* Left Side Contact Info */}
       <div className="md:w-[500px] space-y-8">
         <h1 className="font-serif text-4xl font-extrabold text-gray-900 leading-tight mb-6">Contact Us</h1>
@@ -87,7 +87,7 @@ export default function ContactSection() {
       </div>
 
       {/* Right Side Contact Form */}
-      <div className="bg-white p-8 rounded-3xl shadow-2xl md:w-[450px] mx-auto space-y-8 border border-gray-300">
+      <div className="bg-white p-8 rounded-3xl  md:w-[450px] mx-auto space-y-8 border border-gray-300">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
