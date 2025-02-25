@@ -55,7 +55,7 @@ const CartPage = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-5">
         <ToastContainer />
 
         <h1 className="text-2xl font-bold text-center mb-6">Your Cart</h1>

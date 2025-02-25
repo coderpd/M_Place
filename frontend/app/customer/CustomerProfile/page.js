@@ -64,7 +64,7 @@ const CustomerProfile = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-10">
         {/* Profile Card */}
         <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
           <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">

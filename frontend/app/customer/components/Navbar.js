@@ -5,14 +5,11 @@ import { Search, ShoppingCart, User, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/app/customer/context/CartContext";
 
-const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPriceFilter, disableFilters, disableSearch }) => {
+const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPriceFilter, setSearchQuery, disableFilters, disableSearch }) => {
   const [search, setSearch] = useState("");
   const { cart } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
-  // const [categoryFilter, setCategoryFilter] = useState("");
-  
-
   const router = useRouter();
 
   useEffect(() => {
@@ -31,6 +28,7 @@ const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPrice
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearch(query);
+    setSearchQuery(query); // ✅ Update ProductsPage state too
 
     // Debugging: Check if `allProducts` exists
     if (!Array.isArray(allProducts) || allProducts.length === 0) {
@@ -46,7 +44,7 @@ const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPrice
 
     // ✅ Filter products based on search query
     const filteredProducts = allProducts.filter(
-      (product) => product.name && product.name.toLowerCase().includes(query)
+      (product) => product.productName && product.productName.toLowerCase().includes(query)
     );
 
     console.log("Filtered products:", filteredProducts); // Debugging
@@ -136,12 +134,12 @@ const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPrice
                   </Link>
                 </li>
                 <li>
-                  <Link
+                  {/* <Link
                     href="/customer/settings"
                     className="flex items-center px-4 py-2 hover:bg-gray-100"
                   >
                     <Settings size={20} className="mr-2 text-black" /> Settings
-                  </Link>
+                  </Link> */}
                 </li>
                 <li>
                   <button
