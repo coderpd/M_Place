@@ -1,49 +1,45 @@
 "use client"
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { X, Menu } from "lucide-react";
 
 export default function Navbar() {
-  const [activeLink, setActiveLink] = useState("");
+  const [activeLink, setActiveLink] = useState("Home");
   const [isSidebarOpen, setSidebarOpen] = useState(false); 
   const [isSignupCardOpen, setSignupCardOpen] = useState(false); 
   const [selectedRole, setSelectedRole] = useState(null);
+  const router = useRouter(); // Correctly use useRouter directly
 
- 
   const handleLinkClick = (link) => {
     setActiveLink(link);
   };
 
-  
   const openSignupCard = () => {
     setSignupCardOpen(true);
   };
 
-  
   const closeSignupCard = () => {
     setSignupCardOpen(false);
   };
 
-  
   const handleContinue = () => {
     if (selectedRole === "Customer") {
-    
-      window.location.href = "/CustomerSignup";
+      router.push("/CustomerSignup");
     } else if (selectedRole === "Vendor") {
-      
-      window.location.href = "/VendorSignUp";
+      router.push("/VendorSignUp");
     }
   };
 
   return (
-    <Navbar className="bg-white shadow-md sticky top-0 z-50">
+    <div className="bg-white shadow-md sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4 lg:px-10">
         {/* Logo */}
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner ">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
               <img
                 src="/Logo.png"
                 alt="M-Place Logo"
@@ -57,27 +53,21 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center space-x-8">
           <Link
             href="#Home"
-            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${
-              activeLink === "Home" ? "border-b-2 border-blue-800" : ""
-            }`}
+            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${activeLink === "Home" ? "border-b-2 border-blue-800" : ""}`}
             onClick={() => handleLinkClick("Home")}
           >
             Home
           </Link>
           <Link
             href="#services"
-            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${
-              activeLink === "services" ? "border-b-2 border-blue-800" : ""
-            }`}
+            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${activeLink === "services" ? "border-b-2 border-blue-800" : ""}`}
             onClick={() => handleLinkClick("services")}
           >
             Services
           </Link>
           <Link
             href="#contact-us"
-            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${
-              activeLink === "contact-us" ? "border-b-2 border-blue-800" : ""
-            }`}
+            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${activeLink === "contact-us" ? "border-b-2 border-blue-800" : ""}`}
             onClick={() => handleLinkClick("contact-us")}
           >
             Contact Us
@@ -103,19 +93,13 @@ export default function Navbar() {
           className="lg:hidden p-2 text-gray-700 hover:text-blue-600"
           onClick={() => setSidebarOpen(!isSidebarOpen)}
         >
-          {isSidebarOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
-          )}
+          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 left-0 w-full h-full bg-white shadow-md transform ${
-          isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        } transition-transform duration-300 ease-in-out lg:hidden z-40`}
+        className={`fixed top-0 left-0 w-full h-full bg-white shadow-md transform ${isSidebarOpen ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-in-out lg:hidden z-40`}
       >
         <div className="flex items-center justify-between px-6 py-4">
           <button
@@ -191,11 +175,7 @@ export default function Navbar() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               {/* Customer Card */}
               <Card
-                className={`p-6 w-full sm:w-1/2 border ${
-                  selectedRole === "Customer"
-                    ? "border-[#4A90E2] shadow-lg shadow-gray-300"
-                    : "border-[#A0AEC0]"
-                } rounded-xl cursor-pointer bg-gradient-to-b from-[#F8FAFC] to-[#E3F2FD] hover:from-[#E3F2FD] transition-all duration-300 transform hover:scale-105`}
+                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Customer" ? "border-[#4A90E2] shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
                 onClick={() => setSelectedRole("Customer")}
               >
                 <h3 className="font-medium text-center text-lg text-gray-900">
@@ -208,19 +188,14 @@ export default function Navbar() {
 
               {/* Vendor Card */}
               <Card
-                className={`p-6 w-full sm:w-1/2 border ${
-                  selectedRole === "Vendor"
-                    ? "border-[#4A90E2] shadow-lg shadow-gray-300"
-                    : "border-[#A0AEC0]"
-                } rounded-xl cursor-pointer bg-gradient-to-b from-[#F8FAFC] to-[#E3F2FD] hover:from-[#E3F2FD] transition-all duration-300 transform hover:scale-105`}
+                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Vendor" ? "border-[#4A90E2] shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
                 onClick={() => setSelectedRole("Vendor")}
               >
                 <h3 className="text-center font-medium text-lg text-gray-900">
                   Vendor
                 </h3>
                 <p className="text-sm text-center text-gray-600">
-                  Put your products in front of customers who are ready to
-                  buy!
+                  Put your products in front of customers who are ready to buy!
                 </p>
               </Card>
             </div>
@@ -236,6 +211,6 @@ export default function Navbar() {
           </div>
         </div>
       )}
-    </Navbar>
+    </div>
   );
 }
