@@ -32,7 +32,7 @@ router.post("/customer-sendotp", async (req, res) => {
 router.post("/Customer-signup", async (req, res) => {
   try {
     const {
-      companyName, registrationNumber, gstNumber, firstName, lastName,
+      companyName, registrationNumber,companyWebsite, gstNumber, firstName, lastName,
       phoneNumber, email, otp, address, country, state, city, postalCode, password
     } = req.body;
 
@@ -61,10 +61,10 @@ router.post("/Customer-signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await db.query(
-      `INSERT INTO customersignup (companyName, registrationNumber, gstNumber, firstName, lastName, 
+      `INSERT INTO customersignup (companyName, registrationNumber,companyWebsite, gstNumber, firstName, lastName, 
         phoneNumber, email, address, country, state, city, postalCode, password) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-      [companyName, registrationNumber, gstNumber, firstName, lastName, phoneNumber,
+       VALUES (?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [companyName, registrationNumber,companyWebsite, gstNumber, firstName, lastName, phoneNumber,
        email, address, country, state, city, postalCode, hashedPassword]
     );
 

@@ -25,37 +25,24 @@ const CartPage = () => {
     try {
       const response = await fetch("http://localhost:5000/api/notifyVendor", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cart }),
       });
-
+  
       const data = await response.json();
-      if (data.message) {
-        toast.success("Vendor has been notified successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      } else {
-        toast.error("Failed to notify the vendor. Try again!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      }
+      toast.success(data.message);
     } catch (error) {
       console.error("Error notifying vendor:", error);
-      toast.error("Something went wrong!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Something went wrong!");
     }
   };
+  
+  
 
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-5">
+      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
         <ToastContainer />
 
         <h1 className="text-2xl font-bold text-center mb-6">Your Cart</h1>

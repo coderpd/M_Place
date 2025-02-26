@@ -1,6 +1,6 @@
-import Homepage from "./Home/page.js";
+import LandingPage from "./LandingPage/page";
 export default function Home() {
   return (
-    <Homepage/>
+    <LandingPage/>
   );
 }

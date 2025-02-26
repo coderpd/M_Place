@@ -1,21 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
   FaBars,
   FaClipboardList,
   FaPlus,
-  FaPen,
   FaShoppingBag,
 } from "react-icons/fa";
-import {
-  CircleUserRound,
-  BellRing,
-  Calendar,
-  UserRoundPen,
-  LogOut,
-  Bolt,
-} from "lucide-react";
+import { CircleUserRound, BellRing, Calendar, UserRoundPen, LogOut } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function DashboardLayout({ id, children }) {
@@ -25,19 +17,37 @@ export default function DashboardLayout({ id, children }) {
   const [vendor, setVendor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "New order placed!", read: false },
-    { id: 2, text: "Stock running low!", read: false },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [currentDate, setCurrentDate] = useState("");
 
   const router = useRouter();
   const pathname = usePathname();
 
-  const currentDate = new Date().toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  useEffect(() => {
+    setCurrentDate(new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }));
+  }, []); 
 
+  // Fetch notifications when the component mounts
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/vendorNotifications/${id}`
+        );
+        const data = await response.json();
+        setNotifications(data.notifications);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, [id]); 
+
+  // Fetch vendor details
   useEffect(() => {
     const fetchVendorDetails = async () => {
       try {
@@ -66,16 +76,31 @@ export default function DashboardLayout({ id, children }) {
   const toggleNotification = () => setNotificationOpen(!notificationOpen);
   const handleLogout = () => router.push("/");
 
-  const unreadNotifications = notifications.filter((n) => !n.read).length;
+  const unreadNotifications = notifications.filter((n) => n.is_read === 0).length;
 
   const getPageTitle = () => {
     if (pathname.includes("addproducts")) return "Add Product";
     if (pathname.includes("productdetails")) return "Product Details";
     if (pathname.includes("productcards")) return "Product Portal";
-
     if (pathname.includes("profile")) return "My Profile";
     return "Vendor Dashboard";
   };
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      await fetch("http://localhost:5000/api/markNotificationRead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
+      });
+  
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, is_read: 1 } : n))
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+  
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -134,9 +159,7 @@ export default function DashboardLayout({ id, children }) {
 
       {/* Main Content */}
       <div
-        className={`flex-1 flex flex-col ${
-          isOpen ? "ml-64" : "ml-16"
-        } transition-all duration-300`}
+        className={`flex-1 flex flex-col ${isOpen ? "ml-64" : "ml-16"} transition-all duration-300`}
       >
         {/* Header */}
         <div
@@ -151,7 +174,7 @@ export default function DashboardLayout({ id, children }) {
               <span className="ml-2">{currentDate}</span>
             </div>
 
-            {/* Notifications */}
+            {/* Notifications Dropdown */}
             <div
               className="relative cursor-pointer bg-gray-100 p-3 rounded-md shadow-sm"
               onClick={toggleNotification}
@@ -163,6 +186,32 @@ export default function DashboardLayout({ id, children }) {
                 </span>
               )}
             </div>
+
+            {/* Notification List */}
+            {notificationOpen && (
+              <div className="absolute right-0 top-16 bg-white shadow-lg rounded-md w-64 z-50 p-3 border">
+                <h3 className="font-bold text-gray-800 mb-2">Notifications</h3>
+                <ul className="text-sm">
+                  {notifications.length === 0 ? (
+                    <li className="p-2 text-gray-500">No notifications</li>
+                  ) : (
+                    notifications.map((notification) => (
+                      <li
+                        key={notification.id}
+                        className={`p-2 cursor-pointer ${
+                          notification.is_read
+                            ? "text-gray-500"
+                            : "text-gray-900 font-semibold"
+                        }`}
+                        onClick={() => markNotificationAsRead(notification.id)}
+                      >
+                        {notification.message}
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            )}
 
             {/* User Dropdown */}
             <div
@@ -176,38 +225,33 @@ export default function DashboardLayout({ id, children }) {
                     {vendor.firstName} {vendor.lastName}
                   </span>
                 )}
-                {loading && <span>Loading...</span>}
-                {error && <span className="text-red-500">{error}</span>}
               </div>
             </div>
 
+            {/* Dropdown menu */}
             {dropdownOpen && (
-              <div className="absolute right-0 top-16 bg-white shadow-lg rounded-md w-56 z-50 p-3 border">
-                <ul className="text-lg">
-                  <li
-                    onClick={() => {
-                      router.push(`/vendorDashboard/${id}/myprofile`);
-                      setDropdownOpen(false); // Close the dropdown after navigation
-                    }}
-                    className="p-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
-                  >
-                    <UserRoundPen size={20} /> My Profile
-                  </li>
-
-                 
-                  <li
-                    onClick={handleLogout}
-                    className="p-3 hover:bg-red-100 text-red-600 cursor-pointer flex items-center gap-3"
-                  >
-                    <LogOut size={20} /> Logout
-                  </li>
-                </ul>
+              <div className="absolute right-0 top-16 bg-white shadow-lg rounded-md w-40 z-50 p-3 border">
+                <button
+                  className="w-full text-left text-sm p-2 hover:bg-gray-100 rounded-md"
+                  onClick={() => router.push(`/vendorDashboard/${id}/profile`)}
+                >
+                  <UserRoundPen className="inline-block mr-2" />
+                  Profile
+                </button>
+                <button
+                  className="w-full text-left text-sm p-2 hover:bg-gray-100 rounded-md"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="inline-block mr-2" />
+                  Logout
+                </button>
               </div>
             )}
           </div>
         </div>
 
-        <div className="p-8 bg-gray-50 flex-1 mt-20">{children}</div>
+        {/* Main Content Area */}
+        <div className="pt-20 px-6">{children}</div>
       </div>
     </div>
   );

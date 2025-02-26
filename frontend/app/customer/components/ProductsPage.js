@@ -57,8 +57,6 @@ const ProductsPage = () => {
         product.category?.toLowerCase().includes(query.toLowerCase()) ||  product.brand?.toLowerCase().includes(query.toLowerCase()) || product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
-    
-
     if (category) {
       filteredProducts = filteredProducts.filter(
         (product) => product.category.toLowerCase() === category.toLowerCase()

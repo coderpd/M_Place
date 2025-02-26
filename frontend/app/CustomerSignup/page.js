@@ -24,6 +24,7 @@ const CustomerSignup = () => {
   const [formValues, setFormValues] = useState({
     companyName: "",
     registrationNumber: "",
+    companyWebsite:"",
     gstNumber: "",
     firstName: "",
     lastName: "",
@@ -78,7 +79,6 @@ const CustomerSignup = () => {
     try {
       const country = countries.find((c) => c.name === selectedCountry);
       if (!country) return;
-
       const response = await fetch(
         `https://api.countrystatecity.in/v1/countries/${country.code}/states`,
         { headers: { "X-CSCAPI-KEY": API_KEY } }
@@ -150,7 +150,8 @@ const CustomerSignup = () => {
       newErrors.companyName = "Company Name is required";
     if (!formValues.registrationNumber)
       newErrors.registrationNumber = "Registration Number is required";
-
+  
+    if(!formValues.companyWebsite)  newErrors.companyWebsite="Company Website is requires";
     if (!formValues.gstNumber) newErrors.gstNumber = "GST Number is required";
     if (!formValues.firstName) newErrors.firstName = "First Name is required";
     if (!formValues.lastName) newErrors.lastName = "Last Name is required";
@@ -340,6 +341,20 @@ const CustomerSignup = () => {
                 {errors.registrationNumber && (
                   <p className="text-sm text-red-500">
                     {errors.registrationNumber}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <InputField
+                  label="Company Website"
+                  name="companyWebsite"
+                  value={formValues.companyWebsite}
+                  onChange={handleInputChange}
+                />
+                {errors.companyWebsite && (
+                  <p className="text-sm text-red-500">
+                    {errors.companyWebsite}
                   </p>
                 )}
               </div>
@@ -603,16 +618,12 @@ const CustomerSignup = () => {
                 className="text-sm text-gray-700 cursor-pointer ml-3" 
               >
                 By Signing Up, you must agree to our
-                <a href="#" className="text-teal-500 hover:underline ml-1">
-                  Terms
-                </a>
-                ,
                 <a href="#" className="text-teal-500 hover:underline mx-1">
                   Privacy Policy
                 </a>{" "}
                 and
                 <a href="#" className="text-teal-500 hover:underline ml-1">
-                  Cookie Policy
+                Legal Disclaimer
                 </a>
                 .
               </label>
