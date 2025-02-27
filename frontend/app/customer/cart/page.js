@@ -9,7 +9,6 @@ import Navbar from "../components/Navbar";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
-  const [company] = useState("RnD Technologies");
 
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -23,16 +22,25 @@ const CartPage = () => {
 
   const handleNotifyVendor = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/notifyVendor", {
+      // Collect the product info and vendor details
+      const vendorNotifications = cart.map(item => ({
+        product_id: item.id,
+        vendor_id: item.vendorId, // Ensure vendorId is added here
+        message: `A purchase has been made for your product: ${item.productName}. Quantity: ${item.quantity}. Total: ₹${(item.price * item.quantity).toFixed(2)}.`,
+      }));
+  
+      console.log("Sending notification:", JSON.stringify(vendorNotifications, null, 2));  // Log the notification data
+  
+      const response = await fetch("http://localhost:5000/notification/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cart }),
+        body: JSON.stringify(vendorNotifications),
       });
-
+  
       const data = await response.json();
-      if (data.message) {
+      if (data.success) {
         toast.success("Vendor has been notified successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -51,11 +59,13 @@ const CartPage = () => {
       });
     }
   };
+  
+  
 
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+      <div className=" font-sans max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
         <ToastContainer />
 
         <h1 className="text-2xl font-bold text-center mb-6">Your Cart</h1>

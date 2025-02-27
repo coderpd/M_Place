@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div
-      className="border p-4 rounded-lg shadow-md flex flex-col h-[330px] w-full transition-transform transform hover:scale-105 hover:z-10 bg-slate-100 cursor-pointer"
+      className="font-sans border p-4 rounded-lg shadow-md flex flex-col h-[330px] w-full transition-transform transform hover:scale-105 hover:z-10 bg-slate-100 cursor-pointer"
       onClick={handleNavigation}
     >
       <div className="w-full h-48 flex items-center justify-center bg-gray-100 rounded-md">

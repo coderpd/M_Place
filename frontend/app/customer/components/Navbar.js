@@ -1,69 +1,42 @@
-"use client";
+"use client"; 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, ShoppingCart, User, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/app/customer/context/CartContext";
 
-const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPriceFilter, disableFilters, disableSearch }) => {
+const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilters, disableSearch }) => {
   const [search, setSearch] = useState("");
   const { cart } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [customerName, setCustomerName] = useState("");
-  // const [categoryFilter, setCategoryFilter] = useState("");
-  
-
-  const router = useRouter();
+  const [customerName, setCustomerName] = useState(""); // State to store customer name
+  const router = useRouter(); // ✅ No more errors
 
   useEffect(() => {
-    const customerData = localStorage.getItem("customer");
+    // Fetch customer data from local storage if available
+    const customerData = JSON.parse(localStorage.getItem("customer"));
     if (customerData) {
-      const parsedData = JSON.parse(customerData);
-      if (parsedData.firstName && parsedData.lastName) {
-        setCustomerName(`${parsedData.firstName} ${parsedData.lastName}`);
-      } else {
-        console.warn("Customer data format incorrect:", parsedData);
-      }
+      setCustomerName(customerData.firstName + " " + customerData.lastName); // Adjust based on the structure of customer data
     }
   }, []);
 
-  // ✅ Fixed Search Function
   const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
+    const query = e.target.value;
     setSearch(query);
-
-    // Debugging: Check if `allProducts` exists
-    if (!Array.isArray(allProducts) || allProducts.length === 0) {
-      console.warn("No products available for search:", allProducts);
-      return;
-    }
-
-    // Debugging: Check if `setDisplayedProducts` is a function
-    if (typeof setDisplayedProducts !== "function") {
-      console.warn("setDisplayedProducts is not a function.");
-      return;
-    }
-
-    // ✅ Filter products based on search query
-    const filteredProducts = allProducts.filter(
-      (product) => product.name && product.name.toLowerCase().includes(query)
-    );
-
-    console.log("Filtered products:", filteredProducts); // Debugging
-    setDisplayedProducts(filteredProducts);
+    setSearchQuery(query);
   };
 
-  // ✅ Logout Confirmation
+  // Logout confirmation function
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?");
     if (confirmLogout) {
-      localStorage.removeItem("customer");
-      router.push("/");
+      localStorage.removeItem("customer"); // Clear customer data from local storage
+      router.push("/"); // Redirect to home page
     }
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white shadow-md p-6 h-20 flex items-center justify-between z-50">
+    <nav className="font-sans fixed top-0 left-0 w-full bg-white shadow-md p-6 h-20 flex items-center justify-between z-50">
       {/* Left Section: Logo */}
       <div className="flex items-center space-x-3">
         <div className="w-10 h-10 flex items-center justify-center bg-black text-white font-bold rounded-lg text-lg">

@@ -76,11 +76,11 @@ const ProductDetail = () => {
           <div className="hidden md:block w-[2px] bg-gray-400 h-auto md:min-h-[300px] mx-6"></div>
 
           <div className="w-full md:w-1/2 flex flex-col">
-            <h1 className="text-3xl font-bold text-gray-800">{product.productName}</h1>
-            <p className="text-gray-600 text-lg mt-4">{product.description}</p>
+            <h1 className="text-3xl font-bold text-gray-800">{product.productName}</h1>            
             <p className="text-2xl font-semibold text-gray-800 mt-6">Price: ₹{product.price}</p>
             <p className="text-lg font-normal text-gray-800 mt-6">Brand: {product.brand}</p>
             <p className="text-lg font-normal text-gray-800 mt-6">Category: {product.category}</p>
+            <p className="text-gray-600 text-lg mt-4">{product.description}</p>
             <p className="text-lg font-normal text-gray-800 mt-6">Seller: {product.seller}</p>
           </div>
         </div>

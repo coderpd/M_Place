@@ -10,6 +10,24 @@ router.post("/update-profile", async (req, res) => {
     firstName, lastName, phoneNumber, email, address, 
     country, state, city, postalCode
   } = req.body;
+  router.get("/customer/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // SQL query to fetch customer details by ID
+    const [rows] = await db.query("SELECT * FROM customersignup WHERE id = ?", [id]);
+
+    if (rows.length > 0) {
+      const customer = rows[0];
+      return res.status(200).json(customer);
+    } else {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching customer data:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
 
   try {
     // Log the received request body

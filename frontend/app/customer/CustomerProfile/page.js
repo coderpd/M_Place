@@ -64,9 +64,9 @@ const CustomerProfile = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+      <div className="font-sans max-w-3xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12">
         {/* Profile Card */}
-        <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
+        <div className="relative bg-gradient-to-r from-blue-500 to-indigo-900 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
           <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
             <UserCircle className="w-20 h-20 text-gray-500" />
           </div>
@@ -76,10 +76,10 @@ const CustomerProfile = () => {
               name="companyName"
               value={formData.companyName || ""}
               onChange={handleChange}
-              className="mt-4 text-3xl font-semibold text-black p-1 border rounded w-full text-center"
+              className="mt-4 text-[16px] font-semibold text-black p-1 border rounded w-full text-center"
             />
           ) : (
-            <h2 className="text-3xl font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
+            <h2 className="text-[24px] font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
           )}
         </div>
 
@@ -102,13 +102,13 @@ const CustomerProfile = () => {
                 { label: "Postal Code", name: "postalCode" },
               ].map(({ label, name, type = "text" }) => (
                 <div key={name} className="bg-gray-100 p-4 rounded-lg">
-                  <label className="text-xs text-gray-600 uppercase font-semibold">{label}</label>
+                  <label className="text-sm text-gray-600 uppercase font-semibold">{label}</label>
                   <input
                     type={type}
                     name={name}
                     value={formData[name] || ""}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded-md mt-1"
+                    className="w-full p-2 border rounded-md mt-1 text-[16px]"
                   />
                 </div>
               ))}
@@ -136,10 +136,10 @@ const CustomerProfile = () => {
                 .filter(([key]) => !["id", "password", "created_at"].includes(key))
                 .map(([key, value]) => (
                   <div key={key} className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-xs text-gray-600 uppercase font-semibold">
+                    <p className="text-sm text-gray-600 uppercase font-semibold">
                       {key.replace(/([A-Z])/g, " $1")}
                     </p>
-                    <p className="text-lg font-bold text-gray-900 mt-1">{value || "N/A"}</p>
+                    <p className="text-[16px] font-bold text-gray-900 mt-1">{value || "N/A"}</p>
                   </div>
                 ))}
             </div>
@@ -153,7 +153,7 @@ const CustomerProfile = () => {
               onClick={() => setIsEditing(true)}
               className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600"
             >
-              Edit Profile
+              Edit
             </button>
           )}
         </div>

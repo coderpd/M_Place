@@ -112,7 +112,7 @@ export default function AddProduct() {
           <label className="w-1/4 text-lg font-medium text-gray-600">Make and Model:</label>
           <input
             type="text"
-            name="make&model"
+            name="brand"
             value={formData.brand}
             onChange={handleInputChange}
             className="w-3/4 p-3 border rounded-md"
