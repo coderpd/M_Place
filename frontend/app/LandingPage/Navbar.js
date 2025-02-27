@@ -1,29 +1,28 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { X, Menu } from "lucide-react";
+import { X, Logs  } from "lucide-react";
+import { RiMenuUnfold2Fill } from "react-icons/ri";
 
 export default function Navbar() {
-  const [activeLink, setActiveLink] = useState("Home");
-  const [isSidebarOpen, setSidebarOpen] = useState(false); 
-  const [isSignupCardOpen, setSignupCardOpen] = useState(false); 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSignupCardOpen, setSignupCardOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
-  const router = useRouter(); // Correctly use useRouter directly
+  const [activeLink, setActiveLink] = useState("");
+  const router = useRouter();
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
+    if (isSidebarOpen) {
+      setSidebarOpen(false); // Close the sidebar when a link is clicked
+    }
   };
 
-  const openSignupCard = () => {
-    setSignupCardOpen(true);
-  };
-
-  const closeSignupCard = () => {
-    setSignupCardOpen(false);
-  };
+  const openSignupCard = () => setSignupCardOpen(true);
+  const closeSignupCard = () => setSignupCardOpen(false);
 
   const handleContinue = () => {
     if (selectedRole === "Customer") {
@@ -52,23 +51,25 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-8">
           <Link
-            href="#Home"
-            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${activeLink === "Home" ? "border-b-2 border-blue-800" : ""}`}
-            onClick={() => handleLinkClick("Home")}
+            href="/"
+            className={`text-lg font-medium text-gray-600 hover:text-blue-600 hover:border-b-2 ${activeLink === 'Home' ? 'border-b-2 border-blue-600' : ''}`}
+            onClick={() => handleLinkClick('Home')}
           >
             Home
           </Link>
+
           <Link
-            href="#services"
-            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${activeLink === "services" ? "border-b-2 border-blue-800" : ""}`}
-            onClick={() => handleLinkClick("services")}
+            href="/#services"
+            className={`text-lg font-medium text-gray-600 hover:text-blue-600 hover:border-b-2 ${activeLink === 'services' ? 'border-b-2 border-blue-600' : ''}`}
+            onClick={() => handleLinkClick('services')}
           >
             Services
           </Link>
+
           <Link
-            href="#contact-us"
-            className={`text-lg font-medium text-gray-600 hover:text-blue-600 ${activeLink === "contact-us" ? "border-b-2 border-blue-800" : ""}`}
-            onClick={() => handleLinkClick("contact-us")}
+            href="/#ContactSection"
+            className={`text-lg font-medium text-gray-600 hover:text-blue-600 hover:border-b-2 ${activeLink === 'ContactSection' ? 'border-b-2 border-blue-600' : ''}`}
+            onClick={() => handleLinkClick('ContactSection')}
           >
             Contact Us
           </Link>
@@ -80,12 +81,15 @@ export default function Navbar() {
           >
             SIGN UP
           </Button>
-          <Button
-            variant="outline"
-            className="rounded-full text-sm px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
-          >
-            <Link href="./SignIn">SIGN IN</Link>
-          </Button>
+
+          <Link href="/SignIn">
+            <Button
+              variant="outline"
+              className="rounded-full text-sm px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
+            >
+              SIGN IN
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Navigation */}
@@ -93,60 +97,67 @@ export default function Navbar() {
           className="lg:hidden p-2 text-gray-700 hover:text-blue-600"
           onClick={() => setSidebarOpen(!isSidebarOpen)}
         >
-          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isSidebarOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <RiMenuUnfold2Fill  className="w-10 h-9 text-black" />
+          )}
         </button>
       </div>
 
       {/* Mobile Sidebar */}
-      <div
-        className={`fixed top-0 left-0 w-full h-full bg-white shadow-md transform ${isSidebarOpen ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-in-out lg:hidden z-40`}
-      >
-        <div className="flex items-center justify-between px-6 py-4">
-          <button
-            className="p-2 text-gray-700 hover:text-blue-600"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-        <nav className="mt-6 space-y-6 px-6">
-          <Link
-            href="#home"
-            className="block text-base font-medium text-gray-700 hover:text-blue-600 transition duration-200"
-            onClick={() => handleLinkClick("home")}
-          >
-            Home
-          </Link>
-          <Link
-            href="#services"
-            className="block text-base font-medium text-gray-700 hover:text-blue-600 transition duration-200"
-            onClick={() => handleLinkClick("services")}
-          >
-            Services
-          </Link>
-          <Link
-            href="#contact-us"
-            className="block text-base font-medium text-gray-700 hover:text-blue-600 transition duration-200"
-            onClick={() => handleLinkClick("contact-us")}
-          >
-            Contact Us
-          </Link>
+      {isSidebarOpen && (
+        <div className="fixed top-0 right-0 w-1/4 h-full bg-white shadow-md transform transition-transform duration-300 ease-in-out lg:hidden z-40">
+          <div className="flex items-center justify-between px-6 py-4">
+            <button
+              className="p-2 text-gray-700 hover:text-blue-600"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+          <nav className="mt-6 space-y-6 px-6">
+            <Link
+              href="/#Home"
+              className="block text-base font-medium text-gray-700 hover:text-blue-600 transition duration-200"
+              onClick={() => handleLinkClick('Home')}
+            >
+              Home
+            </Link>
+            <Link
+              href="/#services"
+              className="block text-base font-medium text-gray-700 hover:text-blue-600 transition duration-200"
+              onClick={() => handleLinkClick('services')}
+            >
+              Services
+            </Link>
+            <Link
+              href="/#ContactSection"
+              className="block text-base font-medium text-gray-700 hover:text-blue-600 transition duration-200"
+              onClick={() => handleLinkClick('ContactSection')}
+            >
+              Contact Us
+            </Link>
 
-          <Button
-            variant="outline"
-            className="w-full rounded-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
-            onClick={openSignupCard}
-          >
-            SIGNUP
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full rounded-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
-          >
-            <Link href="./SignIn">SIGNIN</Link>
-          </Button>
-        </nav>
-      </div>
+            <Button
+              variant="outline"
+              className="w-full rounded-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
+              onClick={openSignupCard}
+            >
+              SIGN UP
+            </Button>
+
+            <Link href="/SignIn">
+              <Button
+                variant="outline"
+                className="w-full rounded-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
+              >
+                SIGN IN
+              </Button>
+            </Link>
+          </nav>
+        </div>
+      )}
 
       {/* Role Selection Modal */}
       {isSignupCardOpen && (

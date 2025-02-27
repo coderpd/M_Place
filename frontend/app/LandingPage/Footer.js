@@ -24,12 +24,12 @@ export default function Footer() {
           <h4 className="text-lg font-semibold text-white">Legal</h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/privacy-policy" className="hover:text-white transition duration-200">
+              <Link href="/policy" className="hover:text-white transition duration-200">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-white transition duration-200">
+              <Link href="/legal" className="hover:text-white transition duration-200">
                 Legal Disclaimer
               </Link> 
             </li>

@@ -13,7 +13,6 @@ export default function LandingPage() {
      <Services/>
      <ContactSection/>
      <Footer/>
-
     </div>
   );
 }
