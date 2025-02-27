@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { IoCreateOutline } from "react-icons/io5";
 
 export default function UpdateProduct() {
   const { id, productId } = useParams();
   const router = useRouter();
 
-  const [product, setProduct] = useState({
+  const [formData, setFormData] = useState({
     productName: "",
     brand: "",
     category: "",
@@ -17,7 +18,7 @@ export default function UpdateProduct() {
     description: "",
   });
 
-  const [previewImage, setPreviewImage] = useState("");
+  const [previewImage, setPreviewImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -25,15 +26,12 @@ export default function UpdateProduct() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/auth/products/get-product/${productId}`
-        );
+        const response = await fetch(`http://localhost:5000/auth/products/get-product/${productId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch product details");
         }
         const data = await response.json();
-        setProduct(data.product);
-
+        setFormData(data.product);
         if (data.product.productImage) {
           setPreviewImage(`http://localhost:5000/uploads/${data.product.productImage}`);
         }
@@ -49,12 +47,9 @@ export default function UpdateProduct() {
     }
   }, [productId]);
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleImageChange = (e) => {
@@ -67,32 +62,27 @@ export default function UpdateProduct() {
     e.preventDefault();
     setUpdating(true);
 
-    const formData = new FormData();
-    formData.append("productName", product.productName);
-    formData.append("brand", product.brand);
-    formData.append("category", product.category);
-    formData.append("price", product.price);
-    formData.append("seller", product.seller);
-    formData.append("description", product.description);
-    
+    const formDataToSend = new FormData();
+    formDataToSend.append("productName", formData.productName);
+    formDataToSend.append("brand", formData.brand);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("price", formData.price);
+    formDataToSend.append("seller", formData.seller);
+    formDataToSend.append("description", formData.description);
     if (selectedImage) {
-      formData.append("productImage", selectedImage);
+      formDataToSend.append("productImage", selectedImage);
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/auth/products/update-product/${productId}`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
+      const response = await fetch(`http://localhost:5000/auth/products/update-product/${productId}`, {
+        method: "PUT",
+        body: formDataToSend,
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update product");
       }
 
-      // Show SweetAlert for success
       Swal.fire({
         title: "Success!",
         text: "Product updated successfully!",
@@ -110,114 +100,58 @@ export default function UpdateProduct() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 shadow-md rounded-lg"
-        encType="multipart/form-data"
-      >
-        <div className="mb-4">
-          <label className="block text-gray-700">Product Name</label>
-          <input
-            type="text"
-            name="productName"
-            value={product.productName}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-8 font-sans">
+      <h2 className="text-lg font-bold text-black mb-4 text-left flex items-center gap-2">
+        <IoCreateOutline size={25} /> Update Product
+      </h2>
+
+      <form className="grid grid-cols-2 gap-6 text-sm text-black" onSubmit={handleSubmit}>
+        <div>
+          <label className="block font-medium mb-2">Category</label>
+          <input type="text" name="category" value={formData.category} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Brand</label>
-          <input
-            type="text"
-            name="brand"
-            value={product.brand}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+        <div>
+          <label className="block font-medium mb-2">Make & Model</label>
+          <input type="text" name="brand" value={formData.brand} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Category</label>
-          <input
-            type="text"
-            name="category"
-            value={product.category}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+        <div>
+          <label className="block font-medium mb-2">Product Name</label>
+          <input type="text" name="productName" value={formData.productName} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Price</label>
-          <input
-            type="number"
-            name="price"
-            value={product.price}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+        <div>
+          <label className="block font-medium mb-2">Price</label>
+          <input type="number" name="price" value={formData.price} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Seller</label>
-          <input
-            type="text"
-            name="seller"
-            value={product.seller}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+        <div>
+          <label className="block font-medium mb-2">Seller</label>
+          <input type="text" name="seller" value={formData.seller} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Description</label>
-          <textarea
-            name="description"
-            value={product.description}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
+        <div>
+          <label className="block font-medium mb-2">Image</label>
+          <input type="file" onChange={handleImageChange} className="w-full p-2 border rounded-md" />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Product Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="w-full border rounded p-2"
-          />
-          {previewImage && (
-            <img
-              src={previewImage}
-              alt="Product Preview"
-              className="mt-2 w-32 h-32 object-cover border rounded"
-            />
-          )}
+        {previewImage && (
+          <div className="col-span-2 flex justify-center">
+            <img src={previewImage} alt="Product Preview" className="w-40 h-40 object-cover rounded-lg border" />
+          </div>
+        )}
+
+        <div className="col-span-2">
+          <label className="block font-medium mb-2">Description</label>
+          <textarea name="description" value={formData.description} onChange={handleInputChange} className="w-full p-2 border rounded-md h-24" required />
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50 flex items-center justify-center"
-          disabled={updating}
-        >
-          {updating ? (
-            <>
-              <svg className="animate-spin h-5 w-5 mr-2 border-4 border-white border-t-transparent rounded-full" viewBox="0 0 24 24"></svg>
-              Updating...
-            </>
-          ) : (
-            "Update Product"
-          )}
-        </button>
+        <div className="col-span-2 flex justify-start">
+          <button type="submit" className="bg-[#549DA9] text-white px-6 py-2 rounded-sm hover:bg-[#3E7F88] transition" disabled={updating}>
+            {updating ? "Updating..." : "Update Product"}
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { UserCircle } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { UserCircle, ArrowLeft } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function ProfilePage() {
   const { id } = useParams();
+  const router = useRouter();
   const [vendor, setVendor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,24 +75,28 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-8">
+      {/* Back Arrow Button */}
+      <button onClick={() => router.back()} className="flex items-center text-blue-600 hover:text-blue-800 mb-4">
+        <ArrowLeft className="w-5 h-5 mr-2" /> My Profile
+      </button>
+
       {/* Profile Card */}
       <div className="relative bg-gradient-to-r from-[#3B82F6] to-[#1E3A8A] text-white p-10 rounded-2xl shadow-xl flex flex-col items-center">
-  <div className="w-28 h-28 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-md rounded-full border-4 border-white shadow-md">
-    <UserCircle className="w-24 h-24 text-white opacity-80" />
-  </div>
-  {isEditing ? (
-    <input
-      type="text"
-      name="companyName"
-      value={updatedVendor?.companyName || ""}
-      onChange={handleInputChange}
-      className="mt-4 text-2xl font-semibold text-black p-2 border rounded-md w-60 text-center bg-white shadow-md"
-    />
-  ) : (
-    <h2 className="text-2xl font-semibold mt-4">{vendor?.companyName || "N/A"}</h2>
-  )}
-</div>
-
+        <div className="w-28 h-28 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-md rounded-full border-4 border-white shadow-md">
+          <UserCircle className="w-24 h-24 text-white opacity-80" />
+        </div>
+        {isEditing ? (
+          <input
+            type="text"
+            name="companyName"
+            value={updatedVendor?.companyName || ""}
+            onChange={handleInputChange}
+            className="mt-4 text-2xl font-semibold text-black p-2 border rounded-md w-60 text-center bg-white shadow-md"
+          />
+        ) : (
+          <h2 className="text-2xl font-semibold mt-4">{vendor?.companyName || "N/A"}</h2>
+        )}
+      </div>
 
       {/* Vendor Details */}
       <div className="mt-6 p-6 bg-white bg-opacity-80 backdrop-blur-md shadow-lg rounded-2xl">

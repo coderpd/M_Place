@@ -10,9 +10,9 @@ export default function Home() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         {/* Image Section */}
         <div className="flex justify-center">
-          <div className="relative w-full max-w-lg shadow-lg rounded-2xl overflow-hidden">
+          <div className="relative top-[50px] w-full max-w-lg shadow-lg rounded-2xl overflow-hidden">
             <Image
-              src="/c-class.jpg"
+              src="/c-class3.jpg"
               alt="C-Class IT Products"
               width={900}
               height={600}
@@ -26,8 +26,8 @@ export default function Home() {
           <h1 className="text-4xl font-extrabold text-gray-900 leading-tight mb-20 -mt-[50px] -ml-[500px] text-center">
             Struggling with C-Class IT Procurement? Let Us Handle It for You!
           </h1>
-          <h2 className="text-4xl font-bold text-gray-800 leading-tight mb-6 text-center">
-            B2B IT Procurement for{" "}
+          <h2 className="text-[32px] font-bold text-gray-800 leading-tight mb-6 text-center">
+            B2B IT Procurement for{" "} <br />
             <span className="text-indigo-700">
               C-Class & Select A/B-Class Items
             </span>
@@ -40,23 +40,7 @@ export default function Home() {
             Desktops, Laptops, Servers, entry-level Cisco Switches, Cisco
             Routers, basic Firewalls, and Wi-Fi Routers.
           </p>
-
-          {/* Feature List */}
-          <ul className="space-y-4 text-gray-800 text-lg font-medium">
-            <li className="flex items-center gap-3">
-              <FaCheckCircle className="text-green-600 w-6 h-6" />
-              <span>High-performance Desktops, Laptops & Servers</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <FaCheckCircle className="text-green-600 w-6 h-6" />
-              <span>Cisco Switches, Routers & Firewalls</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <FaCheckCircle className="text-green-600 w-6 h-6" />
-              <span>Secure Wi-Fi Routers & Networking Equipment</span>
-            </li>
-          </ul>
-
+            
           <p className="text-lg text-gray-700 mt-8 leading-relaxed">
             We cater exclusively to B2B clients, and{" "}
             <span className="font-semibold text-indigo-700">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -10,71 +10,72 @@ export default function ProductCards() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 16;
+  const itemsPerPage = 15; // Adjusted to maintain full rows
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProducts = async () => {
       try {
         const response = await fetch(`http://localhost:5000/auth/products/get-products/${id}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.statusText}`);
         }
-
         const data = await response.json();
-        setProducts(data.products);
+        if (isMounted) {
+          setProducts(data.products);
+        }
       } catch (err) {
-        setError(err.message);
+        if (isMounted) setError(err.message);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     if (id) {
       fetchProducts();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
-  if (loading) return <div>Loading products...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   const totalPages = Math.ceil(products.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedProducts = products.slice(startIndex, startIndex + itemsPerPage);
+
+  const selectedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return products.slice(startIndex, startIndex + itemsPerPage);
+  }, [products, currentPage]);
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-center text-[#FF4500] mb-4">
-        🛒 Premium Products, Maximum Impact
-      </h2>
-      <p className="text-gray-600 text-center mb-8 max-w-xl mx-auto">
-        Showcase your top-tier products and attract customers looking for the best in quality. Start making an impact today!
-      </p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div className="p-6 min-h-screen">
+      {error && <div className="text-red-500">{error}</div>}
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {selectedProducts.length > 0 ? (
           selectedProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-slate-100 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105"
+              className="bg-slate-200 rounded-lg shadow-md overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 h-[330px] w-full mx-auto flex flex-col items-center justify-between"
             >
-              <div className="relative">
+              <div className="relative w-full h-40 flex justify-center items-center">
                 {product.productImage && (
                   <img
                     src={`http://localhost:5000/uploads/${product.productImage}`}
                     alt={product.productName}
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="w-full h-full object-cover rounded-md"
                   />
                 )}
               </div>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg font-medium">{product.productName}</h3>
-                <p className="text-md text-gray-600">Brand: {product.brand}</p>
-                <p className="text-xl font-bold text-black-700 mt-2">₹{product.price}</p>
+              <div className="text-center mt-2">
+                <h3 className="text-lg font-medium h-10 overflow-hidden text-ellipsis whitespace-nowrap">{product.productName}</h3>
+                <p className="text-md text-gray-600">{product.brand}</p>
+                <p className="text-xl font-bold mt-1 text-gray-800">₹{product.price}</p>
               </div>
             </div>
           ))
         ) : (
-          <p className="text-gray-500 text-center col-span-4">No products available.</p>
+          !loading && <p className="text-gray-500 text-center col-span-5">No products available.</p>
         )}
       </div>
 

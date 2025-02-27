@@ -172,7 +172,7 @@ export default function Navbar() {
             {/* Close Button */}
             <button
               className="absolute top-3 right-3 p-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
-              onClick={closeSignupCard}
+                onClick={closeSignupCard}
             >
               <X className="w-5 h-5" />
             </button>

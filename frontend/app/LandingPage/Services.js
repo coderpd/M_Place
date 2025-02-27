@@ -3,19 +3,18 @@ import { Briefcase, DollarSign, ShieldCheck } from "lucide-react";
 
 const servicesData = [
   {
-    icon: <Briefcase size={40} className="text-blue-500" />,
     title: "Platform for Seamless Connections",
     description:
       "MPlace serves as a platform connecting customers and suppliers without any monetary benefits. However, if clients opt for our services to facilitate purchase order (PO) processing and supplier follow-ups for deliveries, a service fee applies.",
   },
   {
-    icon: <DollarSign size={40} className="text-green-500" />,
+   
     title: "Direct Transactions for Transparency",
     description:
       "Otherwise, customers are responsible for placing orders and making payments directly to suppliers, with no contractual obligation to our company, as we do not engage in trading or add margins to generate revenue.",
   },
   {
-    icon: <ShieldCheck size={40} className="text-purple-500" />,
+   
     title: "Ensuring Trust and Credibility",
     description:
       "To ensure trust and credibility, we conduct due diligence on both customers and suppliers during onboarding, requiring a nominal registration fee of ₹1,000 for validation.",
@@ -43,8 +42,8 @@ const Services = () => {
             key={index}
             className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 transition-transform duration-300 hover:scale-105 hover:shadow-xl"
           >
-            <div className="flex items-center justify-center mb-6">{service.icon}</div>
-            <h3 className="text-2xl font-semibold text-gray-800 mb-4">{service.title}</h3>
+           
+            <h3 className="text-2xl font-semibold text-indigo-700 mb-4">{service.title}</h3>
             <p className="text-gray-700">{service.description}</p>
           </div>
         ))}
