@@ -36,33 +36,35 @@ export default function ContactSection() {
   };
 
   return (
-    <div id="ContactSection" className="bg-gradient-to-r from-teal-50 to-gray-100 py-20 px-6 md:px-16 lg:px-24 flex flex-col md:flex-row justify-center items-center space-y-12 md:space-y-0 md:space-x-12">
-      
+    <div 
+      id="ContactSection" 
+      className="bg-gradient-to-r from-teal-50 to-gray-100 py-20 px-6 md:px-16 lg:px-24 flex flex-col md:flex-row justify-center items-center space-y-12 md:space-y-0 md:space-x-12 font-[Inter]"
+    >
       {/* Left Side Contact Info */}
       <div className="md:w-[500px] space-y-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">Contact Us</h1>
-        <p className="text-lg text-gray-700">
+        <h1 className="text-4xl font-extrabold text-gray-900 leading-tight tracking-tight">Contact Us</h1>
+        <p className="text-lg text-gray-700 tracking-tight">
           Let’s start something great together. Reach out to our team today!
         </p>
 
         <ul className="space-y-6">
-          <li className="flex items-center text-lg font-semibold text-gray-800">
+          <li className="flex items-center text-lg font-semibold text-gray-800 tracking-tight">
             <Mail className="mr-4 p-2 bg-gray-200 rounded-full hover:bg-teal-400 transition duration-300 transform hover:scale-105 shadow-md" size={32} />
             <span>Email Address</span>
           </li>
-          <p className="text-sm text-gray-600 pl-12">info@teckost.com</p>
+          <p className="text-sm text-gray-600 pl-12 tracking-tight">info@teckost.com</p>
 
-          <li className="flex items-center text-lg font-semibold text-gray-800">
+          <li className="flex items-center text-lg font-semibold text-gray-800 tracking-tight">
             <Phone className="mr-4 p-2 bg-gray-200 rounded-full hover:bg-teal-400 transition duration-300 transform hover:scale-105 shadow-md" size={32} />
             <span>Contact Number</span>
           </li>
-          <p className="text-sm text-gray-600 pl-12">(044) 477-03399</p>
+          <p className="text-sm text-gray-600 pl-12 tracking-tight">(044) 477-03399</p>
 
-          <li className="flex items-center text-lg font-semibold text-gray-800">
+          <li className="flex items-center text-lg font-semibold text-gray-800 tracking-tight">
             <MapPin className="mr-4 p-2 bg-gray-200 rounded-full hover:bg-teal-400 transition duration-300 transform hover:scale-105 shadow-md" size={32} />
             <span>Contact Address</span>
           </li>
-          <p className="text-sm text-gray-600 pl-12">
+          <p className="text-sm text-gray-600 pl-12 tracking-tight">
             53, North Boag Road, Fourth Floor, Mandira Block B, Behind Residency Towers, Chennai, Tamil Nadu 600017.
           </p>
         </ul>
@@ -72,7 +74,7 @@ export default function ContactSection() {
       <div className="bg-white p-8 rounded-3xl shadow-2xl md:w-[450px] mx-auto space-y-6 border border-gray-200">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 tracking-tight">Name</label>
             <Input
               id="name"
               type="text"
@@ -80,11 +82,11 @@ export default function ContactSection() {
               placeholder="Enter Your Name"
               className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm"
             />
-            {errors.name && <p className="text-red-500 text-xs mt-2">{errors.name.message}</p>}
+            {errors.name && <p className="text-red-500 text-xs mt-2 tracking-tight">{errors.name.message}</p>}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 tracking-tight">Email</label>
             <Input
               id="email"
               type="email"
@@ -92,11 +94,11 @@ export default function ContactSection() {
               placeholder="Enter Your Email"
               className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm"
             />
-            {errors.email && <p className="text-red-500 text-xs mt-2">{errors.email.message}</p>}
+            {errors.email && <p className="text-red-500 text-xs mt-2 tracking-tight">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label htmlFor="comment" className="block text-sm font-medium text-gray-700">Comment</label>
+            <label htmlFor="comment" className="block text-sm font-medium text-gray-700 tracking-tight">Comment</label>
             <textarea
               id="comment"
               placeholder="Add your comments here"
@@ -104,13 +106,13 @@ export default function ContactSection() {
               className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm"
               rows="4"
             ></textarea>
-            {errors.comment && <p className="text-red-500 text-xs mt-2">{errors.comment.message}</p>}
+            {errors.comment && <p className="text-red-500 text-xs mt-2 tracking-tight">{errors.comment.message}</p>}
           </div>
 
           <div className="flex justify-center">
             <Button
               type="submit"
-              className="w-[200px] py-2 px-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition duration-300 transform hover:scale-105"
+              className="w-[200px] py-2 px-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition duration-300 transform hover:scale-105 tracking-tight"
               disabled={loading}
             >
               {loading ? "Submitting..." : "Submit"}

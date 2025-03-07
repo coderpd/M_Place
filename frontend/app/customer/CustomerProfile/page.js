@@ -76,7 +76,7 @@ const CustomerProfile = () => {
               name="companyName"
               value={formData.companyName || ""}
               onChange={handleChange}
-              className="mt-4 text-3xl font-semibold text-black p-1 border rounded w-full text-center"
+              className="mt-4 text-3xl font-semibold text-black p-1 border rounded w-full text-center" 
             />
           ) : (
             <h2 className="text-3xl font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
@@ -88,19 +88,19 @@ const CustomerProfile = () => {
           {isEditing ? (
             <div className="grid grid-cols-2 gap-x-12 gap-y-6">
               {[
-                { label: "Company Name", name: "companyName" },
+                { label: "Company Name", name: "companyName", disabled:true },
                 { label: "Registration Number", name: "registrationNumber" },
                 { label: "GST Number", name: "gstNumber" },
                 { label: "First Name", name: "firstName" },
                 { label: "Last Name", name: "lastName" },
                 { label: "Phone Number", name: "phoneNumber" },
-                { label: "Email", name: "email", type: "email" },
+                { label: "Email", name: "email", type: "email" ,disabled:true },
                 { label: "Address", name: "address" },
                 { label: "Country", name: "country" },
                 { label: "State", name: "state" },
                 { label: "City", name: "city" },
                 { label: "Postal Code", name: "postalCode" },
-              ].map(({ label, name, type = "text" }) => (
+              ].map(({ label, name, type = "text",disabled }) => (
                 <div key={name} className="bg-gray-100 p-4 rounded-lg">
                   <label className="text-xs text-gray-600 uppercase font-semibold">{label}</label>
                   <input
@@ -109,6 +109,7 @@ const CustomerProfile = () => {
                     value={formData[name] || ""}
                     onChange={handleChange}
                     className="w-full p-2 border rounded-md mt-1"
+                    disabled={disabled}
                   />
                 </div>
               ))}

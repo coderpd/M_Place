@@ -294,7 +294,7 @@ const VendorSignup = () => {
 
   return (
     <div>
-      <div className="bg-[#549DA9] w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
+      <div className="bg-[#549DA9] w-full font-sans h-[200px] flex flex-col justify-center items-center text-center px-4 relative">
         {/* Logo Positioned at the Top Left */}
         <div className="absolute top-4 left-4">
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
@@ -309,8 +309,8 @@ const VendorSignup = () => {
         </div>
 
         {/* Main Header Content */}
-        <h1 className="text-2xl md:text-4xl font-bold text-white mt-10">
-          Expand Your Business with M-Place!
+        <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">
+          Vendor-Onboarding
         </h1>
         <p className="mt-3 text-lg text-gray-100 max-w-xl">
           Register today and gain access to a marketplace of trusted buyers.

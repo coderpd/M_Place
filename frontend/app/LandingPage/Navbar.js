@@ -16,8 +16,8 @@ export default function Navbar() {
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
-    if (isSidebarOpen) {
-      setSidebarOpen(false); // Close the sidebar when a link is clicked
+    if (isSidebarOpen) {          
+      setSidebarOpen(false);         
     }
   };
 
@@ -34,9 +34,9 @@ export default function Navbar() {
 
   return (
     <div className="bg-white shadow-md sticky top-0 z-50">
-      <div className="flex items-center justify-between px-6 py-4 lg:px-10">
+      <div className="flex items-center justify-between px-6 py-3 lg:px-10">
         {/* Logo */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
             <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
               <img
@@ -104,7 +104,7 @@ export default function Navbar() {
           )}
         </button>
       </div>
-
+       
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
         <div className="fixed top-0 right-0 w-1/4 h-full bg-white shadow-md transform transition-transform duration-300 ease-in-out lg:hidden z-40">
@@ -186,7 +186,7 @@ export default function Navbar() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               {/* Customer Card */}
               <Card
-                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Customer" ? "border-[#4A90E2] shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
+                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Customer" ? "border-[#4A90E2] bg-blue-300 shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
                 onClick={() => setSelectedRole("Customer")}
               >
                 <h3 className="font-medium text-center text-lg text-gray-900">
@@ -199,7 +199,7 @@ export default function Navbar() {
 
               {/* Vendor Card */}
               <Card
-                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Vendor" ? "border-[#4A90E2] shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
+                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Vendor" ? "border-[#4A90E2]  bg-blue-300  shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
                 onClick={() => setSelectedRole("Vendor")}
               >
                 <h3 className="text-center font-medium text-lg text-gray-900">

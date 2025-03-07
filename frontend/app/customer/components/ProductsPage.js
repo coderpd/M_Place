@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
+// import CategoryMenu from "./components/Categories"; 
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -54,7 +55,7 @@ const ProductsPage = () => {
 
     if (query) {
       filteredProducts = filteredProducts.filter((product) =>
-        product.category?.toLowerCase().includes(query.toLowerCase()) ||  product.brand?.toLowerCase().includes(query.toLowerCase()) || product.description?.toLowerCase().includes(query.toLowerCase())
+        product.category?.toLowerCase().includes(query.toLowerCase()) || product.brand?.toLowerCase().includes(query.toLowerCase()) || product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
     if (category) {
@@ -81,28 +82,31 @@ const ProductsPage = () => {
 
   return (
     <>
- <Navbar
-  allProducts={products}
-  setDisplayedProducts={setDisplayedProducts}
-  setSearchQuery={setSearchQuery} 
-  setCategoryFilter={setCategoryFilter}
-  setPriceFilter={setPriceFilter}
-  disableFilters={false}
-  disableSearch={false}
-/>
+      <Navbar
+        allProducts={products}
+        setDisplayedProducts={setDisplayedProducts}
+        setSearchQuery={setSearchQuery}
+        setCategoryFilter={setCategoryFilter}
+        setPriceFilter={setPriceFilter}
+        disableFilters={false}
+        disableSearch={false}
+      />
 
+      {/* Category Menu Below Navbar */}
+      {/* <div className="pt-[80px]"> 
+        <CategoryMenu />
+      </div> */}
 
-
-      <div className="max-w-7xl mx-auto p-4 md:p-6 pt-24 lg:pt-28">
+      <div className="max-w-7xl mx-auto p-4 mt-12 md:p-6 pt-12 lg:pt-12 bg-gray-50 ">
         {loading && <p className="text-center text-blue-500">Loading products...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 ">
           {displayedProducts.length > 0 ? (
             displayedProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-slate-100 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                className="bg-gray-50 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer"
                 onClick={() => handleProductClick(product.id)}
               >
                 <div className="relative">
@@ -115,10 +119,10 @@ const ProductsPage = () => {
                   )}
                 </div>
                 <div className="mt-4 text-center">
-                <h3 className="text-lg font-medium">{product.productName}</h3>
-                <p className="text-md text-gray-600">{product.brand}</p>
-                <p className="text-xl font-bold text-black-700 mt-2">₹{product.price}</p>
-              </div>
+                  <h3 className="text-lg font-medium text-black">{product.productName}</h3>
+                  <p className="text-md text-gray-600">{product.brand}</p>
+                  <p className="text-xl font-bold text-black mt-2">₹{product.price}</p>
+                </div>
               </div>
             ))
           ) : (
