@@ -1,16 +1,63 @@
-import { useState } from "react";
-import { Search, ShoppingCart, User } from "lucide-react";
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Search, ShoppingCart, User, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
-import { useCart } from "@/app/customer/context/CartContext"; // Import cart context
+import { useCart } from "@/app/customer/context/CartContext";
 
-const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
+const Navbar = ({ allProducts, setDisplayedProducts, setCategoryFilter, setPriceFilter, setSearchQuery, disableFilters, disableSearch }) => {
   const [search, setSearch] = useState("");
-  const { cart } = useCart(); // Get cart data
+  const { cart } = useCart();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const router = useRouter();
 
+  useEffect(() => {
+    const customerData = localStorage.getItem("customer");
+    if (customerData) {
+      const parsedData = JSON.parse(customerData);
+      if (parsedData.firstName && parsedData.lastName) {
+        setCustomerName(`${parsedData.firstName} ${parsedData.lastName}`);
+      } else {
+        console.warn("Customer data format incorrect:", parsedData);
+      }
+    }
+  }, []);
+
+  // ✅ Fixed Search Function
   const handleSearch = (e) => {
-    const query = e.target.value;
-    setSearch(query); // Update local state
-    setSearchQuery(query); // Send search query to ProductsPage.js
+    const query = e.target.value.toLowerCase();
+    setSearch(query);
+    setSearchQuery(query); // ✅ Update ProductsPage state too
+
+    // Debugging: Check if `allProducts` exists
+    if (!Array.isArray(allProducts) || allProducts.length === 0) {
+      console.warn("No products available for search:", allProducts);
+      return;
+    }
+
+    // Debugging: Check if `setDisplayedProducts` is a function
+    if (typeof setDisplayedProducts !== "function") {
+      console.warn("setDisplayedProducts is not a function.");
+      return;
+    }
+
+    // ✅ Filter products based on search query
+    const filteredProducts = allProducts.filter(
+      (product) => product.productName && product.productName.toLowerCase().includes(query)
+    );
+
+    console.log("Filtered products:", filteredProducts); // Debugging
+    setDisplayedProducts(filteredProducts);
+  };
+
+  // ✅ Logout Confirmation
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem("customer");
+      router.push("/");
+    }
   };
 
   return (
@@ -24,47 +71,93 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter }) => {
       </div>
 
       {/* Search Bar */}
-      <div className="flex items-center w-full max-w-md bg-gray-100 p-2 rounded-lg transition hover:ring-2 hover:ring-blue-500">
-        <Search className="text-gray-500 mr-2 transition hover:text-blue-500" size={24} />
-        <input
-          type="text"
-          placeholder="Search for products..."
-          className="w-full bg-transparent outline-none text-sm"
-          value={search}
-          onChange={handleSearch} // Trigger search function
-        />
-      </div>
+      {!disableSearch && (
+        <div className="flex items-center w-full max-w-md bg-gray-100 p-2 rounded-lg transition hover:ring-2 hover:ring-blue-500">
+          <Search className="text-gray-500 mr-2 transition hover:text-blue-500" size={24} />
+          <input
+            type="text"
+            placeholder="Search for products..."
+            className="w-full bg-transparent outline-none text-sm"
+            value={search}
+            onChange={handleSearch}
+          />
+        </div>
+      )}
 
       {/* Filters Section */}
-      <div className="flex items-center space-x-4">
-        {/* Category Filter */}
-        <select
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="p-2 rounded-md border bg-white text-sm"
-        >
-          <option value="">All Categories</option>
-          <option value="men's clothing">Men's Clothing</option>
-          <option value="women's clothing">Women's Clothing</option>
-          <option value="electronics">Electronics</option>
-          <option value="jewelery">Jewelry</option>
-        </select>
+      {!disableFilters && (
+        <div className="flex items-center space-x-4">
+          {/* Category Filter */}
+          <select
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="p-2 rounded-md border bg-white text-sm"
+          >
+            <option value="">All Categories</option>
+            <option value="laptop">Laptop</option>
+            <option value="keyboard">Keyboard</option>
+            <option value="mouse">Mouse</option>
+            <option value="cpu">CPU</option>
+            <option value="monitor">Monitor</option>
+            <option value="hard disk">Hard Disk</option>
+          </select>
 
-        {/* Price Filter */}
-        <select
-          onChange={(e) => setPriceFilter(e.target.value)}
-          className="p-2 rounded-md border bg-white text-sm"
-        >
-          <option value="">All Prices</option>
-          <option value="low">Low to High</option>
-          <option value="high">High to Low</option>
-        </select>
-      </div>
+          {/* Price Filter */}
+          <select
+            onChange={(e) => setPriceFilter(e.target.value)}
+            className="p-2 rounded-md border bg-white text-sm"
+          >
+            <option value="">All Prices</option>
+            <option value="low">Low to High</option>
+            <option value="high">High to Low</option>
+          </select>
+        </div>
+      )}
 
       {/* Icons Section */}
-      <div className="flex items-center space-x-5">
-        <User className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
+      <div className="flex items-center space-x-5 relative">
+        {/* User Profile Dropdown */}
+        <div className="relative mt-2">
+          <button onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <User className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
+          </button>
 
-        {/* Cart Icon with Link */}
+          {/* Dropdown Menu */}
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-36 bg-white border rounded-lg shadow-lg z-50">
+              <ul className="py-2 text-md text-gray-700">
+                <li>
+                  <Link
+                    href="./CustomerProfile"
+                    className="flex items-center px-4 py-2 hover:bg-gray-100"
+                  >
+                    <User size={20} className="mr-2 text-black" /> My Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/customer/settings"
+                    className="flex items-center px-4 py-2 hover:bg-gray-100"
+                  >
+                    <Settings size={20} className="mr-2 text-black" /> Settings
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    className="w-full flex items-center text-left px-4 py-2 hover:bg-gray-100"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={20} className="mr-2 text-red-500" /> Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Display Customer Name if logged in */}
+        {customerName && <span className="text-gray-700">{customerName}</span>}
+
+        {/* Cart Icon */}
         <Link href="/customer/cart" className="relative">
           <ShoppingCart className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
           {cart.length > 0 && (

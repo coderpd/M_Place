@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Navbar from "@/app/customer/components/Navbar";
@@ -18,10 +19,10 @@ const ProductDetail = () => {
 
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        const res = await fetch(`http://localhost:5000/auth/products/get-product/${id}`);
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
-        setProduct(data);
+        setProduct(data.product);
       } catch (err) {
         setError("Error fetching product details.");
       } finally {
@@ -38,20 +39,28 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     addToCart(product);
-    toast.success("Product added to cart!"); // Show success notification
+    toast.success("🛒 Product added to cart!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
   };
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={2000} />
-      <Navbar />
+      <Navbar disableFilters={true} disableSearch={true} />
+      <ToastContainer />
       <div className="max-w-6xl mx-auto p-6 pt-24">
         <div className="flex flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px]">
           <div className="relative w-full md:w-1/2 flex flex-col items-center md:pr-6">
             <div className="relative w-80 h-80 flex items-center justify-center">
               <img
-                src={`http://localhost:5000/uploads/${product.image}`}
-                alt={product.name}
+                src={`http://localhost:5000/uploads/${product.productImage}`}
+                alt={product.productName}
                 className="w-80 h-80 object-cover rounded-lg shadow-md"
                 onError={(e) => (e.target.src = "https://via.placeholder.com/300?text=Image+Not+Found")}
               />
@@ -67,10 +76,12 @@ const ProductDetail = () => {
           <div className="hidden md:block w-[2px] bg-gray-400 h-auto md:min-h-[300px] mx-6"></div>
 
           <div className="w-full md:w-1/2 flex flex-col">
-            <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
+            <h1 className="text-3xl font-bold text-gray-800">{product.productName}</h1>
             <p className="text-gray-600 text-lg mt-4">{product.description}</p>
             <p className="text-2xl font-semibold text-gray-800 mt-6">Price: ₹{product.price}</p>
-            <p className="text-lg font-normal text-gray-800 mt-6">Seller: {product.company}</p>
+            <p className="text-lg font-normal text-gray-800 mt-6">Brand: {product.brand}</p>
+            <p className="text-lg font-normal text-gray-800 mt-6">Category: {product.category}</p>
+            <p className="text-lg font-normal text-gray-800 mt-6">Seller: {product.seller}</p>
           </div>
         </div>
       </div>

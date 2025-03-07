@@ -173,6 +173,7 @@ const VendorSignup = () => {
     let companyName = formValues.companyName
       ?.toLowerCase()
       .replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "") 
+      .replace(/\.+/g, "") 
       .trim()
       .replace(/\s+/g, ""); 
 
@@ -460,9 +461,9 @@ const VendorSignup = () => {
             <InputField
                 label="Address"
                 name="address"
-                value={formValues.postalCode}
+                value={formValues.address}
                 onChange={handleInputChange}
-                error={errors.postalCode}
+                error={errors.address}
               />
 
               {errors.address&&(
