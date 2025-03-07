@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { FaClipboardList } from "react-icons/fa";
-import { CircleUserRound, BellRing, Calendar, UserRoundPen, LogOut } from "lucide-react";
+import { CircleUserRound, User, BellRing, Calendar, UserRoundPen, LogOut, X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 
 export default function DashboardLayout({ id, children }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -14,6 +14,10 @@ export default function DashboardLayout({ id, children }) {
   const [error, setError] = useState(null);
   const [fadeIn, setFadeIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [filter, setFilter] = useState("all");
+
+  const [readNotifications, setReadNotifications] = useState(new Set());
 
   const router = useRouter();
   const pathname = usePathname();
@@ -44,25 +48,117 @@ export default function DashboardLayout({ id, children }) {
     }
   }, [id]);
 
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!id) return;
+
+      try {
+        const response = await fetch(`http://localhost:5000/notification/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch notifications");
+        }
+        const data = await response.json();
+
+        if (!data.notifications) {
+          console.error("❌ Backend returned no notifications");
+          return;
+        }
+
+        // Format and sort notifications (latest first)
+        const formattedNotifications = data.notifications
+        .map((notif) => ({
+          ...notif,
+          read: notif.status === "read",
+          time: new Date(notif.created_at).toLocaleString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            timeZone: "UTC",
+            hour12:false,
+          }),
+        }))
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      setNotifications(formattedNotifications);
+    } catch (err) {
+      console.error("❌ Error fetching notifications:", err);
+    }
+  }; 
+
+    fetchNotifications();
+  }, [id]);
+
+  // Filter Notifications
+  const filteredNotifications = notifications.filter((notif) => {
+    if (filter === "all") return true;
+    return filter === "read" ? notif.read : !notif.read;
+  });
+
+  // Mark Single Notification as Read
+  const markAsRead = async (notifId) => {
+    if (!notifId) {
+      console.error("❌ Notification ID is missing");
+      return;
+    }
+
+    try {
+      console.log(`🔍 Marking Notification ID: ${notifId} as Read`);
+      const response = await fetch(`http://localhost:5000/notification/read/${notifId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        setNotifications((prev) =>
+          prev.map((notif) =>
+            notif.id === notifId ? { ...notif, status: "read", read: true } : notif
+          )
+        );
+        console.log(`✅ Notification ${notifId} marked as read`);
+      } else {
+        console.error(`❌ Failed to mark notification ${notifId} as read`);
+      }
+    } catch (error) {
+      console.error("❌ Error marking notification as read:", error);
+    }
+  };
+
+  // Mark All as Read
+  const markAllAsRead = () => {
+    setNotifications((prev) =>
+      prev.map((notification) => ({ ...notification, status: "read", read: true }))
+    );
+  };
+
+  // Delete Notification
+  const deleteNotification = (notifId) => {
+    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId));
+  };
+
+
   useEffect(() => {
     setFadeIn(false);
     setTimeout(() => setFadeIn(true), 100);
   }, [pathname]);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const toggleNotification = () => setNotificationOpen(!notificationOpen);
+  const toggleNotification = () => setNotificationOpen((prev) => !prev);
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Logout Function with SweetAlert2
+
   const handleLogout = () => {
     Swal.fire({
       title: "👋 Logging Out",
       text: "Are you sure you want to logout?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#549DA9",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Logout",
+      confirmButtonColor: "#3085D6",
+      cancelButtonColor: "#3085D6",
+      confirmButtonText: "Yes",
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -71,7 +167,7 @@ export default function DashboardLayout({ id, children }) {
           title: "✅ Logged Out",
           text: "You have successfully logged out.",
           icon: "success",
-          timer: 1000,
+          timer: 2000,
           showConfirmButton: false,
         });
       }
@@ -94,39 +190,41 @@ export default function DashboardLayout({ id, children }) {
           <FaClipboardList size={24} className="cursor-pointer" />
         </button>
 
+
         {/* Navigation Links */}
         <div
-          className={`absolute sm:relative top-16 sm:top-0 left-0 w-full sm:w-auto bg-white sm:bg-transparent p-5 sm:p-0 shadow-lg sm:shadow-none transition-all duration-300 ease-in-out ${
-            menuOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
-          }`}
+          className={`absolute sm:relative top-16 sm:top-0 left-0 w-full sm:w-auto bg-white sm:bg-transparent p-5 sm:p-0 shadow-lg sm:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
+            }`}
         >
           <nav className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productcards`)}
-              className={`text-lg font-bold pb-1 ${
-                pathname.includes("productcards") ? "border-b-4 border-[#549DA9]" : ""
-              }`}
+              className={`text-lg font-bold pb-1 ${pathname.includes("productcards") ? "border-b-4 border-[#549DA9]" : ""
+                }`}
             >
-              Product Portal
+              Product
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/addproducts`)}
-              className={`text-lg font-bold pb-1 ${
-                pathname.includes("addproducts") ? "border-b-4 border-[#549DA9]" : ""
-              }`}
+              className={`text-lg font-bold pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-[#549DA9]" : ""
+                }`}
             >
               Add Product
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productdetails`)}
-              className={`text-lg font-bold pb-1 ${
-                pathname.includes("productdetails") ? "border-b-4 border-[#549DA9]" : ""
-              }`}
+              className={`text-lg font-bold pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-[#549DA9]" : ""
+                }`}
             >
               Product Details
             </button>
           </nav>
         </div>
+
+
+
+
+
 
         {/* Right Section */}
         <div className="flex items-center space-x-4 sm:space-x-6">
@@ -135,18 +233,26 @@ export default function DashboardLayout({ id, children }) {
             <Calendar className="text-black-900" />
             <span className="ml-2">{currentDate}</span>
           </div>
-
+          <div className="w-[2px] h-7 bg-gray-400"></div>
           {/* Notifications */}
-          <button className="relative cursor-pointer" onClick={toggleNotification}>
-            <BellRing className="text-black-900" />
-          </button>
+          <div className="relative">
+            <button className="relative cursor-pointer" onClick={toggleNotification}>
+              <BellRing className="text-black-900 mt-1 w-6 h-6" />
+              {notifications.length > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                  {notifications.length}
+                </span>
+              )}
+            </button>
+          </div>
+
 
           {/* Divider */}
           <div className="w-[2px] h-7 bg-gray-400"></div>
 
           {/* User Dropdown */}
           <div className="relative flex items-center cursor-pointer" onClick={toggleDropdown}>
-            <CircleUserRound className="text-black-900" />
+            <User size={30} className="text-black-900" />
             <div className="ml-2 hidden text-md sm:block">
               {vendor && <span>{vendor.firstName} {vendor.lastName}</span>}
               {loading && <span>Loading...</span>}
@@ -175,10 +281,90 @@ export default function DashboardLayout({ id, children }) {
         </div>
       </div>
 
-      {/* Page Content with Smooth Transition */}
+      {/* Notification Sidebar */}
+      {notificationOpen && (
+        <div className="fixed top-0 right-0 w-[400px] h-full bg-white shadow-lg p-4 border-l z-50 overflow-y-auto transition-transform duration-300 ease-in-out transform translate-x-0">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold">Notifications</h2>
+            <X size={24} className="cursor-pointer" onClick={toggleNotification} />
+          </div>
+
+          <hr className="mb-4" />
+
+          {/* Filter & Mark All as Read */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-2">
+              <select
+                className="p-2 border rounded-md"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="all">All</option>
+                <option value="unread">Unread</option>
+                <option value="read">Read</option>
+              </select>
+            </div>
+            <button className="bg-[#06436B] text-white p-2 rounded-md" onClick={markAllAsRead}>
+              Mark all as read
+            </button>
+          </div>
+
+          <hr className="mb-4" />
+
+          {/* Notifications List */}
+          {filteredNotifications.length === 0 ? (
+            <p className="text-gray-500 text-center">No new notifications</p>
+          ) : (
+            <ul>
+              {filteredNotifications.map((notif, index) => (
+                <li
+                  key={notif.id || index}
+                  className={`p-3 mb-2 rounded-md cursor-pointer ${notif.read ? "bg-gray-100 text-gray-600" : "bg-gray-300 text-black"
+                    }`}
+                >
+                  <div>
+                    <p className="text-sm font-semibold">{notif.message}</p>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    <div className="inline-block bg-[#EFF3F5] p-1 rounded-md">{notif.time}</div>
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        markAsRead(notif.id);
+                      }}
+                      className="text-blue-500 text-sm"
+                    >
+                      Mark as Read
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteNotification(notif.id);
+                      }}
+                      className="text-red-500 text-sm"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                  <hr className="my-2" />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* Page Content */}
       <div className={`p-6 sm:p-8 bg-gray-50 flex-1 mt-20 transition-opacity duration-500 ${fadeIn ? "opacity-100" : "opacity-0"}`}>
         {children}
       </div>
     </div>
   );
 }
+
+
+
+

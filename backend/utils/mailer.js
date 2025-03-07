@@ -52,4 +52,5 @@ async function sendConfirmationEmail(userName,userEmail,) {
 
 
 
-module.exports = { sendOTP,sendConfirmationEmail };
+module.exports = { sendOTP,sendConfirmationEmail};
+

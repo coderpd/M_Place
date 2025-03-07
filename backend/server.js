@@ -36,12 +36,14 @@ app.use("/auth/products", productsRouter);
 const vendorRouter = require("./routes/vendor"); 
 app.use("/auth/vendor", vendorRouter); 
 
-
-const CustomerEdit = require("./routes/customer");
+const CustomerEdit = require("./routes/Customer");
 app.use("/customer-edit", CustomerEdit);
 
-const cart= require("./routes/cart")
-app.use("/auth/cart",cart)
+const notifyVendorRouter =require("./routes/notifications")
+app.use("/notification", notifyVendorRouter);
+
+const cartRouter = require("./routes/Cart");
+app.use("/cart", cartRouter);
 
 
 app.listen(port, () => {

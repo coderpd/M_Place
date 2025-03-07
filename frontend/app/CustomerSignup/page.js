@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -25,6 +24,7 @@ const CustomerSignup = () => {
   const [formValues, setFormValues] = useState({
     companyName: "",
     registrationNumber: "",
+    companyWebsite:"",
     gstNumber: "",
     firstName: "",
     lastName: "",
@@ -38,7 +38,7 @@ const CustomerSignup = () => {
     postalCode: "",
     password: "",
     confirmPassword: "",
-    terms: true,
+    terms: false,
   });
 
   const selectedCountry = formValues.country;
@@ -79,7 +79,6 @@ const CustomerSignup = () => {
     try {
       const country = countries.find((c) => c.name === selectedCountry);
       if (!country) return;
-
       const response = await fetch(
         `https://api.countrystatecity.in/v1/countries/${country.code}/states`,
         { headers: { "X-CSCAPI-KEY": API_KEY } }
@@ -151,7 +150,8 @@ const CustomerSignup = () => {
       newErrors.companyName = "Company Name is required";
     if (!formValues.registrationNumber)
       newErrors.registrationNumber = "Registration Number is required";
-
+  
+    if(!formValues.companyWebsite)  newErrors.companyWebsite="Company Website is requires";
     if (!formValues.gstNumber) newErrors.gstNumber = "GST Number is required";
     if (!formValues.firstName) newErrors.firstName = "First Name is required";
     if (!formValues.lastName) newErrors.lastName = "Last Name is required";
@@ -189,6 +189,8 @@ const CustomerSignup = () => {
     if (!formValues.city) newErrors.city = "City is required";
     if (!formValues.postalCode)
       newErrors.postalCode = "Postal Code is required";
+    if(!formValues.terms ) newErrors.terms="You must agree the terms and condition to continue"
+    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -339,6 +341,20 @@ const CustomerSignup = () => {
                 {errors.registrationNumber && (
                   <p className="text-sm text-red-500">
                     {errors.registrationNumber}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <InputField
+                  label="Company Website"
+                  name="companyWebsite"
+                  value={formValues.companyWebsite}
+                  onChange={handleInputChange}
+                />
+                {errors.companyWebsite && (
+                  <p className="text-sm text-red-500">
+                    {errors.companyWebsite}
                   </p>
                 )}
               </div>
@@ -583,38 +599,36 @@ const CustomerSignup = () => {
               </div>
             </Section>
 
-            {/* Terms and Conditions */}
-            <div className="flex items-start pl-2 gap-2 ml-1 relative">
-              <Checkbox
-                className=""
+            <div className="flex items-center pl-2 gap-2 ml-1 relative">
+              <input
+                type="checkbox"
                 id="terms"
                 checked={formValues.terms}
                 onChange={(e) =>
                   setFormValues((prev) => ({
                     ...prev,
                     terms: e.target.checked,
+                   
                   }))
                 }
+                className="absolute left-0 cursor-pointer"
               />
               <label
                 htmlFor="terms"
-                className="text-sm text-gray-700 cursor-pointer"
+                className="text-sm text-gray-700 cursor-pointer ml-3" 
               >
                 By Signing Up, you must agree to our
-                <a href="#" className="text-teal-500 hover:underline ml-1">
-                  Terms
-                </a>
-                ,
                 <a href="#" className="text-teal-500 hover:underline mx-1">
                   Privacy Policy
                 </a>{" "}
                 and
                 <a href="#" className="text-teal-500 hover:underline ml-1">
-                  Cookie Policy
+                Legal Disclaimer
                 </a>
                 .
               </label>
             </div>
+            {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
 
             <Button
               type="submit"

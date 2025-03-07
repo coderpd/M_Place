@@ -16,7 +16,6 @@ const CustomerProfile = () => {
       router.push("/login");
     } else {
       const customerData = JSON.parse(storedCustomer);
-      console.log("Retrieved customer data:", customerData); // Debugging line
       setCustomer(customerData);
       setFormData(customerData);
     }
@@ -32,8 +31,7 @@ const CustomerProfile = () => {
 
   const handleSave = async () => {
     try {
-      const updatedFormData = { ...formData, id: customer?.id };
-      console.log("Updated Form Data before saving:", updatedFormData); // Debugging log
+      const updatedFormData = { ...formData, id: customer.id };
 
       const response = await fetch("http://localhost:5000/customer-edit/update-profile", {
         method: "POST",
@@ -45,10 +43,8 @@ const CustomerProfile = () => {
         const updatedCustomer = await response.json();
         console.log("Profile updated:", updatedCustomer);
 
-        // Store the entire updated customer object
-        localStorage.setItem("customer", JSON.stringify(updatedCustomer));
-        setCustomer(updatedCustomer);
-        setFormData(updatedCustomer);
+        localStorage.setItem("customer", JSON.stringify(formData));
+        setCustomer(formData);
         setIsEditing(false);
         alert("Profile updated successfully!");
       } else {
@@ -68,7 +64,7 @@ const CustomerProfile = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20">
+      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-10">
         {/* Profile Card */}
         <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
           <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
@@ -136,17 +132,16 @@ const CustomerProfile = () => {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-              {Object.entries(customer || {}).map(([key, value]) => {
-                console.log(`Key: ${key}, Value: ${value}`); // Debugging line
-                return (
+              {Object.entries(customer)
+                .filter(([key]) => !["id", "password", "created_at"].includes(key))
+                .map(([key, value]) => (
                   <div key={key} className="bg-gray-100 p-4 rounded-lg">
                     <p className="text-xs text-gray-600 uppercase font-semibold">
-                      {key.replace(/([A-Z])/g, " $1").trim()}
+                      {key.replace(/([A-Z])/g, " $1")}
                     </p>
                     <p className="text-lg font-bold text-gray-900 mt-1">{value || "N/A"}</p>
                   </div>
-                );
-              })}
+                ))}
             </div>
           )}
         </div>

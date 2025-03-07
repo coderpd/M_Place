@@ -4,12 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import Router, { useRouter } from "next/navigation";
 
-const API_KEY="MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
+const API_KEY = "MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
 
 const VendorSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,15 +43,15 @@ const VendorSignup = () => {
 
   const selectedCountry = formValues.country;
   const selectedState = formValues.state;
-  const Router=useRouter();
+  const Router = useRouter();
 
   // Fetch Countries
   useEffect(() => {
-    const fetchCountries = async () => { 
+    const fetchCountries = async () => {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
         const data = await response.json();
-          console.log(data)
+        console.log(data);
         const sortedCountries = data
           .map((country) => ({
             name: country.name.common,
@@ -166,23 +165,21 @@ const VendorSignup = () => {
     if (!formValues.phoneNumber.match(/^[0-9]{7,12}$/))
       newErrors.phoneNumber = "Invalid Contact Number";
 
-  if (!formValues.officialEmail.match(/^\S+@\S+\.\S+$/)) {
-    newErrors.officialEmail = "Invalid email";
-  } else {
+    if (!formValues.officialEmail.match(/^\S+@\S+\.\S+$/)) {
+      newErrors.officialEmail = "Invalid email";
+    } else {
+      let companyName = formValues.companyName
+        ?.toLowerCase()
+        .replace(/\s?(pvt|ltd|limited|inc |llp|corp|co)\b/gi, "")
+        .replace(/\./g, "")
+        .trim()
+        .replace(/\s+/g, "");
+      const expectedDomain = `@${companyName}.com`;
 
-    let companyName = formValues.companyName
-      ?.toLowerCase()
-      .replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "") 
-      .replace(/\.+/g, "") 
-      .trim()
-      .replace(/\s+/g, ""); 
-
-    const expectedDomain = `@${companyName}.com`;
-
-    if (!formValues.officialEmail.endsWith(expectedDomain)) {
-      newErrors.officialEmail = `Email must be in the format example@${companyName}.com`;
+      if (!formValues.officialEmail.endsWith(expectedDomain)) {
+        newErrors.officialEmail = `Email must be in the format example@${companyName}.com`;
+      }
     }
-  }
     if (!formValues.otp.match(/^\d{4}$/))
       newErrors.otp = "OTP must be 4 digits";
     if (
@@ -199,7 +196,8 @@ const VendorSignup = () => {
     if (!formValues.city) newErrors.city = "City is required";
     if (!formValues.postalCode)
       newErrors.postalCode = "Postal Code is required";
-
+    if(!formValues.terms ) newErrors.terms="You must agree the terms and condition to continue"
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -242,45 +240,48 @@ const VendorSignup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/auth/vendor/vendor-signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formValues), // Ensure OTP is included
-      });
+      const response = await fetch(
+        "http://localhost:5000/auth/vendor/vendor-signup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formValues), // Ensure OTP is included
+        }
+      );
 
       const result = await response.json();
       if (response.ok) {
-             Swal.fire({
-               title: "Signup Successful!",
-               text: "You have successfully signed up.",
-               icon: "success",  
-               confirmButtonColor: "#4BB543", 
-               confirmButtonText: "Okay",
-             }).then((result) => {
-               if (result.isConfirmed) {
-                 Router.push('./SignIn')
-               }
-             });;
-           } else {
-             Swal.fire({
-               title: "Signup Failed",
-               text: result.message || "Please try again later.",
-               icon: "error", 
-               confirmButtonColor: "#D9534F", 
-               confirmButtonText: "Try Again",
-             });
-           }
-         } catch (error) {
-           Swal.fire({
-             title: "Error Occurred",
-             text: error.message || "Something went wrong. Please try again.",
-             icon: "error", 
-             confirmButtonColor: "#D9534F", 
-             confirmButtonText: "Close",
-           });
-         } finally {
-           setLoading(false);
-         }
+        Swal.fire({
+          title: "Signup Successful!",
+          text: "You have successfully signed up.",
+          icon: "success",
+          confirmButtonColor: "#4BB543",
+          confirmButtonText: "Okay",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Router.push("./SignIn");
+          }
+        });
+      } else {
+        Swal.fire({
+          title: "Signup Failed",
+          text: result.message || "Please try again later.",
+          icon: "error",
+          confirmButtonColor: "#D9534F",
+          confirmButtonText: "Try Again",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error Occurred",
+        text: error.message || "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#D9534F",
+        confirmButtonText: "Close",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -293,17 +294,25 @@ const VendorSignup = () => {
 
   return (
     <div>
-      <div className="bg-[#549DA9] w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-2">
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-12 md:w-14 md:h-14 pb-2 rounded-xl bg-black flex items-center justify-center text-white text-2xl font-semibold">
-            M
+      <div className="bg-[#549DA9] w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
+        {/* Logo Positioned at the Top Left */}
+        <div className="absolute top-4 left-4">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+              <img
+                src="/Logo.png"
+                alt="M-Place Logo"
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+              />
+            </div>
           </div>
-          <span className="text-4xl font-semibold text-black">M-Place</span>
         </div>
-        <h1 className="text-2xl md:text-4xl font-bold text-white">
+
+        {/* Main Header Content */}
+        <h1 className="text-2xl md:text-4xl font-bold text-white mt-10">
           Expand Your Business with M-Place!
         </h1>
-        <p className="mt-3 text-lg text-gray-100">
+        <p className="mt-3 text-lg text-gray-100 max-w-xl">
           Register today and gain access to a marketplace of trusted buyers.
         </p>
       </div>
@@ -426,20 +435,19 @@ const VendorSignup = () => {
                 )}
               </div>
 
-
-            <div>
-            <InputField
-                id="otp"
-                label="OTP"
-                name="otp"
-                value={formValues.otp}
-                onChange={handleInputChange}
-              />
+              <div>
+                <InputField
+                  id="otp"
+                  label="OTP"
+                  name="otp"
+                  value={formValues.otp}
+                  onChange={handleInputChange}
+                />
                 {errors.otp && (
                   <p className="text-sm text-red-500">{errors.otp}</p>
                 )}
-            </div>
-             
+              </div>
+
               {otpMessage && (
                 <p
                   className={`text-sm ${
@@ -457,21 +465,19 @@ const VendorSignup = () => {
             >
               {/* <div className="grid grid-cols-2 gap-3 w-full"> */}
 
-            <div>
-            <InputField
-                label="Address"
-                name="address"
-                value={formValues.address}
-                onChange={handleInputChange}
-                error={errors.address}
-              />
+              <div>
+                <InputField
+                  label="Address"
+                  name="address"
+                  value={formValues.address}
+                  onChange={handleInputChange}
+                  error={errors.address}
+                />
 
-              {errors.address&&(
-                 <p className="text-sm text-red-500">{errors.address}</p>
-              )}
-
-            </div>
-             
+                {errors.address && (
+                  <p className="text-sm text-red-500">{errors.address}</p>
+                )}
+              </div>
 
               <div className="mt-2">
                 <Label>Country</Label>
@@ -533,21 +539,18 @@ const VendorSignup = () => {
                 )}
               </div>
 
-             <div>
-             <InputField
-                label="Postal Code"
-                name="postalCode"
-                value={formValues.postalCode}
-                onChange={handleInputChange}
-                error={errors.postalCode}
-              />
-               {errors.postalCode && (
+              <div>
+                <InputField
+                  label="Postal Code"
+                  name="postalCode"
+                  value={formValues.postalCode}
+                  onChange={handleInputChange}
+                  error={errors.postalCode}
+                />
+                {errors.postalCode && (
                   <p className="text-sm text-red-500">{errors.postalCode}</p>
                 )}
-
-             </div>
-             
-              
+              </div>
             </Section>
             {/* Password */}
             <Section
@@ -569,7 +572,6 @@ const VendorSignup = () => {
                   <p className="text-sm text-red-500">{errors.password}</p>
                 )}
 
-
                 <div
                   className="absolute right-3 top-[39px] transform -translate-y-1/2 cursor-pointer"
                   onClick={togglePasswordVisibility}
@@ -582,7 +584,6 @@ const VendorSignup = () => {
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
                   id="confirmPassword"
-                  
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm Password"
                   name="confirmPassword"
@@ -590,7 +591,7 @@ const VendorSignup = () => {
                   onChange={handleInputChange}
                   className="w-full"
                 />
-      
+
                 <div
                   className="absolute right-3 top-[39px] transform -translate-y-1/2 cursor-pointer"
                   onClick={toggleConfirmPasswordVisibility}
@@ -605,9 +606,9 @@ const VendorSignup = () => {
             </Section>
 
             {/* Terms and Conditions */}
-            <div className="flex items-start pl-2 gap-2 ml-1 relative">
-              <Checkbox
-                className=""
+            <div className="flex items-center pl-2 gap-2 ml-1 relative">
+              <input
+                type="checkbox"
                 id="terms"
                 checked={formValues.terms}
                 onChange={(e) =>
@@ -616,10 +617,11 @@ const VendorSignup = () => {
                     terms: e.target.checked,
                   }))
                 }
+                className="absolute left-0 cursor-pointer"
               />
               <label
                 htmlFor="terms"
-                className="text-sm text-gray-700 cursor-pointer"
+                className="text-sm text-gray-700 cursor-pointer ml-3"
               >
                 By Signing Up, you must agree to our
                 <a href="#" className="text-teal-500 hover:underline ml-1">
@@ -636,8 +638,14 @@ const VendorSignup = () => {
                 .
               </label>
             </div>
+            {errors.terms && (
+              <p className="text-sm text-red-500">{errors.terms}</p>
+            )}
 
-            <Button type="submit" className="ml-[350px] bg-[#549DA9] hover:bg-black">
+            <Button
+              type="submit"
+              className="ml-[350px] bg-[#549DA9] hover:bg-black"
+            >
               Submit
             </Button>
           </form>
@@ -656,14 +664,22 @@ const Section = ({ title, icon, children }) => (
     <div className="grid grid-cols-2 gap-4">{children}</div>
   </div>
 );
-const InputField = ({ label, name, value, onChange, onOtpRequest, type,placeholder }) => (
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  onOtpRequest,
+  type,
+  placeholder,
+}) => (
   <div className="space-y-2">
     <Label htmlFor={name}>{label}</Label>
     <div className="relative">
       <Input
         id={name}
         type={type || "text"}
-        placeholder={placeholder||label}
+        placeholder={placeholder || label}
         name={name}
         value={value}
         onChange={onChange}
@@ -673,7 +689,6 @@ const InputField = ({ label, name, value, onChange, onOtpRequest, type,placehold
         <button
           type="button"
           onClick={onOtpRequest}
-          
           className="absolute  right-3 top-1/2 transform -translate-y-1/2 text-blue-500 font-medium"
         >
           Get OTP
