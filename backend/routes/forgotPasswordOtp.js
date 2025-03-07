@@ -1,7 +1,3 @@
-// import { Router } from "express";
-// import { hash } from "bcrypt";
-// import { db.query } from "../db";
-// import { sendOTP } from "../utils/mailer";
 const express = require("express");
 const bcrypt = require("bcrypt");
 const db = require("../db");
@@ -57,6 +53,8 @@ router.post("/verify-otp", async (req, res) => {
     console.log("Received request body:", req.body);
     const { email, otp } = req.body;
 
+    otpStore[email] = otp;
+    
     if (!email || !otp) {
       return res.status(400).json({ error: "Email and OTP are required" });
     }
@@ -92,7 +90,7 @@ router.post("/reset-password", async (req, res) => {
     }
 
     // Hash the new password before saving it
-    const hashedPassword = await hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Check if the email belongs to the vendor or customer
     const [vendorRows] = await db.query("SELECT * FROM vendorsignup WHERE officialEmail = ?", [email]);
@@ -118,4 +116,4 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
-module.exports=router;
+module.exports = router;

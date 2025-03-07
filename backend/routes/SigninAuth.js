@@ -41,10 +41,21 @@ router.post("/signin", async (req, res) => {
         return res.status(400).json({ message: "Invalid email or password" });
       }
 
+      // Fetch the customer's cart items
+      // const [cartItems] = await db.query(
+      //   `SELECT c.id, c.product_id, c.quantity, 
+      //           p.productName, p.price, p.productImage 
+      //    FROM cart c 
+      //    JOIN products p ON c.product_id = p.id 
+      //    WHERE c.customer_id = ?`,
+      //   [customer.id]
+      // );
+
       return res.status(200).json({
         message: "Login successful",
         userType: "customer",
         user: customer,
+        // cartItems, // Include cart items in response
       });
     }
 

@@ -4,46 +4,47 @@ const jwt = require("jsonwebtoken");
 const mysql = require("mysql2");
 const { sendOTP } = require("./utils/mailer"); 
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const app = express();
 const port = 5000;
+app.use("/uploads",express.static("uploads"));
 
-
-// app.use(cors());
-// const cors = require("cors");
-app.use(cors({ 
-  origin: "http://localhost:3000", // Allow requests from frontend
-  methods: "GET,POST,PUT,DELETE,OPTIONS", 
-  allowedHeaders: "Content-Type, Authorization" 
-}));
-
+app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json());
+
 // Routes
 const CustomerAuthRouter = require("./routes/CustomerSignupAuth");
-app.use("/auth/customer", CustomerAuthRouter);  // Now it's a distinct route for customers
+app.use("/auth/customer", CustomerAuthRouter); 
 
 const VendorAuthRouter = require("./routes/VendorSignupAuth");
 app.use("/auth/vendor", VendorAuthRouter);  
 
-const SigninAuthRouter = require("./routes/SigninAuth");
-app.use("/auth/signin", SigninAuthRouter);  // Separate signin route
+const Signin = require("./routes/SigninAuth");
+app.use("/auth", Signin);  
 
 const ForgotPassword = require("./routes/forgotPasswordOtp");
 app.use("/forgotpassword", ForgotPassword);  
 
-const Products = require("./routes/products");
-app.use("/products", Products);  
+const contactUsRouter = require("./routes/ContactUs");
+app.use("/contact", contactUsRouter);
 
-const VendorNotification = require("./routes/notification");
-app.use("/notification", VendorNotification);  
+const getvendor = require("./routes/getvendor");
+app.use("/auth", getvendor);
 
-const ProfileRouter = require("./routes/CustomerProfileFetch");  
-app.use("/customer-profile", ProfileRouter);
+const productsRouter = require("./routes/products");
+app.use("/auth/products", productsRouter);
 
+const vendorRouter = require("./routes/vendor"); 
+app.use("/auth/vendor", vendorRouter); 
 
-const CustomerEdit = require("./routes/customer");
+const CustomerEdit = require("./routes/Customer");
 app.use("/customer-edit", CustomerEdit);
+
+const cartRouter = require("./routes/cart");
+app.use("/cart", cartRouter);
+
+// const cartRouter = require("./routes/cartRouter");
+// app.use("/cart", cartRouter);  // Add cart route
+
 
 
 
