@@ -6,7 +6,7 @@ import { useState } from "react";
 import ImageSlider from "./ImageSlider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,34 +20,31 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setLoading(true);
     setError("");
-  
+    
     try {
       const response = await fetch("http://localhost:5000/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.message || "Login failed. Please try again.");
       }
-  
+
       console.log("Login Response:", data);
-  
-      // Store JWT token securely
+
       if (rememberMe) {
-        localStorage.setItem("token", data.token);  // Persistent storage
+        localStorage.setItem("token", data.token);
       } else {
-        sessionStorage.setItem("token", data.token);  // Session-based storage
+        sessionStorage.setItem("token", data.token);
       }
-  
-      // Store user details
+
       localStorage.setItem("userType", data.userType);
       localStorage.setItem("userId", data.user.id);
-  
-      // Redirect based on user type
+
       if (data.userType === "vendor") {
         router.push(`/vendorDashboard/${data.user.id}`);
       } else if (data.userType === "customer") {
@@ -62,7 +59,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-    
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       <ImageSlider />
@@ -139,9 +136,9 @@ export default function LoginPage() {
               <Button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md disabled:bg-gray-400"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md disabled:bg-gray-400 flex items-center justify-center"
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? <Loader2 className="animate-spin" size={20} /> : "Login"}
               </Button>
             </div>
 

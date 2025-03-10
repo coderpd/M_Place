@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
+const convertToIST = (utcDateString) => {
+  return new Date(utcDateString).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+};
 
 router.get("/:vendorId", async (req, res) => {
   try {
@@ -12,16 +15,22 @@ router.get("/:vendorId", async (req, res) => {
     }
 
     const [notifications] = await db.execute(
-      "SELECT id, message, CONVERT_TZ(created_at, @@session.time_zone, '+00:00') AS created_at, status FROM notifications WHERE product_vendor_id = ?",
+      "SELECT id, message, created_at, status FROM notifications WHERE product_vendor_id = ?",
       [vendorId]
     );
 
-    res.json({ notifications });
+    const formattedNotifications = notifications.map((notif) => ({
+      ...notif,
+      created_at: convertToIST(notif.created_at),
+    }));
+
+    res.json({ notifications: formattedNotifications });
   } catch (error) {
     console.error("❌ Error fetching notifications:", error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
 });
+
 
 // Notify vendor and insert into notifications table
 router.post("/notify-vendor", async (req, res) => {

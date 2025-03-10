@@ -8,7 +8,7 @@ const servicesData = [
       "MPlace serves as a platform connecting customers and suppliers without any monetary benefits. However, if clients opt for our services to facilitate purchase order (PO) processing and supplier follow-ups for deliveries, a service fee applies.",
   },
   {
-    title: "Direct Transactions for Transparency",
+    title: "Direct Transactions with Transparency",
     description:
       "Otherwise, customers are responsible for placing orders and making payments directly to suppliers, with no contractual obligation to our company, as we do not engage in trading or add margins to generate revenue.",
   },

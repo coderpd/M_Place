@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FaClipboardList } from "react-icons/fa";
-import { CircleUserRound, User, BellRing, Calendar, UserRoundPen, LogOut, X } from "lucide-react";
+import { User, BellRing, Calendar, UserRoundPen, LogOut, X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -28,24 +28,39 @@ export default function DashboardLayout({ id, children }) {
   });
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    let isMounted = true;
+
     const fetchVendorDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/auth/get-vendor/${id}`);
+        const response = await fetch(`http://localhost:5000/auth/get-vendor/${id}`, { signal });
+
         if (!response.ok) {
           throw new Error(`Failed to fetch vendor: ${response.statusText}`);
         }
+
         const data = await response.json();
-        setVendor(data.vendor);
+        if (isMounted) {
+          setVendor(data.vendor);
+        }
       } catch (err) {
-        setError(err.message);
+        if (!signal.aborted) {
+          if (isMounted) setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     if (id) {
       fetchVendorDetails();
     }
+
+    return () => {
+      isMounted = false;
+      controller.abort(); // Cancel the request if the component unmounts
+    };
   }, [id]);
 
 
@@ -67,27 +82,29 @@ export default function DashboardLayout({ id, children }) {
 
         // Format and sort notifications (latest first)
         const formattedNotifications = data.notifications
-        .map((notif) => ({
-          ...notif,
-          read: notif.status === "read",
-          time: new Date(notif.created_at).toLocaleString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-            timeZone: "UTC",
-            hour12:false,
-          }),
-        }))
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          .map((notif) => ({
+            ...notif,
+            read: notif.status === "read",
+            time: new Date(notif.created_at).toLocaleString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              timeZone: "Asia/Kolkata", // Ensure IST timezone
+              hour12: true, // Enable AM/PM format
+            }),
+          }))
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-      setNotifications(formattedNotifications);
-    } catch (err) {
-      console.error("❌ Error fetching notifications:", err);
-    }
-  }; 
+        setNotifications(formattedNotifications);
+
+
+      } catch (err) {
+        console.error("❌ Error fetching notifications:", err);
+      }
+    };
 
     fetchNotifications();
   }, [id]);
@@ -146,7 +163,16 @@ export default function DashboardLayout({ id, children }) {
   }, [pathname]);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const toggleNotification = () => setNotificationOpen((prev) => !prev);
+  const toggleNotification = () => {
+    setNotificationOpen(!notificationOpen);
+
+    if (!notificationOpen) {
+      document.body.style.overflow = "hidden"; // Disable scrolling
+    } else {
+      document.body.style.overflow = "auto"; // Enable scrolling when closed
+    }
+  };
+
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
 
@@ -162,24 +188,23 @@ export default function DashboardLayout({ id, children }) {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
+        // ✅ Clear local storage before redirecting
+        localStorage.clear();
+
+        // ✅ Redirect to the homepage
         router.push("/");
-        Swal.fire({
-          title: "✅ Logged Out",
-          text: "You have successfully logged out.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
       }
     });
   };
 
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-white shadow px-5 py-4 flex justify-between items-center border-b fixed top-0 left-0 right-0 z-10">
+      <div className="bg-white shadow  px-5 py-4 flex justify-between items-center border-b fixed top-0 left-0 right-0 z-10">
         {/* Logo */}
-        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+        <div className="w-12 h-12  sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
           <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
             <img src="/Logo.png" alt="M-Place Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
           </div>
@@ -193,27 +218,27 @@ export default function DashboardLayout({ id, children }) {
 
         {/* Navigation Links */}
         <div
-          className={`absolute sm:relative top-16 sm:top-0 left-0 w-full sm:w-auto bg-white sm:bg-transparent p-5 sm:p-0 shadow-lg sm:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
+          className={`absolute sm:relative  top-16 sm:top-0 left-0 w-full sm:w-auto bg-white sm:bg-transparent p-5 sm:p-0 shadow-lg sm:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
             }`}
         >
-          <nav className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+          <nav className="flex flex-col  mt-3 sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productcards`)}
-              className={`text-lg font-bold pb-1 ${pathname.includes("productcards") ? "border-b-4 border-[#549DA9]" : ""
+              className={`text-lg  pb-1 ${pathname.includes("productcards") ? "border-b-4 border-[#549DA9]" : ""
                 }`}
             >
-              Product
+              Product portal
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/addproducts`)}
-              className={`text-lg font-bold pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-[#549DA9]" : ""
+              className={`text-lg  pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-[#549DA9]" : ""
                 }`}
             >
               Add Product
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productdetails`)}
-              className={`text-lg font-bold pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-[#549DA9]" : ""
+              className={`text-lg   pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-[#549DA9]" : ""
                 }`}
             >
               Product Details
@@ -221,12 +246,9 @@ export default function DashboardLayout({ id, children }) {
           </nav>
         </div>
 
-
-
-
-
-
         {/* Right Section */}
+
+
         <div className="flex items-center space-x-4 sm:space-x-6">
           {/* Date */}
           <div className="hidden sm:flex items-center">
@@ -326,28 +348,20 @@ export default function DashboardLayout({ id, children }) {
                   <div>
                     <p className="text-sm font-semibold">{notif.message}</p>
                   </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    <div className="inline-block bg-[#EFF3F5] p-1 rounded-md">{notif.time}</div>
+                  <div className="mt-4 text-xs text-gray-500">
+                    <div className=" inline-block bg-[#EFF3F5]  rounded-md">{notif.time}</div>
                   </div>
-                  <div className="flex justify-between mt-2">
+                  <div className="flex justify-between -mt-4 ">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         markAsRead(notif.id);
                       }}
-                      className="text-blue-500 text-sm"
+                      className="text-blue-500 text-sm ml-[230px]"
                     >
                       Mark as Read
                     </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteNotification(notif.id);
-                      }}
-                      className="text-red-500 text-sm"
-                    >
-                      Dismiss
-                    </button>
+
                   </div>
                   <hr className="my-2" />
                 </li>

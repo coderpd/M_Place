@@ -27,7 +27,7 @@ export default function ProductDetails() {
         }
         const data = await response.json();
         if (isMounted) {
-          setProducts(data.products);
+          setProducts(data.products || []);
         }
       } catch (err) {
         if (isMounted) {
@@ -58,7 +58,7 @@ export default function ProductDetails() {
         throw new Error(`Failed to delete product: ${response.statusText}`);
       }
 
-      setProducts(products.filter((product) => product.id !== productId));
+      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
       toast.success("Product deleted successfully!");
     } catch (error) {
       toast.error("Error deleting product: " + error.message);
@@ -69,20 +69,24 @@ export default function ProductDetails() {
     router.push(`/vendorDashboard/${id}/updateproduct/${productId}`);
   };
 
-  const filteredProducts = useMemo(() =>
-    products.filter(
-      (product) =>
-        product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.seller.toLowerCase().includes(searchQuery.toLowerCase())
-    ),
-    [products, searchQuery]
-  );
+  const filteredProducts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    setCurrentPage(1);
+    return products.filter((product) => {
+      return (
+        product?.productName?.toLowerCase().includes(query) ||
+        product?.category?.toLowerCase().includes(query) ||
+        product?.brand?.toLowerCase().includes(query)
+      
+      );
+    });
+  }, [products, searchQuery]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  const selectedProducts = useMemo(() => {
+    return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredProducts, currentPage]);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -92,12 +96,12 @@ export default function ProductDetails() {
         <div className="relative w-[350px]">
           <input
             type="text"
-            placeholder="Search by name, category, brand, seller"
+            placeholder="Search by name, category, brand"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#549DA9]"
+            className="w-full pl-3 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#549DA9]"
           />
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
       </div>
 
@@ -148,11 +152,30 @@ export default function ProductDetails() {
       )}
 
       <div className="flex justify-center mt-4 space-x-2">
-        <button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300">Previous</button>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300"
+        >
+          Previous
+        </button>
         {[...Array(totalPages)].map((_, index) => (
-          <button key={index} onClick={() => setCurrentPage(index + 1)} className={`px-3 py-2 border rounded ${currentPage === index + 1 ? "bg-[#549DA9] text-white" : "bg-white"}`}>{index + 1}</button>
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`px-3 py-2 border rounded ${currentPage === index + 1 ? "bg-[#549DA9] text-white" : "bg-white"
+              }`}
+          >
+            {index + 1}
+          </button>
         ))}
-        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300">Next</button>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

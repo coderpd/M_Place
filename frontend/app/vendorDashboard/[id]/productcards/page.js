@@ -107,12 +107,13 @@ export default function EcommercePage() {
         </div>
 
         {/* Pagination */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-6 space-x-2">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="bg-gray-800 text-white hover:bg-gray-900"
+              className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300 hover:bg-[#46828D]"
             >
               Previous
             </Button>
@@ -121,11 +122,10 @@ export default function EcommercePage() {
               <Button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`${
-                  page === currentPage
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-black hover:bg-gray-700 hover:text-white border border-gray-400"
-                }`}
+                className={`px-3 py-2 border rounded ${page === currentPage
+                    ? "bg-[#497C8C] text-white hover:bg-[#3B6B7A]"
+                    : "bg-white text-[#549DA9] border-gray-400 hover:bg-gray-200"
+                  }`}
               >
                 {page}
               </Button>
@@ -134,12 +134,13 @@ export default function EcommercePage() {
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="bg-gray-800 text-white hover:bg-gray-900"
+              className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300 hover:bg-[#46828D]"
             >
               Next
             </Button>
           </div>
         )}
+
       </div>
     </div>
   );
