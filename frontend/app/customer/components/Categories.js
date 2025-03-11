@@ -1,6 +1,7 @@
 "use client";
-import { useState ,useRef, useEffect} from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import ProductsPage from "../products/page";
 
 const categories = [
   {
@@ -102,146 +103,157 @@ const categories = [
   {
     name: "IT Accessories",
     subcategories: [
-      { name: "Computer Accessories", 
+      {
+        name: "Computer Accessories",
         items: [
           "Laptop Bags & Sleeves",
           "Laptop Stands & Cooling Pads",
           "Mouse Pads & Wrist Rests",
           "USB Hubs",
           "Monitor Mounts & Stands",
-      ] ,
-    },
-      { name: "Office Accessories", 
+        ],
+      },
+      {
+        name: "Office Accessories",
         items: [
           "Surge Protectors & Power Strips",
           "Extension Cords",
           "Desk Organizers",
           "Label Makers & Tapes",
-       
-        ] ,
+        ],
       },
-      {name:"Mobile Accessories",
-        items:[
-          "Power Banks",
-          "Bluetooth Headsets",
-          "Mobile Charging Cables ",
-        ]
-      }
+      {
+        name: "Mobile Accessories",
+        items: ["Power Banks", "Bluetooth Headsets", "Mobile Charging Cables "],
+      },
     ],
   },
   {
     name: "Hardware",
     subcategories: [
-      { name: "Desktops & Laptops", 
+      {
+        name: "Desktops & Laptops",
         items: [
           "Desktops (Basic, High-Performance, All-in-One)",
           "Laptops (Business, Gaming, Ultrabooks)",
           "Workstations (Engineering, Graphic Design, Video Editing)",
           "Thin Clients",
           "Chromebooks",
-          "Tablets (iPads, Android Tablets, Windows Tablets)"
-        
-      ] ,
-    },
-     
-      { name: "Servers & Storage", 
+          "Tablets (iPads, Android Tablets, Windows Tablets)",
+        ],
+      },
+
+      {
+        name: "Servers & Storage",
         items: [
           "Servers (Rack, Tower, Blade, Modular, Microservers)",
           "NAS (Network Attached Storage)",
           "SAN (Storage Area Network)",
           "DAS (Direct Attached Storage)",
           "SSDs (SATA, NVMe)",
-          "HDDs (Enterprise, Consumer)"
-        ] ,
+          "HDDs (Enterprise, Consumer)",
+        ],
       },
-      { name: "Mobile Devices", 
+      {
+        name: "Mobile Devices",
         items: [
           "Smartphones (iOS, Android)",
           "E-Readers (Kindle, Kobo)",
           "Wearables (Smartwatches, Fitness Trackers)",
-          "Tablets"
+          "Tablets",
         ],
-       },
-      { name: "Audio & Video Equipment", 
+      },
+      {
+        name: "Audio & Video Equipment",
         items: [
-            "Cameras (DSLR, Mirrorless, Action, Security)",
-            "Camcorders",
-            "Video Conferencing Systems",
-            "AV Receivers",
-            "Projector Screens"
-        ] },
+          "Cameras (DSLR, Mirrorless, Action, Security)",
+          "Camcorders",
+          "Video Conferencing Systems",
+          "AV Receivers",
+          "Projector Screens",
+        ],
+      },
     ],
   },
   {
     name: "Software",
     subcategories: [
-      { name: "Operating Systems",
+      {
+        name: "Operating Systems",
         items: [
           "Windows (Home, Pro, Enterprise)",
           "macOS",
           "Linux Distributions (Ubuntu, CentOS, Red Hat, Fedora)",
-        ] ,
+        ],
       },
-      { name: "Productivity Software", 
+      {
+        name: "Productivity Software",
         items: [
           "Office Suites (Microsoft Office, Google Workspace, LibreOffice)",
           "Project Management Tools (Asana, Trello, Microsoft Project)",
           "Collaboration Tools (Slack, Microsoft Teams, Zoom)",
           "Email Clients (Outlook, Thunderbird)",
-        ] ,
+        ],
       },
-      { name: "Security Software",
-         items: [
+      {
+        name: "Security Software",
+        items: [
           "Antivirus & Anti-malware (Norton, McAfee, Bitdefender)",
           "Firewalls (ZoneAlarm, Comodo)",
           "VPN Software (NordVPN, ExpressVPN, OpenVPN)",
           "Encryption Tools (VeraCrypt, BitLocker)",
           "Endpoint Security (CrowdStrike, Symantec)",
-         ],
-         },
-      { name: "Graphics & Design Software", 
+        ],
+      },
+      {
+        name: "Graphics & Design Software",
         items: [
           " Graphic Design (Adobe Photoshop, Illustrator, CorelDRAW)",
           "Video Editing (Adobe Premiere Pro, Final Cut Pro, DaVinci Resolve)",
           "3D Modeling (AutoCAD, Blender, SketchUp)",
           "Animation (Maya, After Effects, Toon Boom)",
-          "CAD/CAM Software (SolidWorks, AutoCAD, Fusion 360)"
-        ] },
+          "CAD/CAM Software (SolidWorks, AutoCAD, Fusion 360)",
+        ],
+      },
     ],
   },
   {
     name: "Networking",
     subcategories: [
-      { name: "Network Infrastructure", 
+      {
+        name: "Network Infrastructure",
         items: [
           "Routers (Enterprise, Home, Wireless)",
           "Switches (Core, Distribution, Access, PoE)",
           "Network Cabling (Ethernet, Fiber Optic, Coaxial)",
           "Network Interface Cards (NICs)",
-        ] ,
+        ],
       },
-      { name: "Wireless Networking",
-         items: [
+      {
+        name: "Wireless Networking",
+        items: [
           "Wireless Access Points (Wi-Fi 6, Mesh Systems)",
           "Wireless Controllers",
           "Wi-Fi Extenders",
-          "Wireless Antennas"
-         ] ,
-        },
-      
-      { name: "Network Management Tools",
-         items: [
+          "Wireless Antennas",
+        ],
+      },
+
+      {
+        name: "Network Management Tools",
+        items: [
           "Network Monitoring (SolarWinds, Nagios, PRTG)",
           "Network Configuration Management (Cisco Prime, SolarWinds)",
           "Bandwidth Management Tools (NetFlow, Zabbix)",
           "Network Analysis Tools (Wireshark, Omnipeek)",
-          "Network Simulation & Testing Tools (GNS3, Cisco Packet Tracer)"
-         ] },
+          "Network Simulation & Testing Tools (GNS3, Cisco Packet Tracer)",
+        ],
+      },
     ],
   },
 ];
 
-const CategoryMenu = () => {
+const CategoryMenu = ({ setCategoryFilter }) => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSubcategory, setActiveSubcategory] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState("left-0");
@@ -323,25 +335,26 @@ const CategoryMenu = () => {
                         {sub.name}
                       </button>
 
-                      {/* Subcategory Dropdown */}
-                      {activeSubcategory === sub.name && sub.items.length > 0 && (
+                      
+                        {activeSubcategory === sub.name && sub.items.length > 0 && (
                         <div
                           className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${
                             dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
                           }`}
                         >
-                          <ul className="py-2 text-md text-gray-700">
-                            {sub.items.map((item, itemIndex) => (  
-                              <li key={itemIndex}>
-                                <Link
-                                  href={`/${item.replace(/\s+/g, "-").toLowerCase()}`}
-                                  className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                  {item}
-                                </Link>
-                              </li>
-                            ))}
+                          <ul className="py-2 text-md text-gray-700 text-left">
+                                {sub.items.map((item, itemIndex) => (  
+                                     <li key={itemIndex} className="pl-2"> {/* Ensures list items start from the left */}
+                                    <button
+                                      onClick={() => setCategoryFilter(item)}
+                                      className="block w-full text-left px-2 py-2 hover:bg-gray-100"
+                                    >
+                                       {item}
+                                    </button>
+                                  </li>
+                                ))}
                           </ul>
+
                         </div>
                       )}
                     </li>

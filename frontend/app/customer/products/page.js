@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Navbar from "../components/Navbar";
-import CategoryMenu from "../components/Categories"; // Import CategoryMenu
+import CategoryMenu from "../components/Categories"; 
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -14,9 +14,24 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // State for client-side rendering to avoid errors
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Read category from URL
+    const categoryFromURL = searchParams.get("category") || "";
+    setCategoryFilter(categoryFromURL);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,7 +49,7 @@ const ProductsPage = () => {
         }
 
         setProducts(data.products);
-        updateDisplayedProducts(data.products, searchQuery, categoryFilter, priceFilter, 1);
+        updateDisplayedProducts(data.products, searchQuery, categoryFilter,priceFilter, 1);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err.message || "Error loading products.");
@@ -47,23 +62,25 @@ const ProductsPage = () => {
   }, []);
 
   useEffect(() => {
-    updateDisplayedProducts(products, searchQuery, categoryFilter, priceFilter, currentPage);
-  }, [searchQuery, categoryFilter, priceFilter, currentPage, products]);
+    updateDisplayedProducts(products, searchQuery, categoryFilter,priceFilter, currentPage);
+  }, [searchQuery, categoryFilter,priceFilter, currentPage, products]);
 
   const updateDisplayedProducts = (allProducts, query, category, price, page) => {
     let filteredProducts = allProducts;
 
     if (query) {
       filteredProducts = filteredProducts.filter((product) =>
-        product.category?.toLowerCase().includes(query.toLowerCase()) || product.brand?.toLowerCase().includes(query.toLowerCase()) || product.description?.toLowerCase().includes(query.toLowerCase())
+        product.category?.toLowerCase().includes(query.toLowerCase()) ||
+        product.brand?.toLowerCase().includes(query.toLowerCase()) ||
+        product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
+
     if (category) {
       filteredProducts = filteredProducts.filter(
         (product) => product.category.toLowerCase() === category.toLowerCase()
       );
     }
-
     if (price === "low") {
       filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
     } else if (price === "high") {
@@ -74,8 +91,17 @@ const ProductsPage = () => {
     setDisplayedProducts(filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE));
   };
 
+  const handleCategoryChange = (category) => {
+    setCategoryFilter(category);
+    router.push(`/customer/products?category=${encodeURIComponent(category)}`); // Update URL
+  };
+
   const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
 
+  // Only render the component after mounting to avoid SSR issues
+  if (!isMounted) {
+    return null;
+  }
   const handleProductClick = (productId) => {
     router.push(`/customer/product/${productId}`);
   };
@@ -92,16 +118,15 @@ const ProductsPage = () => {
         disableSearch={false}
       />
 
-      {/* Category Menu Below Navbar */}
-      <div className="pt-[80px]"> {/* Adjust the top padding to match the navbar height */}
-        <CategoryMenu />
+      <div className="pt-[80px]"> 
+        <CategoryMenu setCategoryFilter={handleCategoryChange} />
       </div>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-6 pt-12 lg:pt-12 bg-gray-50 ">
+      <div className="max-w-7xl mx-auto p-4 md:p-6 pt-12 lg:pt-12 bg-gray-50">
         {loading && <p className="text-center text-blue-500">Loading products...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 ">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
           {displayedProducts.length > 0 ? (
             displayedProducts.map((product) => (
               <div
@@ -139,7 +164,7 @@ const ProductsPage = () => {
               <Button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`${page === currentPage ? "bg-blue-500 text-white hover:bg-blue-700"  : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"}`}
+                className={`${page === currentPage ? "bg-blue-500 text-white hover:bg-blue-700" : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"}`}
               >
                 {page}
               </Button>
@@ -155,3 +180,4 @@ const ProductsPage = () => {
 };
 
 export default ProductsPage;
+
