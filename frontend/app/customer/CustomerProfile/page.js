@@ -139,7 +139,7 @@ const CustomerProfile = () => {
       ))}
       <div className="col-span-2 flex justify-end mt-4">
         <button
-          className="px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-black"
+          className="px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 "
           onClick={handleSave}
         >
           Save Changes
@@ -149,7 +149,7 @@ const CustomerProfile = () => {
             setFormData(customer);
             setIsEditing(false);
           }}
-          className="ml-4 px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-black"
+          className="ml-4 px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700"
         >
           Cancel
         </button>
@@ -177,7 +177,7 @@ const CustomerProfile = () => {
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-black"
+              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700"
             >
               Edit
             </button>

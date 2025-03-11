@@ -132,19 +132,19 @@ const ProductsPage = () => {
 
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-6 space-x-2">
-            <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="bg-blue-500 text-white hover:bg-black">
+            <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="bg-blue-500 text-white hover:bg-blue-700">
               Previous
             </Button>
             {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
               <Button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`${page === currentPage ? "bg-blue-600 text-white" : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"}`}
+                className={`${page === currentPage ? "bg-blue-500 text-white hover:bg-blue-700"  : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"}`}
               >
                 {page}
               </Button>
             ))}
-            <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="bg-blue-500 text-white hover:bg-black">
+            <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="bg-blue-500 text-white hover:bg-blue-700">
               Next
             </Button>
           </div>
