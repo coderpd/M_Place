@@ -4,7 +4,7 @@ const db = require("../db");
 
 const convertToIST = (utcDateString) => {
   return new Date(utcDateString).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-};
+};          
 
 router.get("/:vendorId", async (req, res) => {
   try {

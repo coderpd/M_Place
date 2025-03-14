@@ -1,19 +1,22 @@
+
 "use client";
 import { useEffect, useState, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
+import Footer from "@/app/LandingPage/Footer";
 
 export default function EcommercePage() {
   const { id } = useParams();
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const itemsPerPage = 20; // Now displaying 20 products per page
 
+  const [search, setSearch] = useState("");
+  const itemsPerPage = 20;
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     let isMounted = true;
     const fetchProducts = async () => {
@@ -42,6 +45,15 @@ export default function EcommercePage() {
     };
   }, [id]);
 
+  const handleEdit = (productId) => {
+    router.push(`/vendorDashboard/${id}/updateproduct/${productId}`);
+  };
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to page 1 when search changes
+  }, [search]);
+
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>
       product.productName.toLowerCase().includes(search.toLowerCase())
@@ -54,7 +66,6 @@ export default function EcommercePage() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, currentPage]);
-
   return (
     <div className="min-h-screen border border-gray-200">
       {/* Navbar */}
@@ -62,14 +73,14 @@ export default function EcommercePage() {
         <h1 className="text-2xl font-semibold text-gray-900">Product Spot</h1>
         <div className="flex gap-4 items-center">
           <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search products..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border rounded-md px-3 py-2 w-64 text-black"
-            />
-            <FaSearch className="absolute right-3 top-3 text-gray-600" />
+          <input
+            type="text"
+            placeholder="Search products"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className=" px-3 py-2 w-[300px]  border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+            <FaSearch className="absolute right-3 top-3  text-gray-600" />
           </div>
         </div>
       </nav>
@@ -83,7 +94,8 @@ export default function EcommercePage() {
             selectedProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-gray-50 rounded-xl shadow-md overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                onClick={() => handleEdit(product.id)}
+                className=" bg-gray-50 rounded-xl shadow-md overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer"
               >
                 <div className="relative">
                   {product.productImage && (
@@ -94,8 +106,8 @@ export default function EcommercePage() {
                     />
                   )}
                 </div>
-                <div className="mt-4 text-center">
-                  <h3 className="text-lg font-medium text-black">{product.productName}</h3>
+                <div className="mt-4 text-left">
+                  <h3 className="text-lg  text-gray-700 hover:text-blue-700 font-bold truncate">{product.productName}</h3>
                   <p className="text-md text-gray-600">{product.brand}</p>
                   <p className="text-xl font-bold text-black mt-2">₹{product.price}</p>
                 </div>
@@ -107,34 +119,46 @@ export default function EcommercePage() {
         </div>
 
         {/* Pagination */}
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-6 space-x-2">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300 hover:bg-[#46828D]"
+              className="bg-blue-500 text-white hover:bg-blue-700"
             >
               Previous
             </Button>
 
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-              <Button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`px-3 py-2 border rounded ${page === currentPage
-                    ? "bg-[#497C8C] text-white hover:bg-[#3B6B7A]"
-                    : "bg-white text-[#549DA9] border-gray-400 hover:bg-gray-200"
-                  }`}
-              >
-                {page}
-              </Button>
-            ))}
+            {(() => {
+              const rangeSize = 20; // Number of pages shown at a time
+              const halfRange = Math.floor(rangeSize / 2);
+              let startPage = Math.max(1, currentPage - halfRange);
+              let endPage = Math.min(totalPages, startPage + rangeSize - 1);
+
+              // Adjust range if nearing the last page to always show a full range of pages
+              if (endPage - startPage + 1 < rangeSize) {
+                startPage = Math.max(1, endPage - rangeSize + 1);
+              }
+
+              return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
+                <Button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`${page === currentPage
+                    ? "bg-blue-500 text-white hover:bg-blue-700"
+                    : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"
+                    }`}
+
+                >
+                  {page}
+                </Button>
+              ));
+            })()}
 
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300 hover:bg-[#46828D]"
+              className="bg-blue-500 text-white hover:bg-blue-700"
             >
               Next
             </Button>
@@ -142,6 +166,8 @@ export default function EcommercePage() {
         )}
 
       </div>
+
+     
     </div>
   );
 }

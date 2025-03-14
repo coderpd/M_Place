@@ -5,6 +5,7 @@ import { FaClipboardList } from "react-icons/fa";
 import { User, BellRing, Calendar, UserRoundPen, LogOut, X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
+import Footer from "../LandingPage/Footer";
 
 export default function DashboardLayout({ id, children }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -16,6 +17,7 @@ export default function DashboardLayout({ id, children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
+
 
   const [readNotifications, setReadNotifications] = useState(new Set());
 
@@ -118,7 +120,7 @@ export default function DashboardLayout({ id, children }) {
   // Mark Single Notification as Read
   const markAsRead = async (notifId) => {
     if (!notifId) {
-      console.error("❌ Notification ID is missing");
+      console.error("Notification ID is missing");
       return;
     }
 
@@ -137,10 +139,10 @@ export default function DashboardLayout({ id, children }) {
         );
         console.log(`✅ Notification ${notifId} marked as read`);
       } else {
-        console.error(`❌ Failed to mark notification ${notifId} as read`);
+        console.error(`Failed to mark notification ${notifId} as read`);
       }
     } catch (error) {
-      console.error("❌ Error marking notification as read:", error);
+      console.error("Error marking notification as read:", error);
     }
   };
 
@@ -151,10 +153,7 @@ export default function DashboardLayout({ id, children }) {
     );
   };
 
-  // Delete Notification
-  const deleteNotification = (notifId) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId));
-  };
+  
 
 
   useEffect(() => {
@@ -224,21 +223,21 @@ export default function DashboardLayout({ id, children }) {
           <nav className="flex flex-col  mt-3 sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productcards`)}
-              className={`text-lg  pb-1 ${pathname.includes("productcards") ? "border-b-4 border-[#549DA9]" : ""
+              className={`text-[16px]  pb-1 ${pathname.includes("productcards") ? "border-b-4 border-blue-500" : ""
                 }`}
             >
               Product portal
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/addproducts`)}
-              className={`text-lg  pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-[#549DA9]" : ""
+              className={`text-[16px]  pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-blue-500" : ""
                 }`}
             >
               Add Product
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productdetails`)}
-              className={`text-lg   pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-[#549DA9]" : ""
+              className={`text-[16px]   pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-blue-500" : ""
                 }`}
             >
               Product Details
@@ -273,7 +272,7 @@ export default function DashboardLayout({ id, children }) {
           <div className="w-[2px] h-7 bg-gray-400"></div>
 
           {/* User Dropdown */}
-          <div className="relative flex items-center cursor-pointer" onClick={toggleDropdown}>
+          <div className="relative flex items-center cursor-pointer" onClick={toggleDropdown} >
             <User size={30} className="text-black-900" />
             <div className="ml-2 hidden text-md sm:block">
               {vendor && <span>{vendor.firstName} {vendor.lastName}</span>}
@@ -375,6 +374,9 @@ export default function DashboardLayout({ id, children }) {
       <div className={`p-6 sm:p-8 bg-gray-50 flex-1 mt-20 transition-opacity duration-500 ${fadeIn ? "opacity-100" : "opacity-0"}`}>
         {children}
       </div>
+
+
+      <Footer/>
     </div>
   );
 }

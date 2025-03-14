@@ -186,7 +186,7 @@ export default function Navbar() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               {/* Customer Card */}
               <Card
-                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Customer" ? "border-[#4A90E2] bg-blue-300 shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
+                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Customer" ? "border-blue-500 bg-blue-100 shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
                 onClick={() => setSelectedRole("Customer")}
               >
                 <h3 className="font-medium text-center text-lg text-gray-900">
@@ -199,7 +199,7 @@ export default function Navbar() {
 
               {/* Vendor Card */}
               <Card
-                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Vendor" ? "border-[#4A90E2]  bg-blue-300  shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
+                className={`p-6 w-full sm:w-1/2 border ${selectedRole === "Vendor" ?  "border-blue-500  bg-blue-100  shadow-lg shadow-gray-300" : "border-[#A0AEC0]"}`}
                 onClick={() => setSelectedRole("Vendor")}
               >
                 <h3 className="text-center font-medium text-lg text-gray-900">
@@ -213,7 +213,7 @@ export default function Navbar() {
 
             {/* Continue Button */}
             <Button
-              className="w-full sm:w-[220px] h-[45px] mx-auto mt-6 bg-[#4A90E2] text-white rounded-full py-2 flex justify-center hover:bg-[#357ABD] transition-all duration-300 transform hover:scale-105 shadow-md shadow-gray-300"
+              className="w-full sm:w-[220px] h-[45px] mx-auto mt-6 bg-blue-500 text-white rounded-full py-2 flex justify-center hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-md shadow-gray-300"
               disabled={!selectedRole}
               onClick={handleContinue}
             >

@@ -294,18 +294,18 @@ const VendorSignup = () => {
 
   return (
     <div>
-      <div className="bg-[#549DA9] w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
+      <div className="bg-blue-500 w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
         {/* Logo Positioned at the Top Left */}
         <div className="absolute top-4 left-4">
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+          {/* <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1"> */}
+            <div className="w-full p-2 h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
               <img
                 src="/Logo.png"
                 alt="M-Place Logo"
                 className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
               />
             </div>
-          </div>
+          {/* </div> */}
         </div>
 
         {/* Main Header Content */}
@@ -624,11 +624,11 @@ const VendorSignup = () => {
                 className="text-sm text-gray-700 cursor-pointer ml-3"
               >
                 By Signing Up, you must agree to our
-                <a href="#" className="text-teal-500 hover:underline ml-1">
+                <a href="#" className="text-blue-500 hover:underline ml-1">
                   Terms
                 </a>
                 ,
-                <a href="#" className="text-teal-500 hover:underline mx-1">
+                <a href="#" className="text-blue-500 hover:underline mx-1">
                   Privacy Policy
                 </a>{" "}
                 and
@@ -644,7 +644,7 @@ const VendorSignup = () => {
 
             <Button
               type="submit"
-              className="ml-[350px] bg-[#549DA9] hover:bg-black"
+              className="ml-[350px] bg-blue-500 hover:bg-blue-700"
             >
               Submit
             </Button>
