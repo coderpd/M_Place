@@ -135,20 +135,14 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
       <User className="cursor-pointer text-gray-700" size={28} />
     </button>
     {dropdownOpen && (
-      <div className="absolute right-0 mt-2 w-36 bg-white border rounded-lg shadow-lg">
+      <div className="absolute  mt-12 w-36 bg-white border rounded-lg shadow-lg">
         <ul className="py-2 text-md text-gray-700">
           <li>
-            {/* <Link href="./CustomerProfile" className="flex items-center px-4 py-2 hover:bg-gray-100"> */}
+            
             <Link href="/customer/CustomerProfile" className="flex items-center px-4 py-2 hover:bg-gray-100">
               <User size={20} className="mr-2 text-black" /> My Profile
             </Link>
-            {/* <button
-              onClick={() => router.replace("/customer/CustomerProfile")}
-              className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-            <User size={20} className="mr-2 text-black" /> My Profile
-            </button> */}
-
+            
           </li>
           <li>
             <button className="w-full flex items-center text-left px-4 py-2 hover:bg-gray-100" onClick={handleLogout}>

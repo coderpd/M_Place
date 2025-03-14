@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
-
+import { IoBagAdd } from "react-icons/io5";
 
 export default function AddProduct() {
   const { id } = useParams(); // vendor_id
@@ -35,7 +35,7 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("productName", formData.productName);
     formDataToSend.append("brand", formData.brand);
@@ -47,18 +47,21 @@ export default function AddProduct() {
     if (productImage) {
       formDataToSend.append("productImage", productImage);
     }
-  
+
     try {
-      const response = await fetch("http://localhost:5000/auth/products/add-product", {
-        method: "POST",
-        body: formDataToSend,
-      });
-  
+      const response = await fetch(
+        "http://localhost:5000/auth/products/add-product",
+        {
+          method: "POST",
+          body: formDataToSend,
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to add product");
       }
-  
-      // ✅ Show SweetAlert2 success popup
+
+      // ✅ Show success message
       Swal.fire({
         title: "Success!",
         text: "Product added successfully!",
@@ -66,8 +69,8 @@ export default function AddProduct() {
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK",
       });
-  
-      // ✅ Reset form after successful submission
+
+      // ✅ Reset form
       setFormData({
         category: "",
         brand: "",
@@ -88,117 +91,130 @@ export default function AddProduct() {
       });
     }
   };
-  
+
   return (
-    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-2">
-      {/* <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Add New Product</h2> */}
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        {/* Category */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Category:</label>
+    <div className="max-w-3xl  mx-auto bg-white p-6 rounded-xl shadow-lg mt-8 font-sans">
+      <h2 className="text-lg font-bold text-black mb-4 text-left flex items-center gap-2">
+ <IoBagAdd size={25} />
+  Add New Product
+</h2>
+
+      <form className="grid grid-cols-2 gap-6 text-sm text-black" onSubmit={handleSubmit}>
+        {/* Row 1 */}
+        <div>
+          <label className="block font-medium mb-2">Category</label>
           <input
             type="text"
             name="category"
             value={formData.category}
             onChange={handleInputChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md font-sans"
             required
             placeholder="Enter Product Category"
           />
         </div>
 
-        {/* Brand */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Make and Model:</label>
+        <div>
+          <label className="block font-medium mb-2">Make & Model</label>
           <input
             type="text"
             name="brand"
             value={formData.brand}
             onChange={handleInputChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md font-sans"
             required
-             placeholder="Enter Make & Model"
+            placeholder="Enter Make & Model"
           />
         </div>
 
-        {/* Product Name */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Product Name:</label>
+        {/* Row 2 */}
+        <div>
+          <label className="block font-medium mb-2">Product Name</label>
           <input
             type="text"
             name="productName"
             value={formData.productName}
             onChange={handleInputChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md font-sans"
             required
             placeholder="Enter Product Name"
           />
         </div>
 
-        {/* Price */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Price:</label>
+        <div>
+          <label className="block font-medium mb-2">Price</label>
           <input
             type="number"
             name="price"
             value={formData.price}
             onChange={handleInputChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md font-sans"
             required
-              placeholder="Enter Product Price"
+            placeholder="Enter Product Price"
           />
         </div>
 
-        {/* Seller */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Seller:</label>
+        {/* Row 3 */}
+        <div>
+          <label className="block font-medium mb-2">Seller</label>
           <input
             type="text"
             name="seller"
             value={formData.seller}
             onChange={handleInputChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md font-sans"
             required
             placeholder="Enter Seller Name"
           />
         </div>
 
-        {/* Image Upload */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Image:</label>
+        <div>
+          <label className="block font-medium mb-2">Image</label>
           <input
             type="file"
             onChange={handleImageChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md font-sans"
             required
           />
         </div>
 
+        {/* Image Preview */}
         {previewImage && (
-          <div className="flex items-center space-x-4">
-            <div className="w-1/4 text-lg font-medium text-gray-600">Preview:</div>
-            <img src={previewImage} alt="Product Preview" className="w-32 h-32 object-cover rounded" />
+          <div className="col-span-2 flex justify-center">
+            <img
+              src={previewImage}
+              alt="Product Preview"
+              className="w-40 h-40 object-cover rounded-lg border"
+            />
           </div>
         )}
 
-        {/* Description */}
-        <div className="flex items-center space-x-4">
-          <label className="w-1/4 text-lg font-medium text-gray-600">Description:</label>
+        {/* Row 4 (Full Width) */}
+        <div className="col-span-2">
+          <label className="block font-medium mb-2">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            className="w-3/4 p-3 border rounded-md"
+            className="w-full p-2 border rounded-md h-24 font-sans"
             required
-              placeholder="Enter Product Description"
+            placeholder="Enter Product Description"
           />
         </div>
 
-        <div className="flex justify-end">
-          <button type="submit" className="bg-blue-500 text-white p-3 rounded-lg">Add Product</button>
-        </div>
-      </form>
+        {/* Submit Button (Full Width) */}
+        <div className="col-span-2 flex justify-start">
+      <button
+         type="submit"
+         className="bg-[#549DA9] text-white px-6 py-2 rounded-sm hover:bg-[#3E7F88] transition font-sans"
+
+      >
+        Add Product
+      </button>
+      </div>
+       </form>
+
       <ToastContainer />
     </div>
   );
-} 
+}

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserCircle } from "lucide-react";
+import { UserCircle , ArrowBigLeftDash} from "lucide-react";
 import Navbar from "../components/Navbar";
 import Swal from "sweetalert2";
 
@@ -86,7 +86,23 @@ const CustomerProfile = () => {
       <div className="bg-gray-50">
       <div className="font-sans max-w-3xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12">
         {/* Profile Card */}
-        <div className="relative bg-gradient-to-r from-blue-500 to-indigo-900 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
+        <div className="flex gap-2 ">
+        <button onClick={()=>router.push("/customer/products")} className="mt-3">
+        <ArrowBigLeftDash  size={33}></ArrowBigLeftDash>
+        </button>
+        <h2 className="font-bold text-xl pt-3 ">My Profile</h2>
+        </div>
+        <div className="flex justify-end mt-6">
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 font-semibold "
+            >
+              EDIT PROFILE
+            </button>
+          )}
+        </div>
+        {/* <div className="relative bg-gradient-to-r from-blue-500 to-indigo-900 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
           <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
             <UserCircle className="w-20 h-20 text-gray-500" />
           </div>
@@ -101,10 +117,12 @@ const CustomerProfile = () => {
           ) : (
             <h2 className="text-[24px] font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
           )}
-        </div>
+        </div> */}
 
         
 <div className="bg-white p-6 rounded-xl shadow-md mt-6">
+  <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30 "></img>
+  <h1 className="font-semibold text-lg mb-3 ml-1">Profile Details</h1>
   {isEditing ? (
     <div className="grid grid-cols-2 gap-x-12 gap-y-6">
       {[
@@ -160,11 +178,11 @@ const CustomerProfile = () => {
       {Object.entries(customer)
         .filter(([key]) => !["id", "password", "created_at"].includes(key))
         .map(([key, value]) => (
-          <div key={key} className="bg-gray-100 p-4 rounded-lg">
+          <div key={key} className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-600 uppercase font-semibold">
               {key.replace(/([A-Z])/g, " $1")}
             </p>
-            <p className="text-[16px] font-bold text-gray-900 mt-1">{value || "N/A"}</p>
+            <p className="text-[16px] font-semibold text-gray-900 mt-1">{value || "N/A"}</p>
           </div>
         ))}
     </div>
@@ -173,16 +191,16 @@ const CustomerProfile = () => {
 
 
         {/* Edit Button */}
-        <div className="flex justify-center mt-6">
+        {/* <div className="flex justify-center mt-6">
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
               className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700"
             >
-              Edit
+              Edit Profile
             </button>
           )}
-        </div>
+        </div> */}
       </div>
       </div>
     </>

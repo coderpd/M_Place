@@ -1,116 +1,148 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FaSearch } from "react-icons/fa";
 
-export default function ProductCards() {
-  const { id } = useParams(); // Vendor ID from URL
+export default function EcommercePage() {
+  const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 16;
+  const [search, setSearch] = useState("");
+  const itemsPerPage = 20; // Now displaying 20 products per page
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProducts = async () => {
       try {
         const response = await fetch(`http://localhost:5000/auth/products/get-products/${id}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.statusText}`);
         }
-
         const data = await response.json();
-        setProducts(data.products);
+        if (isMounted) {
+          setProducts(data.products);
+        }
       } catch (err) {
-        setError(err.message);
+        if (isMounted) setError(err.message);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     if (id) {
       fetchProducts();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
-  if (loading) return <div>Loading products...</div>;
-  if (error) return <div>Error: {error}</div>;
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      product.productName.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [products, search]);
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedProducts = products.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  const selectedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredProducts, currentPage]);
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-center text-[#FF4500] mb-4">
-        🛒 Premium Products, Maximum Impact
-      </h2>
-      <p className="text-gray-600 text-center mb-8 max-w-xl mx-auto">
-        Showcase your top-tier products and attract customers looking for the best in quality. Start making an impact today!
-      </p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {selectedProducts.length > 0 ? (
-          selectedProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-slate-100 rounded-xl shadow-lg overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105"
-            >
-              <div className="relative">
-                {product.productImage && (
-                  <img
-                    src={`http://localhost:5000/uploads/${product.productImage}`}
-                    alt={product.productName}
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                )}
-              </div>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg font-medium">{product.productName}</h3>
-                <p className="text-md text-gray-600">Brand: {product.brand}</p>
-                <p className="text-xl font-bold text-black-700 mt-2">₹{product.price}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 text-center col-span-4">No products available.</p>
-        )}
-      </div>
-
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center mt-6 space-x-2">
-          <Button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="bg-blue-500 text-white hover:bg-black"
-          >
-            Previous
-          </Button>
-
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-            <Button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`${
-                page === currentPage
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
-              }`}
-            >
-              {page}
-            </Button>
-          ))}
-
-          <Button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="bg-blue-500 text-white hover:bg-black"
-          >
-            Next
-          </Button>
+    <div className="min-h-screen border border-gray-200">
+      {/* Navbar */}
+      <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-300">
+        <h1 className="text-2xl font-semibold text-gray-900">Product Spot</h1>
+        <div className="flex gap-4 items-center">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border rounded-md px-3 py-2 w-64 text-black"
+            />
+            <FaSearch className="absolute right-3 top-3 text-gray-600" />
+          </div>
         </div>
-      )}
+      </nav>
+
+      {/* Main Content */}
+      <div className="p-6 bg-gray-50">
+        {error && <div className="text-red-500">{error}</div>}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {selectedProducts.length > 0 ? (
+            selectedProducts.map((product) => (
+              <div
+                key={product.id}
+                className="bg-gray-50 rounded-xl shadow-md overflow-hidden p-4 border border-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              >
+                <div className="relative">
+                  {product.productImage && (
+                    <img
+                      src={`http://localhost:5000/uploads/${product.productImage}`}
+                      alt={product.productName}
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                  )}
+                </div>
+                <div className="mt-4 text-center">
+                  <h3 className="text-lg font-medium text-black">{product.productName}</h3>
+                  <p className="text-md text-gray-600">{product.brand}</p>
+                  <p className="text-xl font-bold text-black mt-2">₹{product.price}</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            !loading && <p className="text-gray-600 text-center col-span-5">No products available.</p>
+          )}
+        </div>
+
+        {/* Pagination */}
+        {/* Pagination */}
+        {totalPages > 1 && (
+  <div className="flex justify-center items-center mt-6 space-x-2">
+    <Button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300 hover:bg-[#46828D]"
+    >
+      Previous
+    </Button>
+
+    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+      <Button
+        key={page}
+        onClick={() => setCurrentPage(page)}
+        className={`px-3 py-2 border rounded ${
+          page === currentPage
+            ? "bg-[#497C8C] text-white hover:bg-[#3B6B7A]"
+            : "bg-white text-[#549DA9] border-gray-400 hover:bg-gray-200"
+        }`}
+      >
+        {page}
+      </Button>
+    ))}
+
+    <Button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300 hover:bg-[#46828D]"
+    >
+      Next
+    </Button>
+  </div>
+)}
+
+      </div>
     </div>
   );
 }

@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Navbar from "../components/Navbar";
-import CategoryMenu from "../components/Categories"; 
+import CategoryMenu from "../components/Categories";
+import Footer from "@/app/LandingPage/Footer";
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -19,8 +20,8 @@ const ProductsPage = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // State for client-side rendering to avoid errors
+
+ 
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const ProductsPage = () => {
   useEffect(() => {
     // Read category from URL
     const categoryFromURL = searchParams.get("category") || "";
+    
     setCategoryFilter(categoryFromURL);
   }, [searchParams]);
 
@@ -49,7 +51,7 @@ const ProductsPage = () => {
         }
 
         setProducts(data.products);
-        updateDisplayedProducts(data.products, searchQuery, categoryFilter,priceFilter, 1);
+        updateDisplayedProducts(data.products, searchQuery, categoryFilter, priceFilter, 1);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err.message || "Error loading products.");
@@ -62,8 +64,8 @@ const ProductsPage = () => {
   }, []);
 
   useEffect(() => {
-    updateDisplayedProducts(products, searchQuery, categoryFilter,priceFilter, currentPage);
-  }, [searchQuery, categoryFilter,priceFilter, currentPage, products]);
+    updateDisplayedProducts(products, searchQuery, categoryFilter, priceFilter, currentPage);
+  }, [searchQuery, categoryFilter, priceFilter, currentPage, products]);
 
   const updateDisplayedProducts = (allProducts, query, category, price, page) => {
     let filteredProducts = allProducts;
@@ -72,15 +74,26 @@ const ProductsPage = () => {
       filteredProducts = filteredProducts.filter((product) =>
         product.category?.toLowerCase().includes(query.toLowerCase()) ||
         product.brand?.toLowerCase().includes(query.toLowerCase()) ||
-        product.description?.toLowerCase().includes(query.toLowerCase())
+        product.productName?.toLowerCase().includes(query.toLowerCase())
+        // product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
 
     if (category) {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.category.toLowerCase() === category.toLowerCase()
-      );
+      // Remove special characters like (), & and split by spaces
+      const keywords = category.replace(/[(),&]/g, "").toLowerCase().split(/\s+/);
+    
+      filteredProducts = filteredProducts.filter((product) => {
+        const productCategory = product.category.toLowerCase();
+    
+        return keywords.some((word) => {
+          return (
+            productCategory.includes(word) || productCategory.includes(word.slice(0, -1))
+          );
+        });
+      });
     }
+
     if (price === "low") {
       filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
     } else if (price === "high") {
@@ -102,6 +115,7 @@ const ProductsPage = () => {
   if (!isMounted) {
     return null;
   }
+  
   const handleProductClick = (productId) => {
     router.push(`/customer/product/${productId}`);
   };
@@ -118,7 +132,7 @@ const ProductsPage = () => {
         disableSearch={false}
       />
 
-      <div className="pt-[80px]"> 
+      <div className="pt-[80px]">
         <CategoryMenu setCategoryFilter={handleCategoryChange} />
       </div>
 
@@ -143,10 +157,10 @@ const ProductsPage = () => {
                     />
                   )}
                 </div>
-                <div className="mt-4 text-center">
-                  <h3 className="text-lg font-medium text-black">{product.productName}</h3>
+                <div className="mt-4 text-left">
+                  <h3 className="text-lg font-bold hover:text-blue-700 text-gray-800 mb-3 truncate w-full">{product.productName}</h3>
                   <p className="text-md text-gray-600">{product.brand}</p>
-                  <p className="text-xl font-bold text-black mt-2">₹{product.price}</p>
+                  <p className="text-xl font-bold text-black mt-1">₹{product.price}</p>
                 </div>
               </div>
             ))
@@ -155,7 +169,8 @@ const ProductsPage = () => {
           )}
         </div>
 
-        {totalPages > 1 && (
+        {/* Only show pagination if there are products */}
+        {/* {displayedProducts.length > 0 && totalPages > 1 && (
           <div className="flex justify-center items-center mt-6 space-x-2">
             <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="bg-blue-500 text-white hover:bg-blue-700">
               Previous
@@ -173,11 +188,55 @@ const ProductsPage = () => {
               Next
             </Button>
           </div>
-        )}
+        )} */}
+        {displayedProducts.length > 0 && totalPages > 1 && (
+  <div className="flex justify-center items-center mt-6 space-x-2">
+    {/* Previous Button */}
+    <Button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="bg-blue-500 text-white hover:bg-blue-700"
+    >
+      Previous
+    </Button>
+
+    {/* Dynamic Page Numbers */}
+    {Array.from({ length: 5 }, (_, index) => {
+      const startPage = Math.max(1, Math.min(currentPage - 2, totalPages - 4)); // Ensure pages don't exceed limits
+      const page = startPage + index;
+
+      return (
+        page <= totalPages && (
+          <Button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`${
+              page === currentPage
+                ? "bg-blue-500 text-white hover:bg-blue-700"
+                : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"
+            }`}
+          >
+            {page}
+          </Button>
+        )
+      );
+    })}
+
+    {/* Next Button */}
+    <Button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="bg-blue-500 text-white hover:bg-blue-700"
+    >
+      Next
+    </Button>
+  </div>
+)}
+
       </div>
+      <Footer></Footer>
     </>
   );
 };
 
 export default ProductsPage;
-

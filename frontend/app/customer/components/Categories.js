@@ -63,12 +63,13 @@ const categories = [
       {
         name: "Input Devices",
         items: [
-          "Keyboards (Wired, Wireless, Ergonomic, Gaming)",
+          "Keyboard (Wired, Wireless, Ergonomic, Gaming)",
           "Mice (Wired, Wireless, Optical, Laser, Gaming)",
           "Trackballs",
           "Graphic Tablets & Styluses",
           "Touchpads",
           "Barcode Scanners (Wired, Wireless, Handheld)",
+          "ascadca"
         ],
       },
       {
@@ -132,9 +133,9 @@ const categories = [
     name: "Hardware",
     subcategories: [
       {
-        name: "Desktops & Laptops",
+        name: "Monitors & Laptops",
         items: [
-          "Desktops (Basic, High-Performance, All-in-One)",
+          "Monitors (Basic, High-Performance, All-in-One)",
           "Laptops (Business, Gaming, Ultrabooks)",
           "Workstations (Engineering, Graphic Design, Video Editing)",
           "Thin Clients",
@@ -157,7 +158,7 @@ const categories = [
       {
         name: "Mobile Devices",
         items: [
-          "Smartphones (iOS, Android)",
+          "Mobile Phones (iOS, Android)",
           "E-Readers (Kindle, Kobo)",
           "Wearables (Smartwatches, Fitness Trackers)",
           "Tablets",
