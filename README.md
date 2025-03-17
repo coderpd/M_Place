@@ -93,8 +93,6 @@ Once both the frontend and backend are running:
  The backend will typically run on a separate port, like http://localhost:5000 (or as configured in server.js).
 
 
- ## Usage
-
 - Visit the m-place homepage in the browser.
 - Based on the credentials, sign in to either the vendor or customer page.
 - If you're a new user, create an account as either a vendor or a customer.
