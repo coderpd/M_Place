@@ -141,6 +141,7 @@ Once both the frontend and backend are running:
 
 #### Styling:
 - Tailwind CSS
+- Shandcn 
 
 ### Backend:
 
