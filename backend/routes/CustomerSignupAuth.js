@@ -6,25 +6,20 @@ const { sendOTP } = require("../utils/mailer");
 const router = express.Router();
 let otpStore = {};
 
-// OTP Generation
+// OTP Generation 
 router.post("/customer-sendotp", async (req, res) => {
   const { email } = req.body;
-
   if (!email) return res.status(400).json({ error: "Email is required" });
-
-  const otp = Math.floor(1000 + Math.random() * 9000); // Generate 4-digit OTP
-
+  const otp = Math.floor(1000 + Math.random() * 9000); 
   try {
     await sendOTP(email, otp);
     console.log(`Generated OTP for ${email}: ${otp}`);
-
     // Store OTP with expiry time
     otpStore[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
-
     res.json({ success: true, message: "OTP sent successfully!" });
   } catch (error) {
     console.error("OTP Error:", error);
-    res.status(500).json({ error: "Failed to send OTP" });
+    res.status(500).json({ error: "Failed to send OTP" });  
   }
 });
 

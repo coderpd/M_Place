@@ -76,13 +76,15 @@ export default function ProductDetails() {
       return (
         product?.productName?.toLowerCase().includes(query) ||
         product?.category?.toLowerCase().includes(query) ||
-        product?.brand?.toLowerCase().includes(query) 
+        product?.brand?.toLowerCase().includes(query)
+      
       );
     });
   }, [products, searchQuery]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
+  
   const selectedProducts = useMemo(() => {
     return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, currentPage]);
@@ -98,7 +100,7 @@ export default function ProductDetails() {
             placeholder="Search by name, category, brand"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-3 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#549DA9]"
+            className="w-full pl-3 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
@@ -110,7 +112,7 @@ export default function ProductDetails() {
         <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
           <table className="min-w-full table-auto border-collapse">
             <thead>
-              <tr className="bg-[#549DA9] text-white">
+              <tr className="bg-blue-500 text-white">
                 <th className="px-6 py-3 text-left">Image</th>
                 <th className="px-6 py-3 text-left">Product Name</th>
                 <th className="px-6 py-3 text-left">Brand</th>
@@ -150,32 +152,51 @@ export default function ProductDetails() {
         </div>
       )}
 
-      <div className="flex justify-center mt-4 space-x-2">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300"
-        >
-          Previous
-        </button>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`px-3 py-2 border rounded ${currentPage === index + 1 ? "bg-[#549DA9] text-white" : "bg-white"
-              }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          className="px-4 py-2 border rounded bg-[#549DA9] text-white disabled:bg-gray-300"
-        >
-          Next
-        </button>
-      </div>
+<div className="flex justify-center mt-4 space-x-2">
+  {/* Previous Button */}
+  <button
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
+  >
+    Previous
+  </button>
+
+  {/* Page Numbers with Fixed Range */}
+  {(() => {
+    const rangeSize = 5; // Number of pages to show at a time
+    const halfRange = Math.floor(rangeSize / 2);
+    let startPage = Math.max(1, currentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + rangeSize - 1);
+
+    // Ensure the range shifts only when necessary
+    if (endPage - startPage + 1 < rangeSize) {
+      startPage = Math.max(1, endPage - rangeSize + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
+      <button
+        key={page}
+        onClick={() => setCurrentPage(page)}
+        className={`px-3 py-2 border rounded ${
+          currentPage === page ? "bg-blue-500 text-white" : "bg-white border-blue-400 hover:bg-blue-200"
+        }`}
+      >
+        {page}
+      </button>
+    ));
+  })()}
+
+  {/* Next Button */}
+  <button
+    disabled={currentPage === totalPages}
+    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+    className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
+  >
+    Next
+  </button>
+</div>
+
     </div>
   );
 }

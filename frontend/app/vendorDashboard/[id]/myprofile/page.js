@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { UserCircle, ArrowLeft } from "lucide-react";
+import { UserCircle, ArrowBigLeftDash } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function ProfilePage() {
@@ -74,84 +74,100 @@ export default function ProfilePage() {
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-8">
-      {/* Back Arrow Button */}
-      <button onClick={() => router.back()} className="flex items-center text-blue-600 hover:text-blue-800 mb-4">
-        <ArrowLeft className="w-5 h-5 mr-2" /> My Profile
-      </button>
-
-      {/* Profile Card */}
-      <div className="relative bg-gradient-to-r from-[#3B82F6] to-[#1E3A8A] text-white p-10 rounded-2xl shadow-xl flex flex-col items-center">
-        <div className="w-28 h-28 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-md rounded-full border-4 border-white shadow-md">
-          <UserCircle className="w-24 h-24 text-white opacity-80" />
-        </div>
-        {isEditing ? (
-          <input
-            type="text"
-            name="companyName"
-            value={updatedVendor?.companyName || ""}
-            onChange={handleInputChange}
-            className="mt-4 text-2xl font-semibold text-black p-2 border rounded-md w-60 text-center bg-white shadow-md"
-          />
-        ) : (
-          <h2 className="text-2xl font-semibold mt-4">{vendor?.companyName || "N/A"}</h2>
-        )}
-      </div>
-
-      {/* Vendor Details */}
-      <div className="mt-6 p-6 bg-white bg-opacity-80 backdrop-blur-md shadow-lg rounded-2xl">
-        <h3 className="text-xl font-semibold text-gray-800 text-center mb-4">Vendor Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Object.entries(vendor || {})
-            .filter(([key]) => key !== "password" && key !== "createdAt" && key !== "created_at" && key !== "id") // Exclude "id"
-            .map(([key, value]) => (
-              <div key={key} className="flex flex-col bg-gray-100 p-4 rounded-lg shadow-md">
-                <p className="text-gray-600 text-sm uppercase">{key.replace(/([A-Z])/g, " $1").trim()}</p>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name={key}
-                    value={updatedVendor?.[key] || ""}
-                    onChange={handleInputChange}
-                    className="text-gray-900 font-semibold border p-2 rounded w-full mt-1"
-                  />
-                ) : (
-                  <p className="text-gray-900 font-semibold mt-1">{value || "N/A"}</p>
-                )}
-              </div>
-            ))}
-        </div>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-center mt-6 space-x-4">
-        {isEditing ? (
-          <>
-            <button
-              onClick={handleSave}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-700 transition"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => {
-                setUpdatedVendor(vendor); 
-                setIsEditing(false); 
-              }}
-              className="bg-gray-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-gray-600 transition"
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
-          >
-            Edit
+    <div className="bg-gray-50 -mt-14">
+      <div className="max-w-3xl font-sans mx-auto p-6 pt-20">
+        {/* Back Button and Title */}
+        <div className="flex items-center gap-2">
+          <button onClick={() => router.back()} className="mt-3">
+            <ArrowBigLeftDash size={33} />
           </button>
-        )}
+          <h2 className="font-bold text-xl pt-3">My Profile</h2>
+        </div>
+
+        {/* Edit Button */}
+        <div className="flex justify-end mt-6">
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 font-semibold"
+            >
+              EDIT PROFILE
+            </button>
+          )}
+        </div>
+
+        {/* Profile Card */}
+
+        <div className="bg-white p-6 rounded-xl shadow-md mt-6">
+          <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30 "></img>
+          <h1 className="font-semibold text-lg mt-4 text-left">Profile Details</h1>
+
+          {/* Editable Fields */}
+          {isEditing ? (
+            <div className="grid grid-cols-2 gap-x-12 gap-y-6 mt-4">
+              {[
+                { label: "Company Name", name: "companyName",disabled:true},
+                { label: "Registration Number", name: "registrationNumber" },
+                { label: "Company Website", name: "companyWebsite"  },
+                { label: "GST Number", name: "gstNumber" },
+                { label: "First Name", name: "firstName" },
+                { label: "Last Name", name: "lastName" },
+                { label: "Phone Number", name: "phoneNumber" },
+                { label: "Email", name: "officialEmail", type: "email", disabled:true  },
+                { label: "Address", name: "address" },
+                { label: "Country", name: "country" },
+                { label: "State", name: "state" },
+                { label: "City", name: "city" },
+                { label: "Postal Code", name: "postalCode" },
+              ].map(({ label, name, type = "text" ,disabled}) => (
+                <div key={name} className="p-4 rounded-lg">
+                  <label className="text-sm text-gray-400 uppercase font-semibold">{label}</label>
+                  <input
+                    type={type}
+                    name={name}
+                    value={updatedVendor?.[name] || ""}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-md mt-1 text-[16px]"
+                    
+                    disabled={disabled}
+                  />
+                </div>
+              ))}
+              <div className="col-span-2 flex justify-end mt-4">
+                <button
+                  className="px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700"
+                  onClick={handleSave}
+                >
+                  Save Changes
+                </button>
+                <button
+                  onClick={() => {
+                    setUpdatedVendor(vendor);
+                    setIsEditing(false);
+                  }}
+                  className="ml-4 px-6 py-2 bg-gray-500 text-white rounded-md shadow-md hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-12 gap-y-6 mt-4">
+              {Object.entries(vendor || {})
+                .filter(([key]) => !["id", "password", "created_at"].includes(key))
+                .map(([key, value]) => (
+                  <div key={key} className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 uppercase font-semibold">
+                      {key.replace(/([A-Z])/g, " $1")}
+                    </p>
+                    <p className="text-[16px] font-semibold text-gray-900 mt-1">{value || "N/A"}</p>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
+
   );
 }

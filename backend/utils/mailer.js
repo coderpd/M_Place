@@ -29,8 +29,7 @@ async function sendOTP(email, otp) {
   }
 }
 
-
-//Send mail
+//contact us 
 async function sendConfirmationEmail(userName,userEmail,) {
   console.log("User Name:", userName);  // Check the value of userName
   const mailOptions = {
@@ -48,9 +47,6 @@ async function sendConfirmationEmail(userName,userEmail,) {
     throw error;
   }
 }
-
-
-
 
 module.exports = { sendOTP,sendConfirmationEmail};
 

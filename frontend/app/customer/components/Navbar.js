@@ -75,7 +75,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   });
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white shadow-md p-6 h-20 flex items-center justify-between z-50">
+    <nav className="fixed top-0 left-0 w-full bg-gray-50 shadow-md p-6 h-20 flex items-center justify-between z-50">
       {/* Logo */}
       <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
         <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
@@ -85,12 +85,12 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
 
       {/* Search Bar */}
       {!disableSearch && (
-        <div className="flex items-center w-full max-w-md bg-gray-100 p-2 rounded-lg">
-          <Search className="text-gray-500 mr-2" size={24} />
+        <div className="flex items-center w-full max-w-md bg-gray-100 p-2 border-2 hover:border-blue-500 rounded-lg">
+          <Search className="text-gray-500 mr-2 " size={24} />
           <input
             type="text"
             placeholder="Search for products..."
-            className="w-full bg-transparent outline-none text-sm"
+            className="w-full bg-transparent outline-none text-sm  "
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -101,24 +101,12 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
       )}
       {!disableFilters && (
         <div className="flex items-center space-x-4">
-          {/* Category Filter */}
-          <select
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="p-2 rounded-md border bg-white text-sm"
-          >
-            <option value="">All Categories</option>
-            <option value="laptop">Laptop</option>
-            <option value="keyboard">Keyboard</option>
-            <option value="mouse">Mouse</option>
-            <option value="cpu">CPU</option>
-            <option value="monitor">Monitor</option>
-            <option value="hard disk">Hard Disk</option>
-          </select>
+          
 
           {/* Price Filter */}
           <select
             onChange={(e) => setPriceFilter(e.target.value)}
-            className="p-2 rounded-md border bg-white text-sm"
+            className="p-2 rounded-md border-2 hover:border-blue-500 text-sm "
           >
             <option value="">All Prices</option>
             <option value="low">Low to High</option>
@@ -135,12 +123,14 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
       <User className="cursor-pointer text-gray-700" size={28} />
     </button>
     {dropdownOpen && (
-      <div className="absolute right-0 mt-2 w-36 bg-white border rounded-lg shadow-lg">
+      <div className="absolute  mt-12 w-36 bg-white border rounded-lg shadow-lg">
         <ul className="py-2 text-md text-gray-700">
           <li>
-            <Link href="./CustomerProfile" className="flex items-center px-4 py-2 hover:bg-gray-100">
+            
+            <Link href="/customer/CustomerProfile" className="flex items-center px-4 py-2 hover:bg-gray-100">
               <User size={20} className="mr-2 text-black" /> My Profile
             </Link>
+            
           </li>
           <li>
             <button className="w-full flex items-center text-left px-4 py-2 hover:bg-gray-100" onClick={handleLogout}>

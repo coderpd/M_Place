@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserCircle } from "lucide-react";
+import { UserCircle, ArrowBigLeftDash } from "lucide-react";
 import Navbar from "../components/Navbar";
+import Swal from "sweetalert2";
+import Footer from "@/app/LandingPage/Footer";
 
 const CustomerProfile = () => {
   const [customer, setCustomer] = useState(null);
@@ -46,16 +48,34 @@ const CustomerProfile = () => {
         localStorage.setItem("customer", JSON.stringify(formData));
         setCustomer(formData);
         setIsEditing(false);
-        alert("Profile updated successfully!");
+
+        // Show SweetAlert success message
+        Swal.fire({
+          icon: "success",
+          title: "Profile Updated",
+          text: "Your profile has been updated successfully!",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        });
+
       } else {
         const errorData = await response.json();
-        alert(errorData.message || "Failed to update profile. Try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: errorData.message || "Failed to update profile. Try again.",
+        });
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Something went wrong. Try again later.");
+      Swal.fire({
+        icon: "error",
+        title: "Something went wrong",
+        text: "Try again later.",
+      });
     }
   };
+
 
   if (!customer) {
     return <div>Loading...</div>;
@@ -64,101 +84,97 @@ const CustomerProfile = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="max-w-4xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-10">
-        {/* Profile Card */}
-        <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
-          <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
-            <UserCircle className="w-20 h-20 text-gray-500" />
+      <div className="bg-gray-50">
+        <div className="font-sans max-w-3xl mb-6 mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12">
+          {/* Profile Card */}
+          <div className="flex gap-2 ">
+            <button onClick={() => router.push("/customer/products")} className="mt-3">
+              <ArrowBigLeftDash size={33}></ArrowBigLeftDash>
+            </button>
+            <h2 className="font-bold text-xl pt-3 ">My Profile</h2>
           </div>
-          {isEditing ? (
-            <input
-              type="text"
-              name="companyName"
-              value={formData.companyName || ""}
-              onChange={handleChange}
-              className="mt-4 text-3xl font-semibold text-black p-1 border rounded w-full text-center" 
-            />
-          ) : (
-            <h2 className="text-3xl font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
-          )}
-        </div>
-
-        {/* Profile Details Section */}
-        <div className="bg-white p-6 rounded-xl shadow-md mt-6">
-          {isEditing ? (
-            <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-              {[
-                { label: "Company Name", name: "companyName", disabled:true },
-                { label: "Registration Number", name: "registrationNumber" },
-                { label: "GST Number", name: "gstNumber" },
-                { label: "First Name", name: "firstName" },
-                { label: "Last Name", name: "lastName" },
-                { label: "Phone Number", name: "phoneNumber" },
-                { label: "Email", name: "email", type: "email" ,disabled:true },
-                { label: "Address", name: "address" },
-                { label: "Country", name: "country" },
-                { label: "State", name: "state" },
-                { label: "City", name: "city" },
-                { label: "Postal Code", name: "postalCode" },
-              ].map(({ label, name, type = "text",disabled }) => (
-                <div key={name} className="bg-gray-100 p-4 rounded-lg">
-                  <label className="text-xs text-gray-600 uppercase font-semibold">{label}</label>
-                  <input
-                    type={type}
-                    name={name}
-                    value={formData[name] || ""}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md mt-1"
-                    disabled={disabled}
-                  />
-                </div>
-              ))}
-              <div className="col-span-2 flex justify-end mt-4">
-                <button
-                  className="px-6 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600"
-                  onClick={handleSave}
-                >
-                  Save Changes
-                </button>
-                <button
-                  onClick={() => {
-                    setFormData(customer);
-                    setIsEditing(false);
-                  }}
-                  className="ml-4 px-6 py-2 bg-gray-400 text-white rounded-md shadow-md hover:bg-gray-500"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-              {Object.entries(customer)
-                .filter(([key]) => !["id", "password", "created_at"].includes(key))
-                .map(([key, value]) => (
-                  <div key={key} className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-xs text-gray-600 uppercase font-semibold">
-                      {key.replace(/([A-Z])/g, " $1")}
-                    </p>
-                    <p className="text-lg font-bold text-gray-900 mt-1">{value || "N/A"}</p>
+          <div className="flex justify-end mt-6">
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 font-semibold "
+              >
+                EDIT PROFILE
+              </button>
+            )}
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-md mt-6">
+            <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30 "></img>
+            <h1 className="font-semibold text-lg mb-3 ml-1">Profile Details</h1>
+            {isEditing ? (
+              <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+                {[
+                  { label: "Company Name", name: "companyName" },
+                  { label: "Registration Number", name: "registrationNumber" },
+                  { label: "Company Website", name: "companyWebsite" },
+                  { label: "GST Number", name: "gstNumber" },
+                  { label: "First Name", name: "firstName" },
+                  { label: "Last Name", name: "lastName" },
+                  { label: "Phone Number", name: "phoneNumber" },
+                  { label: "Email", name: "email", type: "email" },
+                  { label: "Address", name: "address" },
+                  { label: "Country", name: "country" },
+                  { label: "State", name: "state" },
+                  { label: "City", name: "city" },
+                  { label: "Postal Code", name: "postalCode" },
+                ].map(({ label, name, type = "text" }) => (
+                  <div key={name} className="p-4 rounded-lg">
+                    <label className="text-sm text-gray-400 uppercase font-semibold">{label}</label>
+                    {name === "companyName" || name === "email" ? (
+                      <p className="w-full p-2 border rounded-md mt-1 text-[16px] text-gray-900">{formData[name] || "N/A"}</p>
+                    ) : (
+                      <input
+                        type={type}
+                        name={name}
+                        value={formData[name] || ""}
+                        onChange={handleChange}
+                        className="w-full p-2 border rounded-md mt-1 text-[16px]"
+                      />
+                    )}
                   </div>
                 ))}
-            </div>
-          )}
+                <div className="col-span-2 flex justify-end mt-4">
+                  <button
+                    className="px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 "
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFormData(customer);
+                      setIsEditing(false);
+                    }}
+                    className="ml-4 px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+                {Object.entries(customer)
+                  .filter(([key]) => !["id", "password", "created_at"].includes(key))
+                  .map(([key, value]) => (
+                    <div key={key} className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600 uppercase font-semibold">
+                        {key.replace(/([A-Z])/g, " $1")}
+                      </p>
+                      <p className="text-[16px] font-semibold text-gray-900 mt-1">{value || "N/A"}</p>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Edit Button */}
-        <div className="flex justify-center mt-6">
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div>
       </div>
+      <Footer />
     </>
   );
 };

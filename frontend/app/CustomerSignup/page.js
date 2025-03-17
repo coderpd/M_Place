@@ -7,6 +7,7 @@ import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import Footer from "../LandingPage/Footer";
 
 const API_KEY = "MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
 
@@ -289,23 +290,23 @@ const CustomerSignup = () => {
 
   return (
     <div>
-      <div className="bg-[#549DA9] w-full font-sans h-[200px] flex flex-col justify-center items-center text-center px-4 relative">
+      <div className="bg-blue-500 w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
         {/* Logo Positioned at the Top Left */}
         <div className="absolute top-4 left-4">
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+          {/* <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-black to-blue-500 p-1"> */}
+            <div className="w-full p-2 h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
               <img
                 src="/Logo.png"
                 alt="M-Place Logo"
                 className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
               />
-            </div>
+            {/* </div> */}
           </div>
         </div>
 
         {/* Main Header Content */}
-        <h1 className="text-2xl md:text-4xl font-bold text-white mt-3">
-        Customer Onboarding
+        <h1 className="text-2xl md:text-4xl font-bold text-white mt-10">
+          Expand Your Business with M-Place!
         </h1>
         <p className="mt-3 text-lg text-gray-100 max-w-xl">
           Register today and gain access to a marketplace of trusted buyers.
@@ -618,11 +619,11 @@ const CustomerSignup = () => {
                 className="text-sm text-gray-700 cursor-pointer ml-3" 
               >
                 By Signing Up, you must agree to our
-                <a href="#" className="text-teal-500 hover:underline mx-1">
+                <a href="#" className="text-blue-500 hover:underline mx-1">
                   Privacy Policy
                 </a>{" "}
                 and
-                <a href="#" className="text-teal-500 hover:underline ml-1">
+                <a href="#" className="text-blue-500 hover:underline ml-1">
                 Legal Disclaimer
                 </a>
                 .
@@ -632,7 +633,7 @@ const CustomerSignup = () => {
 
             <Button
               type="submit"
-              className="ml-[350px] bg-[#549DA9] hover:bg-black"
+              className="ml-[350px] bg-blue-500 hover:bg-blue-700"
             >
               Submit
             </Button>
@@ -683,6 +684,7 @@ const InputField = ({
         </button>
       )}
     </div>
+
   </div>
 );
 
