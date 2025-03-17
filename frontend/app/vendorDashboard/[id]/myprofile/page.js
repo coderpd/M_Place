@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { UserCircle, ArrowBigLeftDash } from "lucide-react";
+import { ArrowBigLeftDash } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function ProfilePage() {

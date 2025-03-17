@@ -3,9 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
-import Footer from "@/app/LandingPage/Footer";
+
 
 export default function EcommercePage() {
   const { id } = useParams();

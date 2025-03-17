@@ -1,7 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import ProductsPage from "../products/page";
+import { useState, useRef } from "react";
 
 const categories = [
   {

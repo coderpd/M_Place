@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import { IoBagAdd } from "react-icons/io5";
-import Footer from "@/app/LandingPage/Footer";
+
 
 export default function AddProduct() {
   const { id } = useParams(); // vendor_id
@@ -371,17 +371,7 @@ export default function AddProduct() {
               <option value="CAD/CAM Software AutoCAD" />
               <option value="CAD/CAM Software Fusion 360" />
 
-              {/* <option value="Network Monitoring SolarWinds" />
-            <option value="Network Monitoring Nagios" />
-            <option value="Network Monitoring PRTG" />
-            <option value="Network Configuration Management Cisco Prime" />
-            <option value="Network Configuration Management SolarWinds" />
-            <option value="Bandwidth Management Tools NetFlow" />
-            <option value="Bandwidth Management Tools Zabbix" />
-            <option value="Network Analysis Tools Wireshark" />
-            <option value="Network Analysis Tools Omnipeek" />
-            <option value="Network Simulation & Testing Tools GNS3" />
-            <option value="Network Simulation & Testing Tools Cisco Packet Tracer" /> */}
+             
             </datalist>
           </div>
 
