@@ -1,5 +1,5 @@
 
-# m-place - B2B E-commerce Platform for IT Products
+# M-place - B2B E-commerce Platform for IT Products
 
 m-place is an innovative B2B e-commerce platform designed for the buying and selling of C-class IT products. The platform connects vendors and customers through a seamless communication system, where vendors can upload their products and customers can initiate discussions before completing a purchase.
 
@@ -93,8 +93,6 @@ Once both the frontend and backend are running:
  The backend will typically run on a separate port, like http://localhost:5000 (or as configured in server.js).
 
 
- ## Usage
-
 - Visit the m-place homepage in the browser.
 - Based on the credentials, sign in to either the vendor or customer page.
 - If you're a new user, create an account as either a vendor or a customer.
@@ -143,6 +141,7 @@ Once both the frontend and backend are running:
 
 #### Styling:
 - Tailwind CSS
+- Shandcn 
 
 ### Backend:
 
@@ -175,11 +174,40 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Homepage
 ![M_Place_HomePage](https://github.com/coderpd/ATM-/blob/8782c191ff5b8768494d083b43bc81998759f377/M-Place-HomePage.png)
 
-### Vendor Dashboard
-![Vendor Dashboard](screenshots/vendor-dashboard.png)
 
-### Customer Cart
-![Customer Cart](screenshots/customer-cart.png)
+### Signin Page
+![signinpage](https://github.com/coderpd/M_Place/blob/2de48e7b089a1a7ac83f14adec04120c084662d1/Screenshot/M-Place_Signin_page.png)
+
+
+### Signup Section
+![signupage](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/M-place_Signup_Page.jpeg)
+
+### Customer Singup Page
+![Customer Cart](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/M-place_CustomerSignup.png)
+
+### Customer Product Page
+![productpage](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/Customer_Product_page.png)
+
+### Customer Cart Page
+![cart page](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/Customer_Cart_page.png)
+
+### Vendor Signup Page
+![vendor signup page](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/M-place_VendorSignUp.png)
+
+### Vendor Product Portal
+![productportal](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/vendorDashboard_Product_Portal.png)
+
+### Vendor Add Product
+![addproduct](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/vendorDashboard_Add_product.png)
+
+### Vendor Product Details
+![productdetails](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/vendorDashboard_Product_Details.png)
+
+### Vendor Notificaiton
+![notificaiton](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/vendorDashboard_Notificaation.png)
+
+### User Profile
+![profile](https://github.com/coderpd/M_Place/blob/4c1d1a0bd5aa2514f5b80fc4acb28049cdaee9e2/Screenshot/User_profile.png)
 
 ## Contact
 
