@@ -1,3 +1,4 @@
+ Dhinesh
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./customer/context/CartContext";
@@ -30,3 +31,6 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+hell
+ Mplace
