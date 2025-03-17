@@ -1,5 +1,5 @@
 
-# m-place - B2B E-commerce Platform for IT Products
+# M-place - B2B E-commerce Platform for IT Products
 
 m-place is an innovative B2B e-commerce platform designed for the buying and selling of C-class IT products. The platform connects vendors and customers through a seamless communication system, where vendors can upload their products and customers can initiate discussions before completing a purchase.
 
