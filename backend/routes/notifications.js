@@ -4,7 +4,7 @@ const db = require("../db");
 
 const convertToIST = (utcDateString) => {
   return new Date(utcDateString).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-};
+};          
 
 router.get("/:vendorId", async (req, res) => {
   try {
@@ -26,7 +26,7 @@ router.get("/:vendorId", async (req, res) => {
 
     res.json({ notifications: formattedNotifications });
   } catch (error) {
-    console.error(" Error fetching notifications:", error);
+    console.error("Error fetching notifications:", error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
 });
@@ -62,7 +62,7 @@ router.post("/notify-vendor", async (req, res) => {
       console.log("Processing item:", item);
 
       if (!item.productId) {
-        console.warn(" Skipping item due to missing productId:", item);
+        console.warn("Skipping item due to missing productId:", item);
         continue;
       }
 
@@ -137,7 +137,7 @@ router.put("/read/:id", async (req, res) => {
       return res.status(404).json({ success: false, message: "Notification not found" });
     }
   } catch (error) {
-    console.error(" Error updating notification:", error);
+    console.error("Error updating notification:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });

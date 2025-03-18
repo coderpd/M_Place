@@ -47,7 +47,7 @@ router.get("/get-products/all", async (req, res) => {
     console.log("Retrieved Products:", products); // Debugging
 
     if (products.length === 0) {
-      console.warn(" No products found in the database!");
+      console.warn("No products found in the database!");
       return res.status(200).json({ products: [] }); // Send empty array instead of undefined
     }
 
@@ -64,7 +64,7 @@ router.get("/get-products/:vendorId", async (req, res) => {
     const [products] = await db.query("SELECT * FROM products WHERE vendor_id = ?", [req.params.vendorId]);
 
     if (products.length === 0) {
-      console.warn(` No products found for vendor ${req.params.vendorId}`);
+      console.warn(`No products found for vendor ${req.params.vendorId}`);
       return res.status(200).json({ products: [] });
     }
 
