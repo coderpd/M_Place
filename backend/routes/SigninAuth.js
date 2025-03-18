@@ -1,8 +1,12 @@
+
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const db = require("../db");
 
 const router = express.Router();
+const JWT_SECRET = "your_secret_key"; // Replace with a secure secret key
 
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
@@ -22,9 +26,17 @@ router.post("/signin", async (req, res) => {
         return res.status(400).json({ message: "Invalid email or password" });
       }
 
-      return res
-        .status(200)
-        .json({ message: "Login successful", userType: "vendor", user: vendor });
+      // Generate JWT token
+      const token = jwt.sign({ id: vendor.id, userType: "vendor" }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      return res.status(200).json({
+        message: "Login successful",
+        userType: "vendor",
+        user: vendor,
+        token,
+      });
     }
 
     // If not vendor, check customer table
@@ -41,14 +53,19 @@ router.post("/signin", async (req, res) => {
         return res.status(400).json({ message: "Invalid email or password" });
       }
 
+      // Generate JWT token
+      const token = jwt.sign({ id: customer.id, userType: "customer" }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
       return res.status(200).json({
         message: "Login successful",
         userType: "customer",
         user: customer,
+        token,
       });
     }
 
-    // If neither found
     return res.status(400).json({ message: "Invalid email or password" });
   } catch (error) {
     console.error("Sign-in Error:", error);

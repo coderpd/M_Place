@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useState } from "react";
 import ImageSlider from "./ImageSlider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,31 +16,39 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   const handleLogin = async () => {
     setLoading(true);
     setError("");
-  
+    
     try {
       const response = await fetch("http://localhost:5000/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.message || "Login failed. Please try again.");
       }
-  
+
       console.log("Login Response:", data);
-  
+
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
+
+      localStorage.setItem("userType", data.userType);
+      localStorage.setItem("userId", data.user.id);
+
       if (data.userType === "vendor") {
         router.push(`/vendorDashboard/${data.user.id}`);
       } else if (data.userType === "customer") {
-        
         localStorage.setItem("customer", JSON.stringify(data.user));
-  
         router.push(`/customer/products`);
       } else {
         throw new Error("Invalid user type.");
@@ -51,23 +59,22 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       <ImageSlider />
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-100 px-6 py-10">
         <Card className="w-full max-w-md shadow-lg p-6 bg-white">
           <CardHeader>
-          
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
-              <img
-                src="/Logo.png"
-                alt="M-Place Logo"
-                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
-              />
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+                <img
+                  src="/Logo.png"
+                  alt="M-Place Logo"
+                  className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                />
+              </div>
             </div>
-          </div>
-      
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-semibold text-gray-800">Welcome Back</h2>
@@ -77,7 +84,9 @@ export default function LoginPage() {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="text-sm text-gray-700">Email Address</label>
+                <label htmlFor="email" className="text-sm text-gray-700">
+                  Email Address
+                </label>
                 <Input
                   id="email"
                   type="email"
@@ -88,7 +97,9 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="text-sm text-gray-700">Password</label>
+                <label htmlFor="password" className="text-sm text-gray-700">
+                  Password
+                </label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -117,15 +128,17 @@ export default function LoginPage() {
                   />
                   Remember Me
                 </label>
-                <Link href="../ForgotPassword" className="text-blue-500">Forgot password?</Link>
+                <Link href="../ForgotPassword" className="text-blue-500">
+                  Forgot password?
+                </Link>
               </div>
 
               <Button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md disabled:bg-gray-400"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md disabled:bg-gray-400 flex items-center justify-center"
               >
-                {loading ? 'Logging in...' : 'Login'}
+                {loading ? <Loader2 className="animate-spin" size={20} /> : "Login"}
               </Button>
             </div>
 
