@@ -70,8 +70,7 @@ export default function ForgotPassOtp() {
       const result = await response.json();
       setSuccessMessage(result.message || "OTP validated successfully.");
       
-      // Clear email from localStorage after verification
-      // localStorage.removeItem("userEmail");
+      
   
       router.push("/ResetPassword");
     } catch (error) {

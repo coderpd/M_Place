@@ -187,10 +187,9 @@ export default function DashboardLayout({ id, children }) {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        // ✅ Clear local storage before redirecting
+       
         localStorage.clear();
 
-        // ✅ Redirect to the homepage
         router.push("/");
       }
     });

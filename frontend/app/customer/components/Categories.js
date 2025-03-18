@@ -374,23 +374,7 @@ const categories = [
         ],
       },
 
-      // {
-      //   name: "Network Management Tools",
-      //   items: [
-      //     "Network Monitoring SolarWinds",
-      //     "Network Monitoring Nagios",
-      //     "Network Monitoring PRTG",
-      //     "Network Configuration Management Cisco Prime",
-      //     "Network Configuration Management SolarWinds",
-      //     "Bandwidth Management Tools NetFlow",
-      //     "Bandwidth Management Tools Zabbix",
-      //     "Network Analysis Tools Wireshark",
-      //     "Network Analysis Tools Omnipeek",
-      //     "Network Simulation & Testing Tools GNS3",
-      //     "Network Simulation & Testing Tools Cisco Packet Tracer",
-      //   ]
-
-      // },
+    
     ],
   },
 ];
