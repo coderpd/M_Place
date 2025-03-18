@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +24,6 @@ const CustomerSignup = () => {
   const [formValues, setFormValues] = useState({
     companyName: "",
     registrationNumber: "",
-    companyWebsite:"",
     gstNumber: "",
     firstName: "",
     lastName: "",
@@ -79,6 +78,7 @@ const CustomerSignup = () => {
     try {
       const country = countries.find((c) => c.name === selectedCountry);
       if (!country) return;
+
       const response = await fetch(
         `https://api.countrystatecity.in/v1/countries/${country.code}/states`,
         { headers: { "X-CSCAPI-KEY": API_KEY } }
@@ -150,8 +150,7 @@ const CustomerSignup = () => {
       newErrors.companyName = "Company Name is required";
     if (!formValues.registrationNumber)
       newErrors.registrationNumber = "Registration Number is required";
-  
-    if(!formValues.companyWebsite)  newErrors.companyWebsite="Company Website is requires";
+
     if (!formValues.gstNumber) newErrors.gstNumber = "GST Number is required";
     if (!formValues.firstName) newErrors.firstName = "First Name is required";
     if (!formValues.lastName) newErrors.lastName = "Last Name is required";
@@ -289,17 +288,17 @@ const CustomerSignup = () => {
 
   return (
     <div>
-      <div className="bg-blue-500 w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
+      <div className="bg-[#549DA9] w-full font-sans h-[250px] flex flex-col justify-center items-center text-center px-4 relative">
         {/* Logo Positioned at the Top Left */}
         <div className="absolute top-4 left-4">
-          {/* <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-black to-blue-500 p-1"> */}
-            <div className="w-full p-2 h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
               <img
                 src="/Logo.png"
                 alt="M-Place Logo"
                 className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
               />
-            {/* </div> */}
+            </div>
           </div>
         </div>
 
@@ -341,20 +340,6 @@ const CustomerSignup = () => {
                 {errors.registrationNumber && (
                   <p className="text-sm text-red-500">
                     {errors.registrationNumber}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <InputField
-                  label="Company Website"
-                  name="companyWebsite"
-                  value={formValues.companyWebsite}
-                  onChange={handleInputChange}
-                />
-                {errors.companyWebsite && (
-                  <p className="text-sm text-red-500">
-                    {errors.companyWebsite}
                   </p>
                 )}
               </div>
@@ -618,12 +603,16 @@ const CustomerSignup = () => {
                 className="text-sm text-gray-700 cursor-pointer ml-3" 
               >
                 By Signing Up, you must agree to our
-                <a href="#" className="text-blue-500 hover:underline mx-1">
+                <a href="#" className="text-teal-500 hover:underline ml-1">
+                  Terms
+                </a>
+                ,
+                <a href="#" className="text-teal-500 hover:underline mx-1">
                   Privacy Policy
                 </a>{" "}
                 and
-                <a href="#" className="text-blue-500 hover:underline ml-1">
-                Legal Disclaimer
+                <a href="#" className="text-teal-500 hover:underline ml-1">
+                  Cookie Policy
                 </a>
                 .
               </label>
@@ -632,7 +621,7 @@ const CustomerSignup = () => {
 
             <Button
               type="submit"
-              className="ml-[350px] bg-blue-500 hover:bg-blue-700"
+              className="ml-[350px] bg-[#549DA9] hover:bg-black"
             >
               Submit
             </Button>
@@ -683,7 +672,6 @@ const InputField = ({
         </button>
       )}
     </div>
-
   </div>
 );
 

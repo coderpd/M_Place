@@ -39,11 +39,9 @@ app.use("/auth/vendor", vendorRouter);
 const CustomerEdit = require("./routes/Customer");
 app.use("/customer-edit", CustomerEdit);
 
-const Notification =require("./routes/notifications")
-app.use("/notification",Notification) 
+// const VendorNotification = require("./routes/notificationRoutes");
+// app.use("/notification", VendorNotification);
 
-const cartRouter = require("./routes/cart");
-app.use("/cart", cartRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

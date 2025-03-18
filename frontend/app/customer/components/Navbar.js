@@ -1,131 +1,85 @@
-"use client";
+"use client"; 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Search,
-  ShoppingCart,
-  User,
-  LogOut,
-  Settings,
-  Calendar,
-} from "lucide-react";
+import { Search, ShoppingCart, User, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
-import Swal from "sweetalert2";
+import { useCart } from "@/app/customer/context/CartContext";
 
-const Navbar = ({
-  setSearchQuery,
-  setCategoryFilter,
-  setPriceFilter,
-  disableFilters,
-  disableSearch,
-}) => {
+const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilters, disableSearch }) => {
   const [search, setSearch] = useState("");
-  const [cart, setCart] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
+  const { cart } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [customer, setCustomer] = useState(null);
-  const router = useRouter();
+  const [customerName, setCustomerName] = useState(""); // State to store customer name
+  const router = useRouter(); // ✅ No more errors
 
-  // Fetch cart count from API
-  const fetchCartCount = async (customerId) => {
-    try {
-      const response = await fetch(`http://localhost:5000/cart/${customerId}`);
-      const data = await response.json();
-      setCartCount(data.cartItems?.length || 0);
-    } catch (error) {
-      console.error("Error fetching cart count:", error);
-    }
-  };
-
-  // Fetch cart and customer details when component mounts
   useEffect(() => {
-    const storedCustomer = localStorage.getItem("customer");
-    if (storedCustomer) {
-      const customerData = JSON.parse(storedCustomer);
-      setCustomer(customerData);
-      fetchCartCount(customerData.id);
+    // Fetch customer data from local storage if available
+    const customerData = JSON.parse(localStorage.getItem("customer"));
+    if (customerData) {
+      setCustomerName(customerData.firstName + " " + customerData.lastName); // Adjust based on the structure of customer data
     }
   }, []);
 
-  // Listen for cart updates from localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
-      if (customer) fetchCartCount(customer.id);
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [customer]);
-
-  // Auto-update cart count every 3 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (customer) fetchCartCount(customer.id);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [customer]);
-
-  // Logout function
-  const handleLogout = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out of your account.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.removeItem("customer");
-        router.push("/");
-        Swal.fire(
-          "Logged Out!",
-          "You have been successfully logged out.",
-          "success"
-        );
-      }
-    });
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearch(query);
+    setSearchQuery(query);
   };
-  const currentDate = new Date().toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+
+  // Logout confirmation function
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem("customer"); // Clear customer data from local storage
+      router.push("/"); // Redirect to home page
+    }
+  };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-gray-50 shadow-md p-6 h-20 flex items-center justify-between z-50">
-      {/* Logo */}
-      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-        <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
-          <img
-            src="/Logo.png"
-            alt="M-Place Logo"
-            className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-          />
+    <nav className="font-sans fixed top-0 left-0 w-full bg-white shadow-md p-6 h-20 flex items-center justify-between z-50">
+      {/* Left Section: Logo */}
+      <div className="flex items-center space-x-3">
+        <div className="w-10 h-10 flex items-center justify-center bg-black text-white font-bold rounded-lg text-lg">
+          M
         </div>
+        <span className="text-2xl font-bold text-gray-800">Mplace</span>
       </div>
 
       {/* Search Bar */}
       {!disableSearch && (
-        <div className="flex items-center w-full max-w-md bg-gray-100 p-2 border-2 hover:border-blue-500 rounded-lg">
-          <Search className="text-gray-500 mr-2 " size={24} />
+        <div className="flex items-center w-full max-w-md bg-gray-100 p-2 rounded-lg transition hover:ring-2 hover:ring-blue-500">
+          <Search className="text-gray-500 mr-2 transition hover:text-blue-500" size={24} />
           <input
             type="text"
             placeholder="Search for products..."
-            className="w-full bg-transparent outline-none text-sm  "
+            className="w-full bg-transparent outline-none text-sm"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setSearchQuery(e.target.value);
-            }}
+            onChange={handleSearch}
           />
         </div>
       )}
+
+      {/* Filters Section */}
       {!disableFilters && (
         <div className="flex items-center space-x-4">
+          {/* Category Filter */}
+          <select
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="p-2 rounded-md border bg-white text-sm"
+          >
+            <option value="">All Categories</option>
+            <option value="laptop">Laptop</option>
+            <option value="keyboard">Keyboard</option>
+            <option value="mouse">Mouse</option>
+            <option value="cpu">CPU</option>
+            <option value="monitor">Monitor</option>
+            <option value="hard disk">Hard Disk</option>
+          </select>
+
           {/* Price Filter */}
           <select
             onChange={(e) => setPriceFilter(e.target.value)}
-            className="p-2 rounded-md border-2 hover:border-blue-500 text-sm "
+            className="p-2 rounded-md border bg-white text-sm"
           >
             <option value="">All Prices</option>
             <option value="low">Low to High</option>
@@ -134,22 +88,32 @@ const Navbar = ({
         </div>
       )}
 
-      {/* Cart & Profile */}
-      <div className="flex items-center space-x-5">
-        {/* User Profile Section */}
-        <div className="flex relative space-x-2">
+      {/* Icons Section */}
+      <div className="flex items-center space-x-5 relative">
+        {/* User Profile Dropdown */}
+        <div className="relative mt-2">
           <button onClick={() => setDropdownOpen(!dropdownOpen)}>
-            <User className="cursor-pointer text-gray-700" size={28} />
+            <User className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
           </button>
+
+          {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute  mt-12 w-36 bg-white border rounded-lg shadow-lg">
+            <div className="absolute right-0 mt-2 w-36 bg-white border rounded-lg shadow-lg z-50">
               <ul className="py-2 text-md text-gray-700">
                 <li>
                   <Link
-                    href="/customer/CustomerProfile"
+                    href="./CustomerProfile"
                     className="flex items-center px-4 py-2 hover:bg-gray-100"
                   >
                     <User size={20} className="mr-2 text-black" /> My Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/customer/settings"
+                    className="flex items-center px-4 py-2 hover:bg-gray-100"
+                  >
+                    <Settings size={20} className="mr-2 text-black" /> Settings
                   </Link>
                 </li>
                 <li>
@@ -163,33 +127,17 @@ const Navbar = ({
               </ul>
             </div>
           )}
-          <div className="mt-1">
-            {customer && (
-              <span className="text-gray-700">
-                {customer.firstName} {customer.lastName}
-              </span>
-            )}
-          </div>
         </div>
 
-        {/* Mild Vertical Line */}
-        <div className="w-[2px] h-8 bg-gray-300"></div>
-
-        {/* Date Section */}
-        <div className="flex items-center p-3">
-          <Calendar className="text-gray-700" />
-          <span className="ml-2">{currentDate}</span>
-        </div>
-
-        {/* Mild Vertical Line */}
-        <div className="w-[2px] h-8 bg-gray-300"></div>
+        {/* Display Customer Name if logged in */}
+        {customerName && <span className="text-gray-700">{customerName}</span>}
 
         {/* Cart Icon */}
         <Link href="/customer/cart" className="relative">
-          <ShoppingCart className="cursor-pointer text-gray-700" size={28} />
-          {cartCount > 0 && (
+          <ShoppingCart className="cursor-pointer text-gray-700 transition hover:text-blue-500" size={28} />
+          {cart.length > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              {cartCount}
+              {cart.length}
             </span>
           )}
         </Link>
