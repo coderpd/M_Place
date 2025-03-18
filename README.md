@@ -167,6 +167,22 @@ Once both the frontend and backend are running:
 - CLSX
 - Reacticon
 - Yup
+- 
+## Database Schema
+
+The project uses **MySQL** as the database. Below are the main tables used:
+
+| Table Name       | Description |
+|-----------------|------------|
+| `vendorsignup`   | Stores vendor account details (name, email, password, etc.). |
+| `customersignup` | Stores customer account details (name, email, password, etc.). |
+| `products`       | Stores product details uploaded by vendors. |
+| `notifications`  | Stores notifications related to customer-vendor interactions. |
+| `contactus`      | Stores messages submitted via the contact form. |
+| `cart`           | Stores items added to the customer's cart before checkout. |
+
+
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ## Screenshots
