@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import { IoCreateOutline } from "react-icons/io5";
 
 export default function UpdateProduct() {
   const { id, productId } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentPage = searchParams.get("page") || 1;
 
   const [formData, setFormData] = useState({
     productName: "",
@@ -61,7 +63,7 @@ export default function UpdateProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdating(true);
-
+  
     const formDataToSend = new FormData();
     formDataToSend.append("productName", formData.productName);
     formDataToSend.append("brand", formData.brand);
@@ -72,33 +74,36 @@ export default function UpdateProduct() {
     if (selectedImage) {
       formDataToSend.append("productImage", selectedImage);
     }
-
+  
     try {
       const response = await fetch(`http://localhost:5000/auth/products/update-product/${productId}`, {
         method: "PUT",
         body: formDataToSend,
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to update product");
       }
-
+  
       Swal.fire({
         title: "Success!",
         text: "Product updated successfully!",
         icon: "success",
-        timer: 1500,
+        timer: 500,
         showConfirmButton: false,
       });
-
-      setTimeout(() => router.push(`/vendorDashboard/${id}/productdetails`), 1500);
+  
+      // Ensure the page parameter is included in the redirect
+      setTimeout(() => {
+        router.push(`/vendorDashboard/${id}/productcards?page=${encodeURIComponent(currentPage)}`);
+      }, 1500);
     } catch (error) {
       Swal.fire("Error", error.message, "error");
     } finally {
       setUpdating(false);
     }
   };
-
+  
   return (
     <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-8 font-sans">
       <h2 className="text-lg font-bold text-black mb-4 text-left flex items-center gap-2">

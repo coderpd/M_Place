@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {ArrowBigLeftDash } from "lucide-react";
+import { UserCircle, ArrowBigLeftDash } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Swal from "sweetalert2";
 import Footer from "@/app/LandingPage/Footer";

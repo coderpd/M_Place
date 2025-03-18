@@ -76,7 +76,7 @@ const ProductsPage = () => {
         product.category?.toLowerCase().includes(query.toLowerCase()) ||
         product.brand?.toLowerCase().includes(query.toLowerCase()) ||
         product.productName?.toLowerCase().includes(query.toLowerCase())
-       
+        // product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
 
@@ -207,7 +207,7 @@ const ProductsPage = () => {
         )}
       </div>
   
-   
+      {/* Footer - Always Stays at Bottom */}
       <Footer />
     </div>
   );

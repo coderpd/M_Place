@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,7 @@ import { BookUser, Building, MapPinned, RectangleEllipsis } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import Footer from "../LandingPage/Footer";
 
 const API_KEY = "MHlWWnpWRG9WMWtNbnRBOVZvVmVGUWhyVXJ4em5JYlBKSTZleFk5MQ==";
 

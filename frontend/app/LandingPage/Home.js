@@ -37,7 +37,7 @@ export default function Home() {
           <p className="text-base sm:text-lg text-gray-700 leading-relaxed tracking-tight">
             This platform specializes in sourcing{" "}
             <span className="font-semibold text-indigo-600">C-Class</span> IT
-            products, along with low-volume A- and B-class items such as
+            products, along with low-volume A and B-class items such as
             Desktops, Laptops, Servers, entry-level Cisco Switches, Cisco
             Routers, basic Firewalls, and Wi-Fi Routers.
           </p>

@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import Navbar from "@/app/customer/components/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import { Search, ShoppingCart, User, LogOut, Settings, Calendar } from "lucide-react";
 import Footer from "@/app/LandingPage/Footer";
 
 const ProductDetail = () => {

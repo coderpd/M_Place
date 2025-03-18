@@ -1,5 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import ProductsPage from "../products/page";
 
 const categories = [
   {
@@ -96,6 +98,7 @@ const categories = [
       {
         name: "Output Devices",
         items: [
+
           "Monitors Standard",
           "Monitors 4K",
           "Monitor",
@@ -129,7 +132,8 @@ const categories = [
           "Microphones Desktop",
           "Microphones USB",
           "Microphones XLR",
-        ],
+        ]
+
       },
       {
         name: "Networking Peripherals",
@@ -164,7 +168,8 @@ const categories = [
           "Modems DSL",
           "Modems Cable",
           "Modems Fiber",
-        ],
+        ]
+
       },
     ],
   },
@@ -198,12 +203,7 @@ const categories = [
       },
       {
         name: "Mobile Accessories",
-        items: [
-          "Power Banks",
-          "Bluetooth Headsets",
-          "Headphones",
-          "Mobile Charging Cables ",
-        ],
+        items: ["Power Banks", "Bluetooth Headsets", "Headphones", "Mobile Charging Cables "],
       },
     ],
   },
@@ -229,7 +229,8 @@ const categories = [
           "Tablets iPads",
           "Tablets Android",
           "Tablets Windows",
-        ],
+        ]
+
       },
 
       {
@@ -253,7 +254,8 @@ const categories = [
           "Wearables Smartwatches",
           "Wearables Fitness Trackers",
           "Tablets",
-        ],
+        ]
+
       },
       {
         name: "Audio & Video Equipment",
@@ -266,7 +268,8 @@ const categories = [
           "Video Conferencing Systems",
           "AV Receivers",
           "Projector Screens",
-        ],
+        ]
+
       },
     ],
   },
@@ -284,7 +287,8 @@ const categories = [
           "Linux Distributions CentOS",
           "Linux Distributions Red Hat",
           "Linux Distributions Fedora",
-        ],
+        ]
+
       },
       {
         name: "Productivity Software",
@@ -300,7 +304,8 @@ const categories = [
           "Collaboration Tools Zoom",
           "Email Clients Outlook",
           "Email Clients Thunderbird",
-        ],
+        ]
+
       },
       {
         name: "Security Software",
@@ -308,7 +313,7 @@ const categories = [
           "Antivirus & Anti-malware Norton",
           "Antivirus & Anti-malware McAfee",
           "Antivirus & Anti-malware Bitdefender",
-          "Firewalls ZoneAlarm",
+          "Firewalls ZoneAlarm",  
           "Firewalls Comodo",
           "VPN Software NordVPN",
 
@@ -318,7 +323,8 @@ const categories = [
           "Encryption Tools BitLocker",
           "Endpoint Security CrowdStrike",
           "Endpoint Security Symantec",
-        ],
+        ]
+
       },
       {
         name: "Graphics & Design Software",
@@ -338,7 +344,8 @@ const categories = [
           "CAD/CAM Software SolidWorks",
           "CAD/CAM Software AutoCAD",
           "CAD/CAM Software Fusion 360",
-        ],
+        ]
+
       },
     ],
   },
@@ -361,7 +368,8 @@ const categories = [
           "Network Cabling Fiber Optic",
           "Network Cabling Coaxial",
           "Network Interface Cards NICs",
-        ],
+        ]
+
       },
       {
         name: "Wireless Networking",
@@ -371,10 +379,27 @@ const categories = [
           "Wireless Controllers",
           "Wi-Fi Extenders",
           "Wireless Antennas",
-        ],
+        ]
+
       },
 
-    
+      // {
+      //   name: "Network Management Tools",
+      //   items: [
+      //     "Network Monitoring SolarWinds",
+      //     "Network Monitoring Nagios",
+      //     "Network Monitoring PRTG",
+      //     "Network Configuration Management Cisco Prime",
+      //     "Network Configuration Management SolarWinds",
+      //     "Bandwidth Management Tools NetFlow",
+      //     "Bandwidth Management Tools Zabbix",
+      //     "Network Analysis Tools Wireshark",
+      //     "Network Analysis Tools Omnipeek",
+      //     "Network Simulation & Testing Tools GNS3",
+      //     "Network Simulation & Testing Tools Cisco Packet Tracer",
+      //   ]
+
+      // },
     ],
   },
 ];
@@ -461,31 +486,27 @@ const CategoryMenu = ({ setCategoryFilter }) => {
                         {sub.name}
                       </button>
 
-                      {activeSubcategory === sub.name &&
-                        sub.items.length > 0 && (
-                          <div
-                            className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${
-                              dropdownPosition === "right-0"
-                                ? "right-full mr-0"
-                                : "left-full ml-0"
+
+                      {activeSubcategory === sub.name && sub.items.length > 0 && (
+                        <div
+                          className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
                             }`}
-                          >
-                            <ul className="py-2 text-md text-gray-700 text-left">
-                              {sub.items.map((item, itemIndex) => (
-                                <li key={itemIndex} className="pl-2">
-                                  {" "}
-                                  {/* Ensures list items start from the left */}
-                                  <button
-                                    onClick={() => setCategoryFilter(item)}
-                                    className="block w-full text-left px-2 py-2 hover:bg-gray-100"
-                                  >
-                                    {item}
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                        >
+                          <ul className="py-2 text-md text-gray-700 text-left">
+                            {sub.items.map((item, itemIndex) => (
+                              <li key={itemIndex} className="pl-2"> {/* Ensures list items start from the left */}
+                                <button
+                                  onClick={() => setCategoryFilter(item)}
+                                  className="block w-full text-left px-2 py-2 hover:bg-gray-100"
+                                >
+                                  {item}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
