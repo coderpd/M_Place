@@ -170,16 +170,17 @@ Once both the frontend and backend are running:
 - 
 ## Database Schema
 
-The project uses **MySQL** as the database. Below are the main tables used:
+The project uses **MySQL** as the database, and the schema name is **`mplace`**. Below are the main tables used:
 
 | Table Name       | Description |
 |-----------------|------------|
-| `vendorsignup`   | Stores vendor account details (name, email, password, etc.). |
-| `customersignup` | Stores customer account details (name, email, password, etc.). |
-| `products`       | Stores product details uploaded by vendors. |
-| `notifications`  | Stores notifications related to customer-vendor interactions. |
-| `contactus`      | Stores messages submitted via the contact form. |
-| `cart`           | Stores items added to the customer's cart before checkout. |
+| `vendorsignup`   | Stores vendor account details (e.g., name, email, password, company details). |
+| `customersignup` | Stores customer account details (e.g., name, email, password, contact details). |
+| `products`       | Stores product details uploaded by vendors, including name, price, category, and stock. |
+| `notifications`  | Stores notifications related to customer-vendor interactions and order updates. |
+| `contactus`      | Stores messages submitted via the contact form, including user inquiries. |
+| `cart`           | Stores items added to the customer's cart before finalizing the purchase or deal. |
+
 
 
 
