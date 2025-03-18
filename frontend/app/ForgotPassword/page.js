@@ -45,7 +45,7 @@ export default function ForgotPassword() {
         setOtpSent(true);
         setOtpMessage("OTP sent successfully!");
   
-        // ✅ Store the email in localStorage before redirecting
+        // Store the email in localStorage before redirecting
         localStorage.setItem("userEmail", data.email);
   
         router.push("./ForgotPassOtp");

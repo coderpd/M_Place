@@ -26,7 +26,7 @@ router.get("/:vendorId", async (req, res) => {
 
     res.json({ notifications: formattedNotifications });
   } catch (error) {
-    console.error("❌ Error fetching notifications:", error);
+    console.error(" Error fetching notifications:", error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
 });
@@ -39,7 +39,7 @@ router.post("/notify-vendor", async (req, res) => {
 
     const { email, cart } = req.body;
     if (!email || !cart || cart.length === 0) {
-      console.error("❌ Invalid data received:", req.body);
+      console.error("Invalid data received:", req.body);
       return res.status(400).json({ error: "Invalid data provided" });
     }
 
@@ -50,7 +50,7 @@ router.post("/notify-vendor", async (req, res) => {
     );
 
     if (customerResult.length === 0) {
-      console.error("❌ Customer not found:", email);
+      console.error("Customer not found:", email);
       return res.status(404).json({ error: "Customer not found" });
     }
     const customerName = customerResult[0].firstName;
@@ -62,7 +62,7 @@ router.post("/notify-vendor", async (req, res) => {
       console.log("Processing item:", item);
 
       if (!item.productId) {
-        console.warn("⚠️ Skipping item due to missing productId:", item);
+        console.warn(" Skipping item due to missing productId:", item);
         continue;
       }
 
@@ -73,14 +73,14 @@ router.post("/notify-vendor", async (req, res) => {
       );
 
       if (productResult.length === 0) {
-        console.warn(`⚠️ Product not found for ID: ${item.productId}`);
+        console.warn(`Product not found for ID: ${item.productId}`);
         continue;
       }
 
       const { id: productId, vendor_id: vendorId, productName } = productResult[0];
 
       if (!vendorId) {
-        console.warn(`⚠️ Vendor ID missing for product ID: ${productId}`);
+        console.warn(`Vendor ID missing for product ID: ${productId}`);
         continue;
       }
 
@@ -91,7 +91,7 @@ router.post("/notify-vendor", async (req, res) => {
       );
 
       if (vendorResult.length === 0) {
-        console.warn(`⚠️ Vendor not found for ID: ${vendorId}`);
+        console.warn(`Vendor not found for ID: ${vendorId}`);
         continue;
       }
       const vendorEmail = vendorResult[0].officialEmail;
@@ -106,19 +106,19 @@ router.post("/notify-vendor", async (req, res) => {
     }
 
     if (values.length === 0) {
-      console.warn("⚠️ No valid notifications to insert");
+      console.warn("No valid notifications to insert");
       return res.status(400).json({ error: "No valid notifications to insert" });
     }
 
-    console.log("📌 Final values to insert:", values);
+    console.log("Final values to insert:", values);
 
     // Insert into notifications table
     const query = `INSERT INTO notifications (customer_id,customerName, product_vendor_id, product_id, message) VALUES ?`;
     await db.query(query, [values]);
 
-    res.status(200).json({ message: "✅ Vendor notified successfully!" });
+    res.status(200).json({ message: "Vendor notified successfully!" });
   } catch (error) {
-    console.error("❌ Server error:", error);
+    console.error("Server error:", error);
     res.status(500).json({ error: "Server error", details: error.message });
   }
 });
@@ -137,7 +137,7 @@ router.put("/read/:id", async (req, res) => {
       return res.status(404).json({ success: false, message: "Notification not found" });
     }
   } catch (error) {
-    console.error("❌ Error updating notification:", error);
+    console.error(" Error updating notification:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
