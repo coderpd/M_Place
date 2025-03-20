@@ -28,14 +28,18 @@ export default function UpdateProduct() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/auth/products/get-product/${productId}`);
+        const response = await fetch(
+          `http://localhost:5000/auth/products/get-product/${productId}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch product details");
         }
         const data = await response.json();
         setFormData(data.product);
         if (data.product.productImage) {
-          setPreviewImage(`http://localhost:5000/uploads/${data.product.productImage}`);
+          setPreviewImage(
+            `http://localhost:5000/uploads/${data.product.productImage}`
+          );
         }
       } catch (error) {
         Swal.fire("Error", error.message, "error");
@@ -63,7 +67,7 @@ export default function UpdateProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdating(true);
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("productName", formData.productName);
     formDataToSend.append("brand", formData.brand);
@@ -74,17 +78,20 @@ export default function UpdateProduct() {
     if (selectedImage) {
       formDataToSend.append("productImage", selectedImage);
     }
-  
+
     try {
-      const response = await fetch(`http://localhost:5000/auth/products/update-product/${productId}`, {
-        method: "PUT",
-        body: formDataToSend,
-      });
-  
+      const response = await fetch(
+        `http://localhost:5000/auth/products/update-product/${productId}`,
+        {
+          method: "PUT",
+          body: formDataToSend,
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to update product");
       }
-  
+
       Swal.fire({
         title: "Success!",
         text: "Product updated successfully!",
@@ -92,10 +99,14 @@ export default function UpdateProduct() {
         timer: 500,
         showConfirmButton: false,
       });
-  
+
       // Ensure the page parameter is included in the redirect
       setTimeout(() => {
-        router.push(`/vendorDashboard/${id}/productcards?page=${encodeURIComponent(currentPage)}`);
+        router.push(
+          `/vendorDashboard/${id}/productdetails?page=${encodeURIComponent(
+            currentPage
+          )}`
+        );
       }, 1500);
     } catch (error) {
       Swal.fire("Error", error.message, "error");
@@ -103,57 +114,113 @@ export default function UpdateProduct() {
       setUpdating(false);
     }
   };
-  
+
   return (
     <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-8 font-sans">
       <h2 className="text-lg font-bold text-black mb-4 text-left flex items-center gap-2">
         <IoCreateOutline size={25} /> Update Product
       </h2>
 
-      <form className="grid grid-cols-2 gap-6 text-sm text-black" onSubmit={handleSubmit}>
+      <form
+        className="grid grid-cols-2 gap-6 text-sm text-black"
+        onSubmit={handleSubmit}
+      >
         <div>
           <label className="block font-medium mb-2">Category</label>
-          <input type="text" name="category" value={formData.category} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
+          <input
+            type="text"
+            name="category"
+            value={formData.category}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md"
+            required
+          />
         </div>
 
         <div>
           <label className="block font-medium mb-2">Make & Model</label>
-          <input type="text" name="brand" value={formData.brand} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
+          <input
+            type="text"
+            name="brand"
+            value={formData.brand}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md"
+            required
+          />
         </div>
 
         <div>
           <label className="block font-medium mb-2">Product Name</label>
-          <input type="text" name="productName" value={formData.productName} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
+          <input
+            type="text"
+            name="productName"
+            value={formData.productName}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md"
+            required
+          />
         </div>
 
         <div>
           <label className="block font-medium mb-2">Price</label>
-          <input type="number" name="price" value={formData.price} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
+          <input
+            type="number"
+            name="price"
+            value={formData.price}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md"
+            required
+          />
         </div>
 
         <div>
           <label className="block font-medium mb-2">Seller</label>
-          <input type="text" name="seller" value={formData.seller} onChange={handleInputChange} className="w-full p-2 border rounded-md" required />
+          <input
+            type="text"
+            name="seller"
+            value={formData.seller}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md"
+            required
+          />
         </div>
 
         <div>
           <label className="block font-medium mb-2">Image</label>
-          <input type="file" onChange={handleImageChange} className="w-full p-2 border rounded-md" />
+          <input
+            type="file"
+            onChange={handleImageChange}
+            className="w-full p-2 border rounded-md"
+          />
         </div>
 
         {previewImage && (
           <div className="col-span-2 flex justify-center">
-            <img src={previewImage} alt="Product Preview" className="w-40 h-40 object-cover rounded-lg border" />
+            <img
+              src={previewImage}
+              alt="Product Preview"
+              className="w-40 h-40 object-cover rounded-lg border"
+            />
           </div>
         )}
 
         <div className="col-span-2">
           <label className="block font-medium mb-2">Description</label>
-          <textarea name="description" value={formData.description} onChange={handleInputChange} className="w-full p-2 border rounded-md h-24" required />
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded-md h-24"
+            required
+          />
         </div>
 
         <div className="col-span-2 flex justify-start">
-          <button type="submit" className="bg-[#549DA9] text-white px-6 py-2 rounded-sm hover:bg-[#3E7F88] transition" disabled={updating}>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-2 rounded-sm hover:bg-blue-600 transition"
+            disabled={updating}
+          >
             {updating ? "Updating..." : "Update Product"}
           </button>
         </div>
