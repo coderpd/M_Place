@@ -98,7 +98,7 @@ export default function DashboardLayout({ id, children }) {
   }))
   .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-setNotifications(formattedNotifications);
+  setNotifications(formattedNotifications);
 
 
       } catch (err) {
@@ -107,7 +107,7 @@ setNotifications(formattedNotifications);
     };
 
     fetchNotifications();
-  }, [id]);
+  }, [id,notifications]);
 
   // Filter Notifications
   const filteredNotifications = notifications.filter((notif) => {

@@ -10,7 +10,8 @@ router.get("/:customerId", async (req, res) => {
     const query = `
       SELECT cart.id, cart.product_id, cart.quantity, products.productName, products.price, products.productImage, products.vendor_id
       FROM cart
-      JOIN products ON cart.product_id = products.id
+      JOIN products 
+      ON cart.product_id = products.id
       WHERE cart.customer_id = ?
     `;
     const [cartItems] = await db.query(query, [customerId]);

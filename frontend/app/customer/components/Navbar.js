@@ -5,6 +5,7 @@ import { Search, ShoppingCart, User, LogOut, Settings,Calendar } from "lucide-re
 import Link from "next/link";
 import Swal from "sweetalert2";
 
+
 const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilters, disableSearch }) => {
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
@@ -18,6 +19,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
     try {
       const response = await fetch(`http://localhost:5000/cart/${customerId}`);
       const data = await response.json();
+      console.log(data)
       setCartCount(data.cartItems?.length || 0);
     } catch (error) {
       console.error("Error fetching cart count:", error);
@@ -27,6 +29,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   // Fetch cart and customer details when component mounts
   useEffect(() => {
     const storedCustomer = localStorage.getItem("customer");
+    console.log(storedCustomer)
     if (storedCustomer) {
       const customerData = JSON.parse(storedCustomer);
       setCustomer(customerData);
@@ -75,6 +78,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   });
 
   return (
+    <>
     <nav className="fixed top-0 left-0 w-full bg-gray-50 shadow-md p-6 h-20 flex items-center justify-between z-50">
       {/* Logo */}
       <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
@@ -101,20 +105,6 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
       )}
       {!disableFilters && (
         <div className="flex items-center space-x-4">
-          {/* Category Filter */}
-          {/* <select
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="p-2 rounded-md border bg-white text-sm"
-          >
-            <option value="">All Categories</option>
-            <option value="laptop">Laptop</option>
-            <option value="keyboard">Keyboard</option>
-            <option value="mouse">Mouse</option>
-            <option value="cpu">CPU</option>
-            <option value="monitor">Monitor</option>
-            <option value="hard disk">Hard Disk</option>
-          </select> */}
-
           {/* Price Filter */}
           <select
             onChange={(e) => setPriceFilter(e.target.value)}
@@ -181,6 +171,9 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
 </div>
 
     </nav>
+    
+    </>
+
   );
 };
 

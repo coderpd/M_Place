@@ -14,7 +14,7 @@ export default function Navbar() {
   const [activeLink, setActiveLink] = useState("");
   const router = useRouter();
 
-  const handleLinkClick = (link) => {
+  const handleLinkClick = (link) => { 
     setActiveLink(link);
     if (isSidebarOpen) {          
       setSidebarOpen(false);         

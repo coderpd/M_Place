@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { UserCircle , ArrowBigLeftDash} from "lucide-react";
 import Navbar from "../components/Navbar";
 import Swal from "sweetalert2";
+import Footer from "@/app/LandingPage/Footer";
 
 const CustomerProfile = () => {
   const [customer, setCustomer] = useState(null);
@@ -83,8 +84,8 @@ const CustomerProfile = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="bg-gray-50">
-      <div className="font-sans max-w-3xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12">
+      <div className="bg-gray-50 min-h-screen">
+      <div className="font-sans max-w-15xl mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12 mb-6">
         {/* Profile Card */}
         <div className="flex gap-2 ">
         <button onClick={()=>router.push("/customer/products")} className="mt-3">
@@ -102,26 +103,10 @@ const CustomerProfile = () => {
             </button>
           )}
         </div>
-        {/* <div className="relative bg-gradient-to-r from-blue-500 to-indigo-900 text-white p-8 rounded-xl shadow-md flex flex-col items-center">
-          <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full border-4 border-white shadow-lg">
-            <UserCircle className="w-20 h-20 text-gray-500" />
-          </div>
-          {isEditing ? (
-            <input
-              type="text"
-              name="companyName"
-              value={formData.companyName || ""}
-              onChange={handleChange}
-              className="mt-4 text-[16px] font-semibold text-black p-1 border rounded w-full text-center"
-            />
-          ) : (
-            <h2 className="text-[24px] font-semibold mt-4">{customer?.companyName || "N/A"}</h2>
-          )}
-        </div> */}
-
+        
         
 <div className="bg-white p-6 rounded-xl shadow-md mt-6">
-  <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30 "></img>
+  <img src="/User_Icon.jpg" alt="User_icon" className="items-center mx-auto w-40 h-30 "></img>
   <h1 className="font-semibold text-lg mb-3 ml-1">Profile Details</h1>
   {isEditing ? (
     <div className="grid grid-cols-2 gap-x-12 gap-y-6">
@@ -190,19 +175,10 @@ const CustomerProfile = () => {
 </div>
 
 
-        {/* Edit Button */}
-        {/* <div className="flex justify-center mt-6">
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div> */}
+        
       </div>
       </div>
+      <Footer></Footer>
     </>
   );
 };

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import Navbar from "../components/Navbar";
+import Footer from "@/app/LandingPage/Footer";
 
 const CartPage = () => {
   const [cart, setCart] = useState([]);
@@ -20,7 +21,6 @@ const CartPage = () => {
       setLoading(false);
     }
   }, []);
-
   const fetchCartItems = useCallback(async (customerId) => {
     try {
       const response = await fetch(`http://localhost:5000/cart/${customerId}`);
@@ -130,8 +130,8 @@ const CartPage = () => {
   return (
     <>
       <Navbar disableFilters={true} disableSearch={true} />
-      <div className="bg-gray-50">
-      <div className="max-w-4xl mx-auto p-6 pt-20">
+      <div className="bg-gray-50 min-h-screen">
+      <div className="max-w-4xl mx-auto p-6 pt-20 mb-6">
         <ToastContainer />
         <h1 className="text-2xl font-bold text-left mb-10 mt-6">Your Cart</h1>
 
@@ -183,6 +183,7 @@ const CartPage = () => {
       </div>
       </div>
       </div>
+      <Footer></Footer>
     </>
   );
 };

@@ -21,7 +21,6 @@ const ProductsPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
- 
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -29,9 +28,7 @@ const ProductsPage = () => {
   }, []);
 
   useEffect(() => {
-    // Read category from URL
     const categoryFromURL = searchParams.get("category") || "";
-    
     setCategoryFilter(categoryFromURL);
   }, [searchParams]);
 
@@ -45,7 +42,6 @@ const ProductsPage = () => {
         if (!response.ok) throw new Error(`API error: ${response.status}`);
 
         const data = await response.json();
-
         if (!data || !Array.isArray(data.products)) {
           throw new Error("Invalid API response format");
         }
@@ -75,22 +71,16 @@ const ProductsPage = () => {
         product.category?.toLowerCase().includes(query.toLowerCase()) ||
         product.brand?.toLowerCase().includes(query.toLowerCase()) ||
         product.productName?.toLowerCase().includes(query.toLowerCase())
-        // product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
 
     if (category) {
-      // Remove special characters like (), & and split by spaces
-      const keywords = category.replace(/[(),&]/g, "").toLowerCase().split(/\s+/);
-    
+      const formattedCategory = category.trim().toLowerCase();
+
       filteredProducts = filteredProducts.filter((product) => {
-        const productCategory = product.category.toLowerCase();
-    
-        return keywords.some((word) => {
-          return (
-            productCategory.includes(word) || productCategory.includes(word.slice(0, -1))
-          );
-        });
+        const productCategory = product.category ? product.category.trim().toLowerCase() : '';
+
+        return productCategory.includes(formattedCategory);
       });
     }
 
@@ -100,28 +90,28 @@ const ProductsPage = () => {
       filteredProducts = filteredProducts.sort((a, b) => b.price - a.price);
     }
 
+    const totalFilteredPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+    setCurrentPage((prev) => (prev > totalFilteredPages ? 1 : prev));
+
     const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
     setDisplayedProducts(filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE));
   };
 
   const handleCategoryChange = (category) => {
     setCategoryFilter(category);
-    router.push(`/customer/products?category=${encodeURIComponent(category)}`); // Update URL
+    router.push(`/customer/products?category=${encodeURIComponent(category)}`);
   };
 
   const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
 
-  // Only render the component after mounting to avoid SSR issues
-  if (!isMounted) {
-    return null;
-  }
-  
+  if (!isMounted) return null;
+
   const handleProductClick = (productId) => {
     router.push(`/customer/product/${productId}`);
   };
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar
         allProducts={products}
         setDisplayedProducts={setDisplayedProducts}
@@ -136,7 +126,7 @@ const ProductsPage = () => {
         <CategoryMenu setCategoryFilter={handleCategoryChange} />
       </div>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-6 pt-12 lg:pt-12 bg-gray-50">
+      <div className="w-full h-full mx-auto p-4 md:p-6 pt-12 lg:pt-12 flex-grow">
         {loading && <p className="text-center text-blue-500">Loading products...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
@@ -169,73 +159,52 @@ const ProductsPage = () => {
           )}
         </div>
 
-        {/* Only show pagination if there are products */}
-        {/* {displayedProducts.length > 0 && totalPages > 1 && (
-          <div className="flex justify-center items-center mt-6 space-x-2">
-            <Button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="bg-blue-500 text-white hover:bg-blue-700">
+        {displayedProducts.length > 0 && totalPages > 1 && (
+          <div className="flex justify-center items-center mt-6 my-6 space-x-2">
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="bg-blue-500 text-white hover:bg-blue-700"
+            >
               Previous
             </Button>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-              <Button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`${page === currentPage ? "bg-blue-500 text-white hover:bg-blue-700" : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"}`}
-              >
-                {page}
-              </Button>
-            ))}
-            <Button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="bg-blue-500 text-white hover:bg-blue-700">
+
+            {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
+              const startPage = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+              const page = startPage + index;
+
+              return (
+                page <= totalPages && (
+                  <Button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`${page === currentPage
+                      ? "bg-blue-500 text-white hover:bg-blue-700"
+                      : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"
+                      }`}
+                  >
+                    {page}
+                  </Button>
+                )
+              );
+            })}
+
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="bg-blue-500 text-white hover:bg-blue-700"
+            >
               Next
             </Button>
           </div>
-        )} */}
-        {displayedProducts.length > 0 && totalPages > 1 && (
-  <div className="flex justify-center items-center mt-6 space-x-2">
-    {/* Previous Button */}
-    <Button
-      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-      className="bg-blue-500 text-white hover:bg-blue-700"
-    >
-      Previous
-    </Button>
-
-    {/* Dynamic Page Numbers */}
-    {Array.from({ length: 5 }, (_, index) => {
-      const startPage = Math.max(1, Math.min(currentPage - 2, totalPages - 4)); // Ensure pages don't exceed limits
-      const page = startPage + index;
-
-      return (
-        page <= totalPages && (
-          <Button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`${
-              page === currentPage
-                ? "bg-blue-500 text-white hover:bg-blue-700"
-                : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"
-            }`}
-          >
-            {page}
-          </Button>
-        )
-      );
-    })}
-
-    {/* Next Button */}
-    <Button
-      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-      disabled={currentPage === totalPages}
-      className="bg-blue-500 text-white hover:bg-blue-700"
-    >
-      Next
-    </Button>
-  </div>
-)}
+        )}
 
       </div>
-      <Footer></Footer>
-    </>
+
+      <Footer/>
+
+
+    </div>
   );
 };
 

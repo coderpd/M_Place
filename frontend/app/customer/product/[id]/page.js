@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { Search, ShoppingCart, User, LogOut, Settings, Calendar } from "lucide-react";
+import Footer from "@/app/LandingPage/Footer";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -102,8 +103,8 @@ const ProductDetail = () => {
     <>
       <Navbar disableFilters={true} disableSearch={true}  />
       <ToastContainer />
-      <div className=" w-full mx-auto p-6 pt-24 bg-gray-50">
-        <div className="flex flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px]">
+      <div className=" w-full h-full mx-auto p-6 pt-24 bg-gray-50 min-h-screen">
+        <div className="flex flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px] mt-6 mb-6">
           <div className="relative w-full md:w-1/2 flex flex-col items-center md:pr-6">
             <div className="relative w-80 h-80 flex items-center justify-center">
               <img
@@ -134,6 +135,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

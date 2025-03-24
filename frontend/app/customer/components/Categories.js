@@ -10,49 +10,62 @@ const categories = [
       {
         name: "Printing Consumables",
         items: [
-          "Ink Cartridges (Black, Color)",
-          "Toner Cartridges (Monochrome, Color)",
-          "Printer Ribbons (Impact Printers)",
-          "Maintenance Kits (Fuser Kits, Roller Kits)",
+          "Ink Cartridges",
+          "Toner Cartridges Monochrome Color",
+          "Toner Cartridges Color",
+          "Printer Ribbons Impact Printers",
+          "Maintenance Kits Fuser Kits",
+          "Maintenance Kits Roller Kits",
           "Drum Units",
-          "Printer Paper (A4, A3, Specialty Paper)",
-          "Label Paper (Adhesive Labels, Shipping Labels)",
-          "Fax Paper (Thermal Paper Rolls)",
+          "Printer Paper",
+          "Label Paper",
+          "Label Marker",
+          "Fax Paper",
           "Photographic Paper",
         ],
       },
       {
         name: "Storage Media",
         items: [
-          "USB Flash Drives (Various Capacities)",
-          "External Hard Drives (HDDs, SSDs)",
-          "Memory Cards (SD, MicroSD, CompactFlash)",
-          "Backup Tapes (LTO, DAT, DLT)",
-          "Optical Media (Blank Discs, RW Discs)",
+          "USB Flash Drives",
+          "External Hard Drives HDDs",
+          "External Hard Drives SSDs",
+          "Memory Cards SD",
+          "Memory Card",
+          "Memory Cards MicroSD",
+          "Memory Cards CompactFlash",
+          "Backup Tapes LTO",
+          "Backup Tapes DAT",
+          "Backup Tapes DLT",
+          "Optical Media Blank Discs",
+          "Optical Media",
+          "Optical Media RW Discs",
         ],
       },
       {
         name: "Batteries",
         items: [
-          "Rechargeable Batteries (NiMH, Lithium-Ion)",
+          "Rechargeable Batteries ",
           "Laptop Batteries",
           "UPS Batteries",
-          "CMOS Batteries (CR2032, CR2025)",
+          "CMOS Batteries",
         ],
       },
       {
         name: "Cables & Adapters",
         items: [
-          "Ethernet Cables (Cat5e, Cat6, Cat7)",
-          "USB Cables (USB-A, USB-C, Micro USB)",
-          "HDMI Cables (Standard, Mini, Micro)",
+          "Ethernet Cables",
+          "USB Cables",
+          "HDMI Cables",
           "DisplayPort Cables",
           "VGA Cables",
-          "Power Cables (IEC, Laptop Adapters)",
-          "Audio Cables (3.5mm, RCA, Optical)",
-          "Phone Cables (RJ11)",
-          "Adapters (USB to HDMI, USB to Ethernet, VGA to HDMI)",
-          "Charging Cables (Lightning, USB-C, Micro-USB)",
+          "Power Cables ",
+          "Audio Cables ",
+          "Phone Cables ",
+          "Adapters ",
+          "Charging Cables",
+          "HDMI Cables Standard",
+          "HDMI Cables Mini",
         ],
       },
     ],
@@ -63,41 +76,100 @@ const categories = [
       {
         name: "Input Devices",
         items: [
-          "Keyboard (Wired, Wireless, Ergonomic, Gaming)",
-          "Mice (Wired, Wireless, Optical, Laser, Gaming)",
+          "Keyboards Wired",
+          "Keyboards Wireless",
+          "Keyboards Ergonomic",
+          "Keyboards Gaming",
+          "Mouse",
+          "Mouse Gaming",
+          "Mouse Wired",
+          "Mouse Wireless",
+          "Mouse Optical",
+          "Mouse Laser",
           "Trackballs",
-          "Graphic Tablets & Styluses",
+          "Graphic Tablets",
+          "Graphic Styluses",
           "Touchpads",
-          "Barcode Scanners (Wired, Wireless, Handheld)",
-          "ascadca"
+          "Barcode Scanners Wired",
+          "Barcode Scanners Wireless",
+          "Barcode Scanners Handheld",
         ],
       },
       {
         name: "Output Devices",
         items: [
-          "Monitors (Standard, 4K, Curved)",
-          "Printers (Inkjet, Laser, Dot Matrix)",
-          "Scanners (Flatbed, Document, Barcode)",
+
+          "Monitors Standard",
+          "Monitors 4K",
+          "Monitor",
+          "Monitors Curved",
+          "Printers Inkjet",
+          "Printers",
+          "Printers Laser",
+          "Printer Paper",
+          "Printers Dot Matrix",
+          "Scanners Flatbed",
+          "Scanners Document",
+          "Scanners Barcode",
           "Label Printers",
-          "Projectors (Portable, Office, Home Theater)",
-          "Speakers (Desktop, Bluetooth, USB)",
-          "Headsets (Wired, Wireless, Noise-Cancelling)",
-          "Webcams (Standard, HD, 4K)",
-          "Microphones (Desktop, USB, XLR)",
-        ],
+          "Projectors",
+          "Projectors Portable",
+          "Projectors Office",
+          "Projectors Home Theater",
+          "Speakers",
+          "Speakers Desktop",
+          "Speakers Bluetooth",
+          "Speakers USB",
+          "Headsets",
+          "Headsets Wired",
+          "Headsets Wireless",
+          "Headsets Noise-Cancelling",
+          "Webcams",
+          "Webcams Standard",
+          "Webcams HD",
+          "Webcams 4K",
+          "Microphones",
+          "Microphones Desktop",
+          "Microphones USB",
+          "Microphones XLR",
+        ]
+
       },
       {
         name: "Networking Peripherals",
         items: [
-          "Routers (Basic, Enterprise)",
-          "Switches (Unmanaged, Managed, PoE)",
+          "Routers",
+          "Routers Wireless",
+          "Routers Enterprise",
+          "Routers Home",
+          "Switches",
+          "Switches Unmanaged",
+          "Switches Managed",
+          "Switches PoE",
           "Wi-Fi Extenders",
-          "Access Points (Indoor, Outdoor, Mesh)",
-          "Network Adapters (Wi-Fi, Bluetooth, Ethernet)",
-          "USB Hubs (Standard, Powered)",
-          "KVM Switches (Keyboard, Video, Mouse)",
-          "Modems (DSL, Cable, Fiber)",
-        ],
+          "Wireless Antennas",
+          "Wireless Access Points",
+          "Wireless Access Points Wi-Fi 6",
+          "Wireless Access Points Mesh System",
+          "Wireless Controllers",
+          "Access Points Indoor",
+          "Access Points Outdoor",
+          "Access Points Mesh",
+          "Network Adapters",
+          "Network Adapters Wi-Fi",
+          "Network Adapters Bluetooth",
+          "Network Adapters Ethernet",
+          "USB Hubs Standard",
+          "USB Hubs Powered",
+          "KVM Switches Keyboard",
+          "KVM Switches Video",
+          "KVM Switches Mouse",
+          "Modems",
+          "Modems DSL",
+          "Modems Cable",
+          "Modems Fiber",
+        ]
+
       },
     ],
   },
@@ -107,25 +179,31 @@ const categories = [
       {
         name: "Computer Accessories",
         items: [
-          "Laptop Bags & Sleeves",
-          "Laptop Stands & Cooling Pads",
-          "Mouse Pads & Wrist Rests",
+          "Laptop Bags",
+          "Laptop Sleeves",
+          "Laptop Stand",
+          "Laptop Cooling Pads",
+          "Mouse Pads",
+          "Wrist Rest",
           "USB Hubs",
-          "Monitor Mounts & Stands",
+          "Monitor Mounts",
+          "Monitor Stands",
         ],
       },
       {
         name: "Office Accessories",
         items: [
-          "Surge Protectors & Power Strips",
+          "Surge Protectors",
+          "Power Strips",
           "Extension Cords",
           "Desk Organizers",
-          "Label Makers & Tapes",
+          "Label Makers",
+          "Label Tapes",
         ],
       },
       {
         name: "Mobile Accessories",
-        items: ["Power Banks", "Bluetooth Headsets", "Mobile Charging Cables "],
+        items: ["Power Banks", "Bluetooth Headsets", "Headphones", "Mobile Charging Cables "],
       },
     ],
   },
@@ -133,21 +211,32 @@ const categories = [
     name: "Hardware",
     subcategories: [
       {
-        name: "Monitors & Laptops",
+        name: "Desktops & Laptops",
         items: [
-          "Monitors (Basic, High-Performance, All-in-One)",
-          "Laptops (Business, Gaming, Ultrabooks)",
-          "Workstations (Engineering, Graphic Design, Video Editing)",
+          "Desktop",
+          "Desktops Basic",
+          "Desktops High-Performance",
+          "Desktops All-in-One",
+          "Laptop",
+          "Laptop Business",
+          "Laptop Gaming",
+          "Laptop Ultrabooks",
+          "Workstations Engineering",
+          "Workstations Graphic Design",
+          "Workstations Video Editing",
           "Thin Clients",
           "Chromebooks",
-          "Tablets (iPads, Android Tablets, Windows Tablets)",
-        ],
+          "Tablets iPads",
+          "Tablets Android",
+          "Tablets Windows",
+        ]
+
       },
 
       {
         name: "Servers & Storage",
         items: [
-          "Servers (Rack, Tower, Blade, Modular, Microservers)",
+          "Servers ",
           "NAS (Network Attached Storage)",
           "SAN (Storage Area Network)",
           "DAS (Direct Attached Storage)",
@@ -158,21 +247,29 @@ const categories = [
       {
         name: "Mobile Devices",
         items: [
-          "Mobile Phones (iOS, Android)",
-          "E-Readers (Kindle, Kobo)",
-          "Wearables (Smartwatches, Fitness Trackers)",
+          "Smartphones iOS",
+          "Smartphones Android",
+          "E-Readers Kindle",
+          "E-Readers Kobo",
+          "Wearables Smartwatches",
+          "Wearables Fitness Trackers",
           "Tablets",
-        ],
+        ]
+
       },
       {
         name: "Audio & Video Equipment",
         items: [
-          "Cameras (DSLR, Mirrorless, Action, Security)",
+          "Cameras DSLR",
+          "Cameras Mirrorless",
+          "Cameras Action",
+          "Cameras Security",
           "Camcorders",
           "Video Conferencing Systems",
           "AV Receivers",
           "Projector Screens",
-        ],
+        ]
+
       },
     ],
   },
@@ -182,39 +279,73 @@ const categories = [
       {
         name: "Operating Systems",
         items: [
-          "Windows (Home, Pro, Enterprise)",
+          "Windows Home",
+          "Windows Pro",
+          "Windows Enterprise",
           "macOS",
-          "Linux Distributions (Ubuntu, CentOS, Red Hat, Fedora)",
-        ],
+          "Linux Distributions Ubuntu",
+          "Linux Distributions CentOS",
+          "Linux Distributions Red Hat",
+          "Linux Distributions Fedora",
+        ]
+
       },
       {
         name: "Productivity Software",
         items: [
-          "Office Suites (Microsoft Office, Google Workspace, LibreOffice)",
-          "Project Management Tools (Asana, Trello, Microsoft Project)",
-          "Collaboration Tools (Slack, Microsoft Teams, Zoom)",
-          "Email Clients (Outlook, Thunderbird)",
-        ],
+          "Office Suites Microsoft Office",
+          "Office Suites Google Workspace",
+          "Office Suites LibreOffice",
+          "Project Management Tools Asana",
+          "Project Management Tools Trello",
+          "Project Management Tools Microsoft Project",
+          "Collaboration Tools Slack",
+          "Collaboration Tools Microsoft Teams",
+          "Collaboration Tools Zoom",
+          "Email Clients Outlook",
+          "Email Clients Thunderbird",
+        ]
+
       },
       {
         name: "Security Software",
         items: [
-          "Antivirus & Anti-malware (Norton, McAfee, Bitdefender)",
-          "Firewalls (ZoneAlarm, Comodo)",
-          "VPN Software (NordVPN, ExpressVPN, OpenVPN)",
-          "Encryption Tools (VeraCrypt, BitLocker)",
-          "Endpoint Security (CrowdStrike, Symantec)",
-        ],
+          "Antivirus & Anti-malware Norton",
+          "Antivirus & Anti-malware McAfee",
+          "Antivirus & Anti-malware Bitdefender",
+          "Firewalls ZoneAlarm",  
+          "Firewalls Comodo",
+          "VPN Software NordVPN",
+
+          "VPN Software ExpressVPN",
+          "VPN Software OpenVPN",
+          "Encryption Tools VeraCrypt",
+          "Encryption Tools BitLocker",
+          "Endpoint Security CrowdStrike",
+          "Endpoint Security Symantec",
+        ]
+
       },
       {
         name: "Graphics & Design Software",
         items: [
-          " Graphic Design (Adobe Photoshop, Illustrator, CorelDRAW)",
-          "Video Editing (Adobe Premiere Pro, Final Cut Pro, DaVinci Resolve)",
-          "3D Modeling (AutoCAD, Blender, SketchUp)",
-          "Animation (Maya, After Effects, Toon Boom)",
-          "CAD/CAM Software (SolidWorks, AutoCAD, Fusion 360)",
-        ],
+          "Graphic Design Adobe Photoshop",
+          // "Graphic Design Illustrator",
+          "Graphic Design CorelDRAW",
+          "Video Editing Adobe Premiere Pro",
+          "Video Editing Final Cut Pro",
+          "Video Editing DaVinci Resolve",
+          "3D Modeling AutoCAD",
+          "3D Modeling Blender",
+          "3D Modeling SketchUp",
+          "Animation Maya",
+          "Animation After Effects",
+          "Animation Toon Boom",
+          "CAD/CAM Software SolidWorks",
+          "CAD/CAM Software AutoCAD",
+          "CAD/CAM Software Fusion 360",
+        ]
+
       },
     ],
   },
@@ -224,32 +355,51 @@ const categories = [
       {
         name: "Network Infrastructure",
         items: [
-          "Routers (Enterprise, Home, Wireless)",
-          "Switches (Core, Distribution, Access, PoE)",
-          "Network Cabling (Ethernet, Fiber Optic, Coaxial)",
-          "Network Interface Cards (NICs)",
-        ],
+          "Routers",
+          "Routers Enterprise",
+          "Routers Home",
+          "Routers Wireless",
+          "Switches",
+          "Switches Core",
+          "Switches Distribution",
+          "Switches Access",
+          "Switches PoE",
+          "Network Cabling Ethernet",
+          "Network Cabling Fiber Optic",
+          "Network Cabling Coaxial",
+          "Network Interface Cards NICs",
+        ]
+
       },
       {
         name: "Wireless Networking",
         items: [
-          "Wireless Access Points (Wi-Fi 6, Mesh Systems)",
+          "Wireless Access Points Wi-Fi 6",
+          "Wireless Access Points Mesh Systems",
           "Wireless Controllers",
           "Wi-Fi Extenders",
           "Wireless Antennas",
-        ],
+        ]
+
       },
 
-      {
-        name: "Network Management Tools",
-        items: [
-          "Network Monitoring (SolarWinds, Nagios, PRTG)",
-          "Network Configuration Management (Cisco Prime, SolarWinds)",
-          "Bandwidth Management Tools (NetFlow, Zabbix)",
-          "Network Analysis Tools (Wireshark, Omnipeek)",
-          "Network Simulation & Testing Tools (GNS3, Cisco Packet Tracer)",
-        ],
-      },
+      // {
+      //   name: "Network Management Tools",
+      //   items: [
+      //     "Network Monitoring SolarWinds",
+      //     "Network Monitoring Nagios",
+      //     "Network Monitoring PRTG",
+      //     "Network Configuration Management Cisco Prime",
+      //     "Network Configuration Management SolarWinds",
+      //     "Bandwidth Management Tools NetFlow",
+      //     "Bandwidth Management Tools Zabbix",
+      //     "Network Analysis Tools Wireshark",
+      //     "Network Analysis Tools Omnipeek",
+      //     "Network Simulation & Testing Tools GNS3",
+      //     "Network Simulation & Testing Tools Cisco Packet Tracer",
+      //   ]
+
+      // },
     ],
   },
 ];
@@ -336,24 +486,23 @@ const CategoryMenu = ({ setCategoryFilter }) => {
                         {sub.name}
                       </button>
 
-                      
-                        {activeSubcategory === sub.name && sub.items.length > 0 && (
+
+                      {activeSubcategory === sub.name && sub.items.length > 0 && (
                         <div
-                          className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${
-                            dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
-                          }`}
+                          className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
+                            }`}
                         >
                           <ul className="py-2 text-md text-gray-700 text-left">
-                                {sub.items.map((item, itemIndex) => (  
-                                     <li key={itemIndex} className="pl-2"> {/* Ensures list items start from the left */}
-                                    <button
-                                      onClick={() => setCategoryFilter(item)}
-                                      className="block w-full text-left px-2 py-2 hover:bg-gray-100"
-                                    >
-                                       {item}
-                                    </button>
-                                  </li>
-                                ))}
+                            {sub.items.map((item, itemIndex) => (
+                              <li key={itemIndex} className="pl-2"> {/* Ensures list items start from the left */}
+                                <button
+                                  onClick={() => setCategoryFilter(item)}
+                                  className="block w-full text-left px-2 py-2 hover:bg-gray-100"
+                                >
+                                  {item}
+                                </button>
+                              </li>
+                            ))}
                           </ul>
 
                         </div>
