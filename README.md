@@ -167,7 +167,7 @@ Once both the frontend and backend are running:
 - CLSX
 - Reacticon
 - Yup
-- 
+  
 ## Database Schema
 
 The project uses **MySQL** as the database, and the schema name is **`mplace`**. Below are the main tables used:
