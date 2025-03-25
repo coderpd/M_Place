@@ -43,7 +43,7 @@ export default function ForgotPassOtp() {
     setSuccessMessage("");
   
     try {
-      const email = localStorage.getItem("userEmail"); // ✅ Retrieve email from localStorage
+      const email = localStorage.getItem("userEmail");
   
       if (!email) {
         setErrorMessage("Email is missing. Please request a new OTP.");
@@ -58,7 +58,7 @@ export default function ForgotPassOtp() {
         },
         body: JSON.stringify({
           email: email,  
-          otp: data.otp,
+          otp:Number(data.otp),
         }),
       });
   
@@ -69,10 +69,7 @@ export default function ForgotPassOtp() {
   
       const result = await response.json();
       setSuccessMessage(result.message || "OTP validated successfully.");
-      
-      // Clear email from localStorage after verification
-      // localStorage.removeItem("userEmail");
-  
+        
       router.push("/ResetPassword");
     } catch (error) {
       setErrorMessage(error.message || "Failed to validate OTP");
@@ -80,11 +77,7 @@ export default function ForgotPassOtp() {
       setLoading(false);
     }
   };
-  
-  
-  
-
-  return (
+   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       <ImageSlider />
 

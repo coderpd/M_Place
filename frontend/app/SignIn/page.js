@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ImageSlider from "./ImageSlider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,10 +17,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     setLoading(true);
     setError("");
-    
+
     try {
       const response = await fetch("http://localhost:5000/auth/signin", {
         method: "POST",
@@ -58,7 +58,7 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, password, rememberMe, router]);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
@@ -143,7 +143,7 @@ export default function LoginPage() {
             </div>
 
             <p className="text-center text-sm mt-4">
-              New here? <Link href="./Home" className="text-blue-500">Create an account</Link>
+              New here? <Link href="/LandingPage" className="text-blue-500">Create an account</Link>
             </p>
           </CardContent>
         </Card>

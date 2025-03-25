@@ -62,7 +62,7 @@ export default function AddProduct() {
         throw new Error("Failed to add product");
       }
 
-      //Show success message
+      // Show success message
       Swal.fire({
         title: "Success!",
         text: "Product added successfully!",
@@ -94,16 +94,17 @@ export default function AddProduct() {
   };
 
   return (
-
-
     <>
-      <div className="max-w-3xl  mx-auto bg-white p-6 rounded-xl shadow-lg mt-8 font-sans">
+      <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-8 font-sans w-full md:w-4/5 lg:w-3/5">
         <h2 className="text-lg font-bold text-black mb-4 text-left flex items-center gap-2">
           <IoBagAdd size={25} />
           Add New Product
         </h2>
 
-        <form className="grid grid-cols-2 gap-6 text-sm text-black" onSubmit={handleSubmit}>
+        <form
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-black"
+          onSubmit={handleSubmit}
+        >
           {/* Row 1 */}
           <div>
             <label className="block font-medium mb-2">Category</label>
@@ -117,7 +118,7 @@ export default function AddProduct() {
               placeholder="Enter Product Category"
               list="category-options"
             />
-           <datalist id="category-options">
+            <datalist id="category-options">
             <option value="Keyboards Wired" />
             <option value="Keyboards Wireless" />
             <option value="Keyboards Ergonomic" />
@@ -369,23 +370,8 @@ export default function AddProduct() {
             <option value="CAD/CAM Software SolidWorks" />
             <option value="CAD/CAM Software AutoCAD" />
             <option value="CAD/CAM Software Fusion 360" />
-
-            {/* <option value="Network Monitoring SolarWinds" />
-            <option value="Network Monitoring Nagios" />
-            <option value="Network Monitoring PRTG" />
-            <option value="Network Configuration Management Cisco Prime" />
-            <option value="Network Configuration Management SolarWinds" />
-            <option value="Bandwidth Management Tools NetFlow" />
-            <option value="Bandwidth Management Tools Zabbix" />
-            <option value="Network Analysis Tools Wireshark" />
-            <option value="Network Analysis Tools Omnipeek" />
-            <option value="Network Simulation & Testing Tools GNS3" />
-            <option value="Network Simulation & Testing Tools Cisco Packet Tracer" /> */}
           </datalist>
-
           </div>
-
-
 
           <div>
             <label className="block font-medium mb-2">Make & Model</label>
@@ -453,17 +439,17 @@ export default function AddProduct() {
 
           {/* Image Preview */}
           {previewImage && (
-            <div className="col-span-2 flex justify-center">
+            <div className="col-span-1 md:col-span-2 flex justify-center">
               <img
                 src={previewImage}
                 alt="Product Preview"
-                className="w-40 h-40 object-cover rounded-lg border"
+                className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-lg border"
               />
             </div>
           )}
 
           {/* Row 4 (Full Width) */}
-          <div className="col-span-2">
+          <div className="col-span-1 md:col-span-2">
             <label className="block font-medium mb-2">Description</label>
             <textarea
               name="description"
@@ -476,11 +462,10 @@ export default function AddProduct() {
           </div>
 
           {/* Submit Button (Full Width) */}
-          <div className="col-span-2 flex justify-start">
+          <div className="col-span-1 md:col-span-2 flex justify-start">
             <button
               type="submit"
-              className="bg-blue-500  text-white px-6 py-2 rounded-sm hover:bg-blue-700 transition font-sans"
-
+              className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition font-sans w-full sm:w-auto"
             >
               Add Product
             </button>
@@ -488,14 +473,8 @@ export default function AddProduct() {
         </form>
 
         <ToastContainer />
-
       </div>
-
-  
-    
       
-
     </>
-
   );
 }

@@ -383,23 +383,7 @@ const categories = [
 
       },
 
-      // {
-      //   name: "Network Management Tools",
-      //   items: [
-      //     "Network Monitoring SolarWinds",
-      //     "Network Monitoring Nagios",
-      //     "Network Monitoring PRTG",
-      //     "Network Configuration Management Cisco Prime",
-      //     "Network Configuration Management SolarWinds",
-      //     "Bandwidth Management Tools NetFlow",
-      //     "Bandwidth Management Tools Zabbix",
-      //     "Network Analysis Tools Wireshark",
-      //     "Network Analysis Tools Omnipeek",
-      //     "Network Simulation & Testing Tools GNS3",
-      //     "Network Simulation & Testing Tools Cisco Packet Tracer",
-      //   ]
-
-      // },
+    
     ],
   },
 ];
@@ -490,7 +474,7 @@ const CategoryMenu = ({ setCategoryFilter }) => {
                       {activeSubcategory === sub.name && sub.items.length > 0 && (
                         <div
                           className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
-                            }`}
+                            } max-h-[300px] overflow-y-auto`}
                         >
                           <ul className="py-2 text-md text-gray-700 text-left">
                             {sub.items.map((item, itemIndex) => (

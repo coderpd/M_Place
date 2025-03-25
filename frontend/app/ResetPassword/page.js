@@ -68,10 +68,10 @@ export default function ResetPassword() {
         text: "You can now log in with your new password.",
         icon: "success",
         confirmButtonColor: "#4BB543",
-        confirmButtonText: "Go to Home",
+        confirmButtonText: "Go to Signin",
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/Home");
+          router.push("/SignIn");
         }
       });
 

@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 import Footer from "@/app/LandingPage/Footer";
 
 const CartPage = () => {

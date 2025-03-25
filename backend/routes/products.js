@@ -15,11 +15,13 @@ const storage = multer.diskStorage({
     }
     cb(null, uploadPath);
   },
+
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);
   },
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage }); 
 
 // Add Product
 router.post("/add-product", upload.single("productImage"), async (req, res) => {

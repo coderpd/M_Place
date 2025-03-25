@@ -28,8 +28,9 @@ router.post("/signin", async (req, res) => {
 
       // Generate JWT token
       const token = jwt.sign({ id: vendor.id, userType: "vendor" }, JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "5000", // Token expires in 5 minutes
       });
+      
 
       return res.status(200).json({
         message: "Login successful",
@@ -55,7 +56,7 @@ router.post("/signin", async (req, res) => {
 
       // Generate JWT token
       const token = jwt.sign({ id: customer.id, userType: "customer" }, JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "",
       });
 
       return res.status(200).json({

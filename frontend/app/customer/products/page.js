@@ -1,10 +1,9 @@
-
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Navbar from "../components/Navbar";
-import CategoryMenu from "../components/Categories";
+import Navbar from "../Components/Navbar";
+import CategoryMenu from "../Components/Categories";
 import Footer from "@/app/LandingPage/Footer";
 
 const PRODUCTS_PER_PAGE = 20;
@@ -22,7 +21,6 @@ const ProductsPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -30,9 +28,7 @@ const ProductsPage = () => {
   }, []);
 
   useEffect(() => {
-    // Read category from URL
     const categoryFromURL = searchParams.get("category") || "";
-
     setCategoryFilter(categoryFromURL);
   }, [searchParams]);
 
@@ -46,7 +42,6 @@ const ProductsPage = () => {
         if (!response.ok) throw new Error(`API error: ${response.status}`);
 
         const data = await response.json();
-
         if (!data || !Array.isArray(data.products)) {
           throw new Error("Invalid API response format");
         }
@@ -76,20 +71,18 @@ const ProductsPage = () => {
         product.category?.toLowerCase().includes(query.toLowerCase()) ||
         product.brand?.toLowerCase().includes(query.toLowerCase()) ||
         product.productName?.toLowerCase().includes(query.toLowerCase())
-        // product.description?.toLowerCase().includes(query.toLowerCase())
       );
     }
 
     if (category) {
       const formattedCategory = category.trim().toLowerCase();
-    
+
       filteredProducts = filteredProducts.filter((product) => {
         const productCategory = product.category ? product.category.trim().toLowerCase() : '';
-    
+
         return productCategory.includes(formattedCategory);
       });
     }
-    
 
     if (price === "low") {
       filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
@@ -97,21 +90,21 @@ const ProductsPage = () => {
       filteredProducts = filteredProducts.sort((a, b) => b.price - a.price);
     }
 
+    const totalFilteredPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+    setCurrentPage((prev) => (prev > totalFilteredPages ? 1 : prev));
+
     const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
     setDisplayedProducts(filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE));
   };
 
   const handleCategoryChange = (category) => {
     setCategoryFilter(category);
-    router.push(`/customer/products?category=${encodeURIComponent(category)}`); // Update URL
+    router.push(`/customer/products?category=${encodeURIComponent(category)}`);
   };
 
   const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
 
-  // Only render the component after mounting to avoid SSR issues
-  if (!isMounted) {
-    return null;
-  }
+  if (!isMounted) return null;
 
   const handleProductClick = (productId) => {
     router.push(`/customer/product/${productId}`);
@@ -128,16 +121,16 @@ const ProductsPage = () => {
         disableFilters={false}
         disableSearch={false}
       />
-  
-      <div className="pt-[80px] ">
+
+      <div className="pt-[80px]">
         <CategoryMenu setCategoryFilter={handleCategoryChange} />
       </div>
-  
-      <div className="max-w-7xl mx-auto p-4 md:p-6 pt-12 lg:pt-12 flex-grow">
+
+      <div className="w-full h-full mx-auto p-4 md:p-6 pt-12 lg:pt-12 flex-grow">
         {loading && <p className="text-center text-blue-500">Loading products...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
-  
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 ">
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
           {displayedProducts.length > 0 ? (
             displayedProducts.map((product) => (
               <div
@@ -162,12 +155,12 @@ const ProductsPage = () => {
               </div>
             ))
           ) : (
-            <p className="text-center col-span-full text-gray-500 ">No products found</p>
+            <p className="text-center col-span-full text-gray-500">No products found</p>
           )}
         </div>
-  
+
         {displayedProducts.length > 0 && totalPages > 1 && (
-          <div className="flex justify-center items-center mt-6 space-x-2 py-6">
+          <div className="flex justify-center items-center mt-6 my-6 space-x-2">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -175,11 +168,11 @@ const ProductsPage = () => {
             >
               Previous
             </Button>
-  
-            {Array.from({ length: 5 }, (_, index) => {
+
+            {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
               const startPage = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
               const page = startPage + index;
-  
+
               return (
                 page <= totalPages && (
                   <Button
@@ -188,14 +181,14 @@ const ProductsPage = () => {
                     className={`${page === currentPage
                       ? "bg-blue-500 text-white hover:bg-blue-700"
                       : "bg-white text-black hover:bg-blue-700 hover:text-white border border-gray-300"
-                    }`}
+                      }`}
                   >
                     {page}
                   </Button>
                 )
               );
             })}
-  
+
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
@@ -205,13 +198,14 @@ const ProductsPage = () => {
             </Button>
           </div>
         )}
+
       </div>
-  
-      {/* Footer - Always Stays at Bottom */}
-      <Footer />
+
+      <Footer/>
+
+
     </div>
   );
-  
 };
 
 export default ProductsPage;

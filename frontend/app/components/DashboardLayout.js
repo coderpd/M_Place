@@ -18,9 +18,9 @@ export default function DashboardLayout({ id, children }) {
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
 
-
   const [readNotifications, setReadNotifications] = useState(new Set());
 
+  console.log(notifications)
   const router = useRouter();
   const pathname = usePathname();
 
@@ -33,6 +33,7 @@ export default function DashboardLayout({ id, children }) {
     const controller = new AbortController();
     const signal = controller.signal;
     let isMounted = true;
+
 
     const fetchVendorDetails = async () => {
       try {
@@ -76,9 +77,10 @@ export default function DashboardLayout({ id, children }) {
           throw new Error("Failed to fetch notifications");
         }
         const data = await response.json();
+        console.log(data)
 
         if (!data.notifications) {
-          console.error("❌ Backend returned no notifications");
+          console.error("Backend returned no notifications");
           return;
         }
 
@@ -100,15 +102,21 @@ export default function DashboardLayout({ id, children }) {
           }))
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-        setNotifications(formattedNotifications);
+        //  Only update state if data has changed
+        setNotifications((prev) =>
+          JSON.stringify(prev) === JSON.stringify(formattedNotifications) ? prev : formattedNotifications
+        );
 
 
       } catch (err) {
-        console.error("❌ Error fetching notifications:", err);
+        console.error("Error fetching notifications:", err);
       }
     };
 
     fetchNotifications();
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
+
   }, [id]);
 
   // Filter Notifications
@@ -137,7 +145,7 @@ export default function DashboardLayout({ id, children }) {
             notif.id === notifId ? { ...notif, status: "read", read: true } : notif
           )
         );
-        console.log(`✅ Notification ${notifId} marked as read`);
+        console.log(`Notification ${notifId} marked as read`);
       } else {
         console.error(`Failed to mark notification ${notifId} as read`);
       }
@@ -153,7 +161,10 @@ export default function DashboardLayout({ id, children }) {
     );
   };
 
-  
+  // Delete Notification
+  const deleteNotification = (notifId) => {
+    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId));
+  };
 
 
   useEffect(() => {
@@ -187,10 +198,10 @@ export default function DashboardLayout({ id, children }) {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        // ✅ Clear local storage before redirecting
+        // Clear local storage before redirecting
         localStorage.clear();
 
-        // ✅ Redirect to the homepage
+        // Redirect to the homepage
         router.push("/");
       }
     });
@@ -223,21 +234,21 @@ export default function DashboardLayout({ id, children }) {
           <nav className="flex flex-col  mt-3 sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productcards`)}
-              className={`text-[16px]  pb-1 ${pathname.includes("productcards") ? "border-b-4 border-blue-500" : ""
+              className={`text-lg  pb-1 ${pathname.includes("productcards") ? "border-b-4 border-blue-500" : ""
                 }`}
             >
               Product portal
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/addproducts`)}
-              className={`text-[16px]  pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-blue-500" : ""
+              className={`text-lg  pb-1 ${pathname.includes("addproducts") ? "border-b-4 border-blue-500" : ""
                 }`}
             >
               Add Product
             </button>
             <button
               onClick={() => router.push(`/vendorDashboard/${id}/productdetails`)}
-              className={`text-[16px]   pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-blue-500" : ""
+              className={`text-lg   pb-1 ${pathname.includes("productdetails") ? "border-b-4 border-blue-500" : ""
                 }`}
             >
               Product Details
@@ -272,7 +283,7 @@ export default function DashboardLayout({ id, children }) {
           <div className="w-[2px] h-7 bg-gray-400"></div>
 
           {/* User Dropdown */}
-          <div className="relative flex items-center cursor-pointer" onClick={toggleDropdown} >
+          <div className="relative flex items-center cursor-pointer" onClick={toggleDropdown}>
             <User size={30} className="text-black-900" />
             <div className="ml-2 hidden text-md sm:block">
               {vendor && <span>{vendor.firstName} {vendor.lastName}</span>}
@@ -374,13 +385,7 @@ export default function DashboardLayout({ id, children }) {
       <div className={`p-6 sm:p-8 bg-gray-50 flex-1 mt-20 transition-opacity duration-500 ${fadeIn ? "opacity-100" : "opacity-0"}`}>
         {children}
       </div>
-
-
-      <Footer/>
+      <Footer />
     </div>
   );
 }
-
-
-
-

@@ -77,14 +77,14 @@ export default function ProductDetails() {
         product?.productName?.toLowerCase().includes(query) ||
         product?.category?.toLowerCase().includes(query) ||
         product?.brand?.toLowerCase().includes(query)
-      
+
       );
     });
   }, [products, searchQuery]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  
+
   const selectedProducts = useMemo(() => {
     return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, currentPage]);
@@ -113,36 +113,36 @@ export default function ProductDetails() {
           <table className="min-w-full table-auto border-collapse">
             <thead>
               <tr className="bg-blue-500 text-white">
-                <th className="px-6 py-3 text-left">Image</th>
-                <th className="px-6 py-3 text-left">Product Name</th>
-                <th className="px-6 py-3 text-left">Brand</th>
-                <th className="px-6 py-3 text-left">Category</th>
-                <th className="px-6 py-3 text-left">Price</th>
-                <th className="px-6 py-3 text-left">Seller</th>
-                <th className="px-6 py-3 text-left">Actions</th>
+                <th className="px-2 md:px-4 py-3 text-left">Image</th>
+                <th className="px-2 md:px-4 py-3 text-left">Product Name</th>
+                <th className="px-2 md:px-4 py-3 text-left">Brand</th>
+                <th className="px-2 md:px-4 py-3 text-left">Category</th>
+                <th className="px-2 md:px-4 py-3 text-left">Price</th>
+                <th className="px-2 md:px-4 py-3 text-left hidden md:table-cell">Seller</th>
+                <th className="px-2 md:px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {selectedProducts.map((product) => (
                 <tr key={product.id} className="border-b hover:bg-gray-100">
-                  <td className="px-6 py-4">
+                  <td className="px-2 md:px-4 py-4">
                     <img
                       src={`http://localhost:5000/uploads/${product.productImage}`}
                       alt={product.productName}
-                      className="w-16 h-16 object-cover rounded"
+                      className="w-12 h-12 md:w-16 md:h-16 object-cover rounded"
                     />
                   </td>
-                  <td className="px-6 py-4">{product.productName}</td>
-                  <td className="px-6 py-4">{product.brand}</td>
-                  <td className="px-6 py-4">{product.category}</td>
-                  <td className="px-6 py-4">₹{product.price}</td>
-                  <td className="px-6 py-4">{product.seller}</td>
-                  <td className="px-6 py-4 flex space-x-3">
+                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">{product.productName}</td>
+                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">{product.brand}</td>
+                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">{product.category}</td>
+                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">₹{product.price}</td>
+                  <td className="px-2 md:px-4 py-4 text-sm md:text-base hidden md:table-cell">{product.seller}</td>
+                  <td className="px-2 md:px-4 py-4 flex space-x-2 md:space-x-3">
                     <button onClick={() => handleEdit(product.id)} className="text-[#549DA9] mt-5">
-                      <FaEdit />
+                      <FaEdit className="text-sm md:text-base" />
                     </button>
                     <button onClick={() => handleDelete(product.id)} className="text-red-600 mt-4">
-                      <Trash2 />
+                      <Trash2 className="text-sm md:text-base" />
                     </button>
                   </td>
                 </tr>
@@ -152,50 +152,49 @@ export default function ProductDetails() {
         </div>
       )}
 
-<div className="flex justify-center mt-4 space-x-2">
-  {/* Previous Button */}
-  <button
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-    className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
-  >
-    Previous
-  </button>
+      <div className="flex justify-center mt-4 space-x-2">
+        {/* Previous Button */}
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
+        >
+          Previous
+        </button>
 
-  {/* Page Numbers with Fixed Range */}
-  {(() => {
-    const rangeSize = 5; // Number of pages to show at a time
-    const halfRange = Math.floor(rangeSize / 2);
-    let startPage = Math.max(1, currentPage - halfRange);
-    let endPage = Math.min(totalPages, startPage + rangeSize - 1);
+        {/* Page Numbers with Fixed Range */}
+        {(() => {
+          const rangeSize = 5; // Number of pages to show at a time
+          const halfRange = Math.floor(rangeSize / 2);
+          let startPage = Math.max(1, currentPage - halfRange);
+          let endPage = Math.min(totalPages, startPage + rangeSize - 1);
 
-    // Ensure the range shifts only when necessary
-    if (endPage - startPage + 1 < rangeSize) {
-      startPage = Math.max(1, endPage - rangeSize + 1);
-    }
+          // Ensure the range shifts only when necessary
+          if (endPage - startPage + 1 < rangeSize) {
+            startPage = Math.max(1, endPage - rangeSize + 1);
+          }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
-      <button
-        key={page}
-        onClick={() => setCurrentPage(page)}
-        className={`px-3 py-2 border rounded ${
-          currentPage === page ? "bg-blue-500 text-white" : "bg-white border-blue-400 hover:bg-blue-200"
-        }`}
-      >
-        {page}
-      </button>
-    ));
-  })()}
+          return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-2 border rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-white border-blue-400 hover:bg-blue-200"
+                }`}
+            >
+              {page}
+            </button>
+          ));
+        })()}
 
-  {/* Next Button */}
-  <button
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-    className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
-  >
-    Next
-  </button>
-</div>
+        {/* Next Button */}
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
+        >
+          Next
+        </button>
+      </div>
 
     </div>
   );

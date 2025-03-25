@@ -306,7 +306,7 @@ const CustomerSignup = () => {
 
         {/* Main Header Content */}
         <h1 className="text-2xl md:text-4xl font-bold text-white mt-10">
-          Expand Your Business with M-Place!
+          Customer-Onboarding 
         </h1>
         <p className="mt-3 text-lg text-gray-100 max-w-xl">
           Register today and gain access to a marketplace of trusted buyers.
@@ -464,9 +464,9 @@ const CustomerSignup = () => {
                 <InputField
                   label="Address"
                   name="address"
-                  value={formValues.postalCode}
+                  value={formValues.address}
                   onChange={handleInputChange}
-                  error={errors.postalCode}
+                  error={errors.address}
                 />
 
                 {errors.address && (
