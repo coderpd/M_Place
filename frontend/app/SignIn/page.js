@@ -22,56 +22,54 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+        const response = await fetch("http://localhost:5000/auth/signin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Invalid email or password. Please try again.");
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error("Invalid email or password. Please try again.");
+            }
+            throw new Error(data.message || "Login failed. Please try again.");
         }
-        throw new Error(data.message || "Login failed. Please try again.");
-      }
 
-      console.log("✅ Login Successful:", data);
+        console.log("✅ Login Successful:", data);
 
-      // Store authentication token
-      if (rememberMe) {
-        localStorage.setItem("token", data.token);
-      } else {
-        sessionStorage.setItem("token", data.token);
-      }
-
-      // Store user details in localStorage
-      localStorage.setItem("userType", data.userType);
-      localStorage.setItem("userId", data.user.id.toString()); // Ensure it's stored as a string
-
-      // Ensure storage updates before redirection
-      setTimeout(() => {
-        if (data.userType === "vendor") {
-          localStorage.setItem("vendorId", data.user.id); // Ensure correct key name
-        
-          setTimeout(() => {
-            router.push(`/vendorDashboard/${data.user.id}`); // Delay navigation slightly
-          }, 100); // Short delay to ensure storage update
-        }
-        else if (data.userType === "customer") {
-          localStorage.setItem("customer", JSON.stringify(data.user));
-          router.push(`/customer/products`);
+        // Store authentication token
+        if (rememberMe) {
+            localStorage.setItem("token", data.token);
         } else {
-          throw new Error("Invalid user type.");
+            sessionStorage.setItem("token", data.token);
         }
-      }, 100); // Delay for 100ms to allow storage update
+
+        localStorage.setItem("userType", data.userType);
+        localStorage.setItem("userId", data.user.id.toString());
+
+        if (data.userType === "vendor") {
+            // ✅ Vendor login logic (unchanged)
+            localStorage.setItem("vendorId", data.user.id);
+            setTimeout(() => {
+                router.push(`/vendorDashboard/${data.user.id}`);
+            }, 100);
+        } else if (data.userType === "customer") {
+            // ✅ Integrated previous customer login logic
+            localStorage.setItem("customer", JSON.stringify(data.user)); // Store full customer data
+            router.push(`/customer/products`); // Redirect immediately after login
+        } else {
+            throw new Error("Invalid user type.");
+        }
     } catch (err) {
-      setError(err.message);
+        setError(err.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }, [email, password, rememberMe, router]);
+}, [email, password, rememberMe, router]);
+
+  
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">

@@ -1,5 +1,3 @@
-
-
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -27,15 +25,21 @@ router.post("/signin", async (req, res) => {
       }
 
       // Generate JWT token
-      const token = jwt.sign({ id: vendor.id, userType: "vendor" }, JWT_SECRET, {
-        expiresIn: "5000", // Token expires in 5 minutes
-      });
-      
+      const token = jwt.sign(
+        { id: vendor.id, userType: "vendor" },
+        JWT_SECRET,
+        { expiresIn: "1h" } // Token valid for 1 hour
+      );
 
       return res.status(200).json({
         message: "Login successful",
         userType: "vendor",
-        user: vendor,
+        user: {
+          id: vendor.id,
+          name: vendor.name,
+          email: vendor.officialEmail,
+          phone: vendor.phone,
+        },
         token,
       });
     }
@@ -56,7 +60,7 @@ router.post("/signin", async (req, res) => {
 
       // Generate JWT token
       const token = jwt.sign({ id: customer.id, userType: "customer" }, JWT_SECRET, {
-        expiresIn: "",
+        expiresIn: "1h",
       });
 
       return res.status(200).json({
@@ -69,7 +73,7 @@ router.post("/signin", async (req, res) => {
 
     return res.status(400).json({ message: "Invalid email or password" });
   } catch (error) {
-    console.error("Sign-in Error:", error);
+    console.error("🚨 Sign-in Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
