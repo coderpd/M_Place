@@ -31,28 +31,41 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Invalid email or password. Please try again.");
+        }
         throw new Error(data.message || "Login failed. Please try again.");
       }
 
-      console.log("Login Response:", data);
+      console.log("✅ Login Successful:", data);
 
+      // Store authentication token
       if (rememberMe) {
         localStorage.setItem("token", data.token);
       } else {
         sessionStorage.setItem("token", data.token);
       }
 
+      // Store user details in localStorage
       localStorage.setItem("userType", data.userType);
-      localStorage.setItem("userId", data.user.id);
+      localStorage.setItem("userId", data.user.id.toString()); // Ensure it's stored as a string
 
-      if (data.userType === "vendor") {
-        router.push(`/vendorDashboard/${data.user.id}`);
-      } else if (data.userType === "customer") {
-        localStorage.setItem("customer", JSON.stringify(data.user));
-        router.push(`/customer/products`);
-      } else {
-        throw new Error("Invalid user type.");
-      }
+      // Ensure storage updates before redirection
+      setTimeout(() => {
+        if (data.userType === "vendor") {
+          localStorage.setItem("vendorId", data.user.id); // Ensure correct key name
+        
+          setTimeout(() => {
+            router.push(`/vendorDashboard/${data.user.id}`); // Delay navigation slightly
+          }, 100); // Short delay to ensure storage update
+        }
+        else if (data.userType === "customer") {
+          localStorage.setItem("customer", JSON.stringify(data.user));
+          router.push(`/customer/products`);
+        } else {
+          throw new Error("Invalid user type.");
+        }
+      }, 100); // Delay for 100ms to allow storage update
     } catch (err) {
       setError(err.message);
     } finally {
