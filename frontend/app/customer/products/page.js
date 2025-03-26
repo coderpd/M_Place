@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Navbar from "../Components/Navbar";
-import CategoryMenu from "../Components/Categories";
+import Navbar from "../components/Navbar";
+import CategoryMenu from "../components/Categories";
 import Footer from "@/app/LandingPage/Footer";
 
 const PRODUCTS_PER_PAGE = 20;

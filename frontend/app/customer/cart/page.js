@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Trash2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
-import Navbar from "../Components/Navbar";
+import Navbar from "../components/Navbar";
 import Footer from "@/app/LandingPage/Footer";
 
 const CartPage = () => {
@@ -10,6 +10,8 @@ const CartPage = () => {
   const [customerId, setCustomerId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notifying, setNotifying] = useState(false);
+
+  
 
   useEffect(() => {
     const storedCustomer = localStorage.getItem("customer");

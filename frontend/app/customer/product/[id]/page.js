@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"; 
 import { useParams } from "next/navigation"; 
-import Navbar from "@/app/customer/Components/Navbar";  
+import Navbar from "../../components/Navbar";
 import { ToastContainer, toast } from "react-toastify";  
 import "react-toastify/dist/ReactToastify.css"; 
 import Link from "next/link"; 

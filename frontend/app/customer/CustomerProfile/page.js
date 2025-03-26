@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserCircle, ArrowBigLeftDash } from "lucide-react";
-import Navbar from "../Components/Navbar";
+import Navbar from "../components/Navbar";
 import Swal from "sweetalert2";
 import Footer from "@/app/LandingPage/Footer";
 
