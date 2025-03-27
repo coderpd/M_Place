@@ -12,7 +12,7 @@ router.post("/signin", async (req, res) => {
   try {
     // Check in vendor table first
     let [vendorRows] = await db.query(
-      "SELECT * FROM vendorsignup WHERE officialEmail = ?",
+      "SELECT * FROM vendorsignup WHERE email = ?",
       [email]
     );
 
@@ -37,7 +37,7 @@ router.post("/signin", async (req, res) => {
         user: {
           id: vendor.id,
           name: vendor.name,
-          email: vendor.officialEmail,
+          email: vendor.email,
           phone: vendor.phone,
         },
         token,

@@ -114,7 +114,7 @@ export default function ProfilePage() {
                 { label: "First Name", name: "firstName" },
                 { label: "Last Name", name: "lastName" },
                 { label: "Phone Number", name: "phoneNumber" },
-                { label: "Email", name: "officialEmail", type: "email", disabled: true },
+                { label: "Email", name: "email", type: "email", disabled: true },
                 { label: "Address", name: "address" },
                 { label: "Country", name: "country" },
                 { label: "State", name: "state" },

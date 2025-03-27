@@ -7,69 +7,79 @@ import ImageSlider from "./ImageSlider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = useCallback(async () => {
     setLoading(true);
-    setError("");
 
     try {
-        const response = await fetch("http://localhost:5000/auth/signin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
+      const response = await fetch("http://localhost:5000/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                throw new Error("Invalid email or password. Please try again.");
-            }
-            throw new Error(data.message || "Login failed. Please try again.");
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Invalid email or password. Please try again.");
         }
+        throw new Error(data.message || "Login failed. Please try again.");
+      }
 
-        console.log("✅ Login Successful:", data);
+      console.log("✅ Login Successful:", data);
 
-        // Store authentication token
-        if (rememberMe) {
-            localStorage.setItem("token", data.token);
-        } else {
-            sessionStorage.setItem("token", data.token);
-        }
+      // Store authentication token
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
 
-        localStorage.setItem("userType", data.userType);
-        localStorage.setItem("userId", data.user.id.toString());
+      localStorage.setItem("userType", data.userType);
+      localStorage.setItem("userId", data.user.id.toString());
 
+      // Show success SweetAlert
+      Swal.fire({
+        title: "Login Successful!",
+        text: "You are now logged in.",
+        imageUrl: "/login.gif", // Custom image path
+        imageWidth: 127, // Adjust width as needed
+        imageHeight: 151, // Adjust height as needed
+        imageAlt: "Logout Image",
+        
+        confirmButtonColor: "#3085D6",
+      }).then(() => {
+        // Redirect after clicking "OK"
         if (data.userType === "vendor") {
-            // ✅ Vendor login logic (unchanged)
-            localStorage.setItem("vendorId", data.user.id);
-            setTimeout(() => {
-                router.push(`/vendorDashboard/${data.user.id}`);
-            }, 100);
+          localStorage.setItem("vendorId", data.user.id);
+          router.push(`/vendorDashboard/${data.user.id}`);
         } else if (data.userType === "customer") {
-            // ✅ Integrated previous customer login logic
-            localStorage.setItem("customer", JSON.stringify(data.user)); // Store full customer data
-            router.push(`/customer/products`); // Redirect immediately after login
-        } else {
-            throw new Error("Invalid user type.");
+          localStorage.setItem("customer", JSON.stringify(data.user));
+          router.push(`/customer/products`);
         }
+      });
     } catch (err) {
-        setError(err.message);
+      // Show error SweetAlert
+      Swal.fire({
+        title: "Login Failed!",
+        text: err.message,
+        icon: "error",
+        confirmButtonColor: "#D33",
+      });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-}, [email, password, rememberMe, router]);
-
-  
+  }, [email, password, rememberMe, router]);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
@@ -90,8 +100,6 @@ export default function LoginPage() {
           <CardContent>
             <h2 className="text-2xl font-semibold text-gray-800">Welcome Back</h2>
             <p className="text-gray-600 mb-4">Log in to continue your journey.</p>
-
-            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
             <div className="space-y-4">
               <div>

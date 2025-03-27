@@ -86,7 +86,7 @@ router.post("/notify-vendor", async (req, res) => {
 
       // Fetch vendor email
       const [vendorResult] = await db.query(
-        "SELECT officialEmail FROM vendorsignup WHERE id = ?",
+        "SELECT email FROM vendorsignup WHERE id = ?",
         [vendorId]
       );
 
@@ -94,7 +94,7 @@ router.post("/notify-vendor", async (req, res) => {
         console.warn(`Vendor not found for ID: ${vendorId}`);
         continue;
       }
-      const vendorEmail = vendorResult[0].officialEmail;
+      const vendorEmail = vendorResult[0].email;
        console.log(vendorEmail)
       values.push([
         customer_id,

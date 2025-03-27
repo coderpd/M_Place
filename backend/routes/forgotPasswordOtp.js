@@ -15,8 +15,8 @@ router.post("/forgot-password", async (req, res) => {
       return res.status(400).json({ error: "Email is required" });
     }
 
-    // Check if the email exists in the vendorsignup table (officialEmail field)
-    const [vendorRows] = await db.query("SELECT * FROM vendorsignup WHERE officialEmail = ?", [email]);
+    // Check if the email exists in the vendorsignup table (email field)
+    const [vendorRows] = await db.query("SELECT * FROM vendorsignup WHERE email = ?", [email]);
     // Check if the email exists in the customersignup table
     const [customerRows] = await db.query("SELECT * FROM customersignup WHERE email = ?", [email]);
 
@@ -53,18 +53,20 @@ router.post("/verify-otp", async (req, res) => {
     console.log("Received request body:", req.body);
     const { email, otp } = req.body;
 
-    otpStore[email] = otp;
-    
     if (!email || !otp) {
       return res.status(400).json({ error: "Email and OTP are required" });
     }
 
+    if (!otpStore[email]) {
+      return res.status(400).json({ error: "OTP expired or not generated for this email" });
+    }
+
     // Check if the OTP matches the stored OTP for the email
-    if (otpStore[email] !== parseInt(otp)) {
+    if (Number(otpStore[email]) !== Number(otp)) {
       return res.status(400).json({ error: "Invalid OTP" });
     }
 
-    // OTP is valid, delete OTP from store
+    // OTP verified successfully, remove it from storage
     delete otpStore[email];
 
     return res.json({ success: true, message: "OTP verified successfully" });
@@ -93,12 +95,12 @@ router.post("/reset-password", async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Check if the email belongs to the vendor or customer
-    const [vendorRows] = await db.query("SELECT * FROM vendorsignup WHERE officialEmail = ?", [email]);
+    const [vendorRows] = await db.query("SELECT * FROM vendorsignup WHERE email = ?", [email]);
     const [customerRows] = await db.query("SELECT * FROM customersignup WHERE email = ?", [email]);
 
     if (vendorRows.length > 0) {
       // Update password for vendor
-      await db.query("UPDATE vendorsignup SET password = ? WHERE officialEmail = ?", [hashedPassword, email]);
+      await db.query("UPDATE vendorsignup SET password = ? WHERE email = ?", [hashedPassword, email]);
       return res.json({ success: true, message: "Password reset successfully for vendor" });
     }
 

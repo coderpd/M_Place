@@ -25,7 +25,7 @@ router.get("/get-vendor/:id", async (req, res) => {
         firstName: vendor.firstName,
         lastName: vendor.lastName,
         companyName: vendor.companyName,
-        officialEmail: vendor.officialEmail,
+        email: vendor.email,
         phoneNumber: vendor.phoneNumber,
         address: vendor.address, // Added Address Field
       },
@@ -64,7 +64,7 @@ router.put("/update-vendor/:id", async (req, res) => {
       firstName: updatedFields.firstName || vendor.firstName,
       lastName: updatedFields.lastName || vendor.lastName,
       phoneNumber: updatedFields.phoneNumber || vendor.phoneNumber,
-      officialEmail: updatedFields.officialEmail || vendor.officialEmail,
+      email: updatedFields.email || vendor.email,
       address: updatedFields.address || vendor.address,
       country: updatedFields.country || vendor.country,
       state: updatedFields.state || vendor.state,
@@ -76,7 +76,7 @@ router.put("/update-vendor/:id", async (req, res) => {
     const result = await db.query(
       `UPDATE vendorsignup 
        SET companyName = ?, registrationNumber = ?, companyWebsite = ?, gstNumber = ?, firstName = ?, 
-           lastName = ?, phoneNumber = ?, officialEmail = ?, address = ?, country = ?, state = ?, 
+           lastName = ?, phoneNumber = ?, email = ?, address = ?, country = ?, state = ?, 
            city = ?, postalCode = ?, password = ?
        WHERE id = ?`,
       [
@@ -87,7 +87,7 @@ router.put("/update-vendor/:id", async (req, res) => {
         updatedData.firstName,
         updatedData.lastName,
         updatedData.phoneNumber,
-        updatedData.officialEmail,
+        updatedData.email,
         updatedData.address,
         updatedData.country,
         updatedData.state,

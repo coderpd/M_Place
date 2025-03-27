@@ -102,7 +102,20 @@ const ProductsPage = () => {
     router.push(`/customer/products?category=${encodeURIComponent(category)}`);
   };
 
-  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+  const filteredCount = products.filter(p => {
+    if (searchQuery && !(
+      p.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.productName?.toLowerCase().includes(searchQuery.toLowerCase())
+    )) return false;
+    
+    if (categoryFilter && !p.category?.trim().toLowerCase().includes(categoryFilter.trim().toLowerCase())) 
+      return false;
+    
+    return true;
+  }).length;
+  
+  const totalPages = Math.ceil(filteredCount / PRODUCTS_PER_PAGE);
 
   if (!isMounted) return null;
 

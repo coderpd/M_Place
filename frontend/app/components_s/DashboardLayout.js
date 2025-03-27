@@ -187,25 +187,36 @@ export default function DashboardLayout({ id, children }) {
 
 
   const handleLogout = () => {
+   
+  
     Swal.fire({
-      title: "👋 Logging Out",
-      text: "Are you sure you want to logout?",
-      icon: "warning",
+      title: "Are you sure want to logout?",
+      imageUrl: "/logout.gif", // Custom image path
+      imageWidth: 127, // Adjust width as needed
+      imageHeight: 151, // Adjust height as needed
+      imageAlt: "Logout Image",
       showCancelButton: true,
       confirmButtonColor: "#3085D6",
       cancelButtonColor: "#3085D6",
-      confirmButtonText: "Yes",
-      cancelButtonText: "Cancel",
+      confirmButtonText: "<b>Yes</b>", // Bold text
+      cancelButtonText: "<b>Cancel</b>", // Bold text
+      customClass: {
+        confirmButton: "swal-button", // Custom class for consistent button styling
+        cancelButton: "swal-button",
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         // Clear local storage before redirecting
         localStorage.clear();
-
+  
         // Redirect to the homepage
         router.push("/");
       }
     });
   };
+  
+  
+  
 
 
 

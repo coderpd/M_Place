@@ -81,3 +81,12 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.swal-button {
+  padding: 10px !important; /* Add 20px padding */
+  font-weight: bold !important; /* Make text bold */
+  font-size: 16px !important; /* Adjust font size */
+  width: auto !important; /* Keep button width flexible */
+  min-width: 120px !important; /* Set a minimum width */
+  text-align: center !important; /* Ensure text stays centered */
+}

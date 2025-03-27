@@ -54,18 +54,25 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   // Logout function
   const handleLogout = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out of your account.",
-      icon: "warning",
+      title: "Are you sure want to logout?",
+      imageUrl: "/logout.gif",
+      imageWidth: 127,
+      imageHeight: 151,
+      imageAlt: "Logout Image",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes",
+      confirmButtonColor: "#3085D6",
+      cancelButtonColor: "#3085D6",
+      confirmButtonText: "<b>Yes</b>",
+      cancelButtonText: "<b>Cancel</b>",
+      customClass: {
+        confirmButton: "swal-button", // Apply custom styles
+        cancelButton: "swal-button",
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("customer");
         router.push("/");
-        Swal.fire("Logged Out!", "You have been successfully logged out.", "success");
+        
       }
     });
   };
