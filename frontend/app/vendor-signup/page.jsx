@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 import { useCountriesStatesCities } from "../hooks/useCountriesStatesCities";
 import { useFormValidation } from "../hooks/useFormValidation";
 import { useOtp } from "../hooks/useOtp";
-import { FormHeader } from "../components_s/auth/FormHeader";
-import { Section } from "../components_s/auth/Section";
-import { BusinessInfoSection } from "../components_s/auth/BusinessInfoSection";
-import { ContactDetailsSection } from "../components_s/auth/ContactDetailsSection";
-import { AddressSection } from "../components_s/auth/AddressSection";
-import { PasswordSection } from "../components_s/auth/PasswordSection";
-import { TermsCheckbox } from "../components_s/auth/TermsCheckbox";
+import { FormHeader } from "../Components/auth/FormHeader";
+import { Section } from "../Components/auth/Section";
+import { BusinessInfoSection } from "../Components/auth/BusinessInfoSection";
+import { ContactDetailsSection } from "../Components/auth/ContactDetailsSection";
+import { AddressSection } from "../Components/auth/AddressSection";
+import { PasswordSection } from "../Components/auth/PasswordSection";
+import { TermsCheckbox } from "../Components/auth/TermsCheckbox";
 
 const VendorSignup = () => {  
   const [showPassword, setShowPassword] = useState(false);

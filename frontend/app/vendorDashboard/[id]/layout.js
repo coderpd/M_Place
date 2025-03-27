@@ -2,7 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/app/components_s/DashboardLayout";
+import DashboardLayout from "@/app/Components/DashboardLayout";
 
 export default function VendorDashboardLayout({ children }) {
   const router = useRouter();
