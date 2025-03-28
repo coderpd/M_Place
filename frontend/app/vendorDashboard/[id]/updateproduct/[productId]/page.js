@@ -95,8 +95,11 @@ export default function UpdateProduct() {
       Swal.fire({
         title: "Success!",
         text: "Product updated successfully!",
-        icon: "success",
-        timer: 500,
+        imageUrl: "/updated.gif",
+        imageWidth: 127,
+        imageHeight: 151,
+        imageAlt: "Update Success",
+        timer: 1500,
         showConfirmButton: false,
       });
 

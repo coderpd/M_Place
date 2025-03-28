@@ -16,8 +16,8 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const[error,setError]=useState("")
 
+  // ✅ Prevent Back Navigation After Login
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
@@ -25,10 +25,9 @@ export default function LoginPage() {
     };
   }, []);
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     setLoading(true);
-    setError("");
-    
+
     try {
       const response = await fetch("http://localhost:5000/auth/signin", {
         method: "POST",
@@ -39,11 +38,16 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed. Please try again.");
+        throw new Error(
+          response.status === 401
+            ? "Invalid email or password. Please try again."
+            : data.message || "Login failed. Please try again."
+        );
       }
 
-      console.log("Login Response:", data);
+      console.log("✅ Login Successful:", data);
 
+      // Store authentication token
       if (rememberMe) {
         localStorage.setItem("token", data.token);
       } else {
@@ -51,55 +55,73 @@ export default function LoginPage() {
       }
 
       localStorage.setItem("userType", data.userType);
-      localStorage.setItem("userId", data.user.id);
+      localStorage.setItem("userId", data.user.id.toString());
 
-      if (data.userType === "vendor") {
-        router.push(`/vendorDashboard/${data.user.id}`);
-      } else if (data.userType === "customer") {
-        localStorage.setItem("customer", JSON.stringify(data.user));
-        router.push('/customer/products');
-      } else {
-        throw new Error("Invalid user type.");
-      }
+      // ✅ Rounded Border for SweetAlert
+      Swal.fire({
+        title: "Login Successful!",
+        text: "You are now logged in.",
+        imageUrl: "/login.gif",
+        imageWidth: 127,
+        imageHeight: 151,
+        imageAlt: "Login Success",
+        confirmButtonColor: "#3085D6",
+        customClass: {
+          popup: "rounded-lg shadow-md", // Added rounded borders & shadow
+          confirmButton: "px-6 py-2 bg-blue-600 text-white rounded-md",
+        },
+      }).then(() => {
+        // Redirect based on user type
+        if (data.userType === "vendor") {
+          localStorage.setItem("vendorId", data.user.id);
+          router.push(`/vendorDashboard/${data.user.id}`);
+        } else if (data.userType === "customer") {
+          localStorage.setItem("customer", JSON.stringify(data.user));
+          router.push(`/customer/products`);
+        }
+      });
     } catch (err) {
-      setError(err.message);
+      Swal.fire({
+        title: "Login Failed!",
+        text: err.message,
+        icon: "error",
+        confirmButtonColor: "#D33",
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, password, rememberMe, router]);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
-      {/* Image Slider - Hidden on mobile, shows on lg screens */}
-      <div className="hidden lg:block lg:w-1/2 h-full overflow-hidden">
-        <ImageSlider />
+      {/* Image Slider - Fixed solution to ensure visibility */}
+      <div className="hidden lg:block lg:w-1/2 2xl:w-3/5 h-full overflow-hidden">
+        <div className="h-full w-full">
+          <ImageSlider />
+        </div>
       </div>
       
-      {/* Login Form Container - Full width on mobile, half on desktop */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4 sm:px-6 py-8 sm:py-10 lg:py-12">
-        <Card className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-md xl:max-w-lg 2xl:max-w-xl shadow-sm sm:shadow-md p-4 sm:p-6 md:p-8 bg-white rounded-lg sm:rounded-xl">
-          <CardHeader className="p-0 pb-4 sm:pb-6">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto rounded-lg sm:rounded-xl shadow-md bg-gradient-to-br from-blue-600 to-indigo-500 p-0.5">
-              <div className="w-full h-full bg-white rounded-lg sm:rounded-xl flex items-center justify-center border border-gray-200 shadow-inner">
+      {/* Login Form Container */}
+      <div className="w-full lg:w-1/2 2xl:w-2/5 flex items-center justify-center bg-gray-100 px-6 py-10 2xl:py-16">
+        <Card className="w-full max-w-md 2xl:max-w-lg shadow-lg p-6 2xl:p-8 bg-white rounded-lg">
+          <CardHeader>
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 2xl:w-24 2xl:h-24 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
                 <img
                   src="/Logo.png"
                   alt="M-Place Logo"
-                  className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-contain"
+                  className="w-12 h-12 sm:w-16 sm:h-16 2xl:w-20 2xl:h-20 object-contain"
                 />
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 text-center">
-              Welcome Back
-            </h2>
-            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg text-center">
-              Log in to continue your journey.
-            </p>
+          <CardContent>
+            <h2 className="text-2xl 2xl:text-3xl font-semibold text-gray-800">Welcome Back</h2>
+            <p className="text-gray-600 mb-4 2xl:mb-6 2xl:text-lg">Log in to continue your journey.</p>
 
-            <div className="space-y-3 sm:space-y-4 md:space-y-5">
+            <div className="space-y-4 2xl:space-y-6">
               <div>
-                <label htmlFor="email" className="text-xs sm:text-sm md:text-base text-gray-700">
+                <label htmlFor="email" className="text-sm 2xl:text-base text-gray-700">
                   Email Address
                 </label>
                 <Input
@@ -108,12 +130,12 @@ export default function LoginPage() {
                   placeholder="Enter email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-10 sm:h-11 md:h-12 text-sm sm:text-base"
+                  className="2xl:h-12 2xl:text-base"
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="text-xs sm:text-sm md:text-base text-gray-700">
+                <label htmlFor="password" className="text-sm 2xl:text-base text-gray-700">
                   Password
                 </label>
                 <div className="relative">
@@ -123,29 +145,25 @@ export default function LoginPage() {
                     placeholder="Enter password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-10 sm:h-11 md:h-12 text-sm sm:text-base"
+                    className="2xl:h-12 2xl:text-base"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
-                    ) : (
-                      <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
-                    )}
+                    {showPassword ? <EyeOff size={20} className="2xl:w-6 2xl:h-6" /> : <Eye size={20} className="2xl:w-6 2xl:h-6" />}
                   </button>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center text-xs sm:text-sm md:text-base">
+              <div className="flex justify-between items-center text-sm 2xl:text-base">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={() => setRememberMe(!rememberMe)}
-                    className="mr-2 w-3 h-3 sm:w-4 sm:h-4"
+                    className="mr-2 w-4 h-4 2xl:w-5 2xl:h-5"
                   />
                   Remember Me
                 </label>
@@ -157,21 +175,14 @@ export default function LoginPage() {
               <Button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 sm:h-11 md:h-12 rounded-md disabled:bg-gray-400 flex items-center justify-center text-sm sm:text-base"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 2xl:py-3 rounded-md disabled:bg-gray-400 flex items-center justify-center text-base 2xl:text-lg"
               >
-                {loading ? (
-                  <Loader2 className="animate-spin w-4 h-4 sm:w-5 sm:h-5" />
-                ) : (
-                  "Login"
-                )}
+                {loading ? <Loader2 className="animate-spin" size={24} /> : "Login"}
               </Button>
             </div>
 
-            <p className="text-center text-xs sm:text-sm md:text-base mt-4 sm:mt-6">
-              New here?{" "}
-              <Link href="/LandingPage" className="text-blue-500 hover:text-blue-700">
-                Create an account
-              </Link>
+            <p className="text-center text-sm 2xl:text-base mt-4 2xl:mt-6">
+              New here? <Link href="/LandingPage" className="text-blue-500 hover:text-blue-700">Create an account</Link>
             </p>
           </CardContent>
         </Card>

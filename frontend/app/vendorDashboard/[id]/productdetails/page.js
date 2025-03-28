@@ -61,7 +61,10 @@ export default function ProductDetails() {
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "This product will be permanently deleted!",
-        icon: "warning",
+        imageUrl: "/trash.gif",
+        imageWidth: 127,
+        imageHeight: 151,
+        imageAlt: "Login Success",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",

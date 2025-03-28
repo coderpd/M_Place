@@ -48,7 +48,7 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   useEffect(() => {
     const interval = setInterval(() => {
       if (customer) fetchCartCount(customer.id);
-    }, 3000);
+    }, 500);
     return () => clearInterval(interval);
   }, [customer]);
 

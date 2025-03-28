@@ -12,37 +12,30 @@ export default function VendorDashboardLayout({ children }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-  
-    if (!params.id) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("🚨 params.id is undefined! Redirecting...");
-      }
-      router.replace("/SignIn");
-      return;
-    }
-  
+
     const storedVendorId = localStorage.getItem("vendorId");
-  
+    
+    console.log("📌 Stored Vendor ID:", storedVendorId);
+    console.log("📌 URL Params ID:", params.id);
+
     if (!storedVendorId) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("🚨 Vendor ID not found in localStorage. Redirecting to SignIn...");
-      }
+      console.warn("🚨 Vendor ID missing in localStorage. Redirecting to SignIn...");
       router.replace("/SignIn");
       return;
     }
-  
-    if (storedVendorId.toString() !== params.id.toString()) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("❌ ID Mismatch! Redirecting to SignIn...");
-      }
+
+    // Convert both to strings before comparison
+    if (storedVendorId.toString().trim() !== params.id.toString().trim()) {
+      console.warn("❌ ID Mismatch! Redirecting...");
       router.replace("/SignIn");
       return;
     }
-  
+
     setVendorId(storedVendorId);
     setIsLoading(false);
   }, [params.id, router]);
-    if (isLoading) {
+
+  if (isLoading) {
     return <p className="text-center text-gray-600 mt-10">Loading...</p>;
   }
 
