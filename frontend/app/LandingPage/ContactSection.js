@@ -306,7 +306,7 @@ export default function ContactSection() {
                         message: "Message must be at least 10 characters",
                       },
                     })}
-                    className="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[120px]"
+                    className="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[250px]"
                     placeholder="How can we help you?"
                   />
                 </div>

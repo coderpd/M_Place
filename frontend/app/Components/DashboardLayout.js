@@ -203,6 +203,7 @@ export default function DashboardLayout({ id, children }) {
       customClass: {
         confirmButton: "swal-button", // Custom class for consistent button styling
         cancelButton: "swal-button",
+        popup: "rounded-alert",
       },
     }).then((result) => {
       if (result.isConfirmed) {

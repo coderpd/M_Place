@@ -84,7 +84,7 @@ const ProductDetail = () => {
         // Notify Navbar of cart update
         window.dispatchEvent(new Event("storage"));
   
-        toast.success("🛒 Product added to cart!", { position: "top-right", autoClose: 1000 });
+        toast.success("🛒 Product added to cart!", { position: "bottom-right", autoClose: 1000 });
       } else {
         toast.error(`Failed to add product: ${data.message}`, { position: "top-right", autoClose: 1000 });
       }
@@ -103,7 +103,7 @@ const ProductDetail = () => {
     <>
       <Navbar disableFilters={true} disableSearch={true}  />
       <ToastContainer />
-      <div className=" w-full mx-auto p-6 pt-24 bg-gray-50">
+      <div className=" w-full mx-auto p-6 pt-24 bg-gray-50 min-h-screen">
         <div className="flex mb-6 mt-6 flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px]">
           <div className="relative w-full md:w-1/2 flex flex-col items-center md:pr-6">
             <div className="relative w-80 h-80 flex items-center justify-center">

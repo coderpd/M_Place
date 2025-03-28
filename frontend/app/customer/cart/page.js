@@ -73,7 +73,7 @@ const CartPage = () => {
       });
       if (response.ok) {
         setCart(cart.filter((item) => item.id !== cartId));
-        toast.success("Item removed from cart!");
+       // toast.success("Item removed from cart!", { position: "bottom-right", autoClose:1000});
       } else {
         toast.error("Failed to remove item");
       }

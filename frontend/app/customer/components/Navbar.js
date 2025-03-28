@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Search, ShoppingCart, User, LogOut, Settings,Calendar } from "lucide-react";
 import Link from "next/link";
@@ -14,15 +14,16 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   const router = useRouter();
 
   // Fetch cart count from API
-  const fetchCartCount = async (customerId) => {
+  const fetchCartCount =(async (customerId) => {
     try {
       const response = await fetch(`http://localhost:5000/cart/${customerId}`);
+      console.log("hioooo")
       const data = await response.json();
       setCartCount(data.cartItems?.length || 0);
     } catch (error) {
       console.error("Error fetching cart count:", error);
     }
-  };
+  });
 
   // Fetch cart and customer details when component mounts
   useEffect(() => {

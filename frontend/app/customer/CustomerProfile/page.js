@@ -49,7 +49,6 @@ const CustomerProfile = () => {
         setCustomer(formData);
         setIsEditing(false);
 
-        // Show SweetAlert success message
         Swal.fire({
           icon: "success",
           title: "Profile Updated",
@@ -76,7 +75,6 @@ const CustomerProfile = () => {
     }
   };
 
-
   if (!customer) {
     return <div>Loading...</div>;
   }
@@ -86,28 +84,27 @@ const CustomerProfile = () => {
       <Navbar disableFilters={true} disableSearch={true} />
       <div className="bg-gray-50">
         <div className="font-sans max-w-3xl mb-6 mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12">
-          {/* Profile Card */}
-          <div className="flex gap-2 ">
+          <div className="flex gap-2">
             <button onClick={() => router.push("/customer/products")} className="mt-3">
               <ArrowBigLeftDash size={33}></ArrowBigLeftDash>
             </button>
-            <h2 className="font-bold text-xl pt-3 ">My Profile</h2>
+            <h2 className="font-bold text-xl pt-3">My Profile</h2>
           </div>
           <div className="flex justify-end mt-6">
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 font-semibold "
+                className="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-700 font-semibold"
               >
                 EDIT PROFILE
               </button>
             )}
           </div>
           <div className="bg-white p-6 rounded-xl shadow-md mt-6">
-            <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30 "></img>
+            <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30"></img>
             <h1 className="font-semibold text-lg mb-3 ml-1">Profile Details</h1>
             {isEditing ? (
-              <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                 {[
                   { label: "Company Name", name: "companyName" },
                   { label: "Registration Number", name: "registrationNumber" },
@@ -126,21 +123,21 @@ const CustomerProfile = () => {
                   <div key={name} className="p-4 rounded-lg">
                     <label className="text-sm text-gray-400 uppercase font-semibold">{label}</label>
                     {name === "companyName" || name === "email" ? (
-                      <p className="w-full p-2 border rounded-md mt-1 text-[16px] text-gray-900">{formData[name] || "N/A"}</p>
+                      <p className="w-full p-2 border rounded-md mt-1 text-[16px] text-gray-900 truncate">{formData[name] || "N/A"}</p>
                     ) : (
                       <input
                         type={type}
                         name={name}
                         value={formData[name] || ""}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md mt-1 text-[16px]"
+                        className="w-full p-2 border rounded-md mt-1 text-[16px] truncate"
                       />
                     )}
                   </div>
                 ))}
-                <div className="col-span-2 flex justify-end mt-4">
+                <div className="md:col-span-2 flex justify-end mt-4">
                   <button
-                    className="px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 "
+                    className="px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700"
                     onClick={handleSave}
                   >
                     Save Changes
@@ -150,14 +147,14 @@ const CustomerProfile = () => {
                       setFormData(customer);
                       setIsEditing(false);
                     }}
-                    className="ml-4 px-6 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700"
+                    className="ml-4 px-6 py-2 bg-gray-500 text-white rounded-md shadow-md hover:bg-gray-700"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                 {Object.entries(customer)
                   .filter(([key]) => !["id", "password", "created_at"].includes(key))
                   .map(([key, value]) => (
@@ -165,14 +162,13 @@ const CustomerProfile = () => {
                       <p className="text-sm text-gray-600 uppercase font-semibold">
                         {key.replace(/([A-Z])/g, " $1")}
                       </p>
-                      <p className="text-[16px] font-semibold text-gray-900 mt-1">{value || "N/A"}</p>
+                      <p className="text-[16px] font-semibold text-gray-900 mt-1 truncate">{value || "N/A"}</p>
                     </div>
                   ))}
               </div>
             )}
           </div>
         </div>
-
       </div>
       <Footer />
     </>

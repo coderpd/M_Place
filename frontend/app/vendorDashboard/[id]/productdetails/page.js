@@ -3,28 +3,36 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { FaSearch, FaEdit } from "react-icons/fa";
-import { Trash2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 export default function ProductDetails() {
-  const { id } = useParams(); // Vendor ID from URL
+  const { id } = useParams();
   const router = useRouter();
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
   const itemsPerPage = 5;
 
   useEffect(() => {
     let isMounted = true;
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/auth/products/get-products/${id}`);
+        const response = await fetch(`http://localhost:5000/auth/products/get-products/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.statusText}`);
         }
+        
         const data = await response.json();
         if (isMounted) {
           setProducts(data.products || []);
@@ -50,18 +58,56 @@ export default function ProductDetails() {
 
   const handleDelete = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/products/delete-product/${productId}`, {
-        method: "DELETE",
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This product will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+        customClass: {
+          popup: "rounded-lg shadow-xl",
+          confirmButton: "px-4 py-2 rounded-md",
+          cancelButton: "px-4 py-2 rounded-md mr-2"
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete product: ${response.statusText}`);
-      }
+      if (result.isConfirmed) {
+        setDeletingId(productId);
+        
+        const response = await fetch(`http://localhost:5000/auth/products/delete-product/${productId}`, {
+          method: "DELETE",
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
 
-      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
-      toast.success("Product deleted successfully!");
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to delete product");
+        }
+
+        setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
+        
+        await Swal.fire({
+          title: "Deleted!",
+          text: "Product has been successfully deleted.",
+          icon: "success",
+          confirmButtonColor: "#4BB543",
+          customClass: {
+            popup: "rounded-lg shadow-md"
+          }
+        });
+      }
     } catch (error) {
-      toast.error("Error deleting product: " + error.message);
+      console.error("Delete error:", error);
+      toast.error(error.message || "Failed to delete product. Please try again.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -77,125 +123,183 @@ export default function ProductDetails() {
         product?.productName?.toLowerCase().includes(query) ||
         product?.category?.toLowerCase().includes(query) ||
         product?.brand?.toLowerCase().includes(query)
-
       );
     });
   }, [products, searchQuery]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-
   const selectedProducts = useMemo(() => {
     return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, currentPage]);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-12 w-12 text-blue-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <ToastContainer />
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-700">Product List</h2>
-        <div className="relative w-[350px]">
+      <ToastContainer position="top-right" autoClose={5000} />
+      
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h2 className="text-2xl font-semibold text-gray-800">Your Products</h2>
+        <div className="relative w-full md:w-[350px]">
           <input
             type="text"
             placeholder="Search by name, category, brand"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-3 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-3 pr-10 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
       </div>
 
       {filteredProducts.length === 0 ? (
-        <p className="text-gray-600 text-center">No products available.</p>
-      ) : (
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
-          <table className="min-w-full table-auto border-collapse">
-            <thead>
-              <tr className="bg-blue-500 text-white">
-                <th className="px-2 md:px-4 py-3 text-left">Image</th>
-                <th className="px-2 md:px-4 py-3 text-left">Product Name</th>
-                <th className="px-2 md:px-4 py-3 text-left">Brand</th>
-                <th className="px-2 md:px-4 py-3 text-left">Category</th>
-                <th className="px-2 md:px-4 py-3 text-left">Price</th>
-                <th className="px-2 md:px-4 py-3 text-left hidden md:table-cell">Seller</th>
-                <th className="px-2 md:px-4 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedProducts.map((product) => (
-                <tr key={product.id} className="border-b hover:bg-gray-100">
-                  <td className="px-2 md:px-4 py-4">
-                    <img
-                      src={`http://localhost:5000/uploads/${product.productImage}`}
-                      alt={product.productName}
-                      className="w-12 h-12 md:w-16 md:h-16 object-cover rounded"
-                    />
-                  </td>
-                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">{product.productName}</td>
-                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">{product.brand}</td>
-                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">{product.category}</td>
-                  <td className="px-2 md:px-4 py-4 text-sm md:text-base">₹{product.price}</td>
-                  <td className="px-2 md:px-4 py-4 text-sm md:text-base hidden md:table-cell">{product.seller}</td>
-                  <td className="px-2 md:px-4 py-4 flex space-x-2 md:space-x-3">
-                    <button onClick={() => handleEdit(product.id)} className="text-[#549DA9] mt-5">
-                      <FaEdit className="text-sm md:text-base" />
-                    </button>
-                    <button onClick={() => handleDelete(product.id)} className="text-red-600 mt-4">
-                      <Trash2 className="text-sm md:text-base" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <p className="text-gray-600">No products found. {searchQuery && "Try a different search term."}</p>
         </div>
+      ) : (
+        <>
+          <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-blue-500">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider">Image</th>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider">Name</th>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider hidden sm:table-cell">Brand</th>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider hidden md:table-cell">Category</th>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider">Price</th>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider hidden lg:table-cell">Seller</th>
+                  <th className="px-4 py-3 text-left text-xs md:text-sm font-medium text-white uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {selectedProducts.map((product) => (
+                  <tr key={product.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <img
+                          src={`http://localhost:5000/uploads/${product.productImage}`}
+                          alt={product.productName}
+                          className="h-10 w-10 rounded object-cover"
+                          onError={(e) => {
+                            e.target.src = '/placeholder-product.png';
+                          }}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{product.productName}</div>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
+                      <div className="text-sm text-gray-500">{product.brand}</div>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap hidden md:table-cell">
+                      <div className="text-sm text-gray-500">{product.category}</div>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">₹{product.price}</div>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap hidden lg:table-cell">
+                      <div className="text-sm text-gray-500">{product.seller}</div>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEdit(product.id)}
+                          className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                          title="Edit"
+                        >
+                          <FaEdit className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          disabled={deletingId === product.id}
+                          className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors disabled:opacity-50"
+                          title="Delete"
+                        >
+                          {deletingId === product.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-gray-700">
+              Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
+              <span className="font-medium">{Math.min(startIndex + itemsPerPage, filteredProducts.length)}</span> of{' '}
+              <span className="font-medium">{filteredProducts.length}</span> results
+            </div>
+            
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border rounded-md text-white text-sm font-medium bg-blue-500 hover:bg-blue-700 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`px-3 py-1 border rounded-md text-sm font-medium ${
+                      currentPage === pageNum
+                        ? 'bg-blue-500 text-white border-blue-500'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 border rounded-md text-white text-sm font-medium bg-blue-500 hover:bg-blue-700 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </>
       )}
-
-      <div className="flex justify-center mt-4 space-x-2">
-        {/* Previous Button */}
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
-        >
-          Previous
-        </button>
-
-        {/* Page Numbers with Fixed Range */}
-        {(() => {
-          const rangeSize = 5; // Number of pages to show at a time
-          const halfRange = Math.floor(rangeSize / 2);
-          let startPage = Math.max(1, currentPage - halfRange);
-          let endPage = Math.min(totalPages, startPage + rangeSize - 1);
-
-          // Ensure the range shifts only when necessary
-          if (endPage - startPage + 1 < rangeSize) {
-            startPage = Math.max(1, endPage - rangeSize + 1);
-          }
-
-          return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-2 border rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-white border-blue-400 hover:bg-blue-200"
-                }`}
-            >
-              {page}
-            </button>
-          ));
-        })()}
-
-        {/* Next Button */}
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          className="px-4 py-2 border rounded bg-blue-500 text-white disabled:bg-blue-300"
-        >
-          Next
-        </button>
-      </div>
-
     </div>
   );
 }
