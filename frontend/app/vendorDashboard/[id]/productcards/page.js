@@ -104,7 +104,7 @@ export default function EcommercePage() {
                     <h3 className="text-lg text-gray-700 hover:text-blue-700 font-bold truncate">
                       {product.productName}
                     </h3>
-                    <p className="text-md text-gray-600">{product.brand}</p>
+                    <p className="text-md text-gray-500">{product.brand}</p>
                     <p className="text-xl font-bold text-black mt-2">
                       ₹{product.price}
                     </p>

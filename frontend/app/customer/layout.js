@@ -11,7 +11,7 @@ export default function CustomerLayout({ children }) {
     const storedCustomer = localStorage.getItem("customer");
 
     if (!storedCustomer) {
-      console.warn("🚨 Customer not found in local storage. Redirecting...");
+      console.warn("Customer not found in local storage. Redirecting...");
       router.replace("/SignIn"); // Redirect to SignIn page
     } else {
       setIsVerified(true); // Allow rendering if customer exists
