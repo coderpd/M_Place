@@ -28,7 +28,7 @@ export const PasswordSection = ({
         <p className="text-sm text-red-500">{errors.password}</p>
       )}
       <div
-        className="absolute right-3 top-[39px] transform -translate-y-1/2 cursor-pointer"
+        className="absolute right-3 top-[41px] transform -translate-y-1/2 cursor-pointer"
         onClick={togglePasswordVisibility}
       >
         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -47,7 +47,7 @@ export const PasswordSection = ({
         className="w-full"
       />
       <div
-        className="absolute right-3 top-[39px] transform -translate-y-1/2 cursor-pointer"
+        className="absolute right-3 top-[41px] transform -translate-y-1/2 cursor-pointer"
         onClick={toggleConfirmPasswordVisibility}
       >
         {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}

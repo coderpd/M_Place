@@ -69,10 +69,10 @@ export default function ContactSection() {
       },
       background: "#fff",
       showClass: {
-        popup: "animate__animated animate__fadeInDown",
+        popup: "animate_animated animate_fadeInDown",
       },
       hideClass: {
-        popup: "animate__animated animate__fadeOutUp",
+        popup: "animate_animated animate_fadeOutUp",
       },
     });
   };
@@ -95,7 +95,7 @@ export default function ContactSection() {
       id="ContactSection"
       className="bg-gradient-to-br from-gray-50 to-blue-50 py-20 px-4 sm:px-6 lg:px-8"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl -mt-6 font-[Inter] mx-auto">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -113,7 +113,7 @@ export default function ContactSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Contact Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -123,7 +123,7 @@ export default function ContactSection() {
             className="space-y-8"
           >
             {/* Contact Cards */}
-            <div className="space-y-6">
+            <div className="space-y-14">
               <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-blue-100 rounded-lg text-blue-600">
@@ -188,24 +188,6 @@ export default function ContactSection() {
                     >
                       Get directions
                     </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-amber-100 rounded-lg text-amber-600">
-                    <Clock size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      Working Hours
-                    </h3>
-                    <div className="mt-2 space-y-1 text-gray-600">
-                    <p>Mon-Fri: 9:00 AM - 6:00 PM</p>
-                    <p>Sat: 10:00 AM - 4:00 PM</p>
-                    <p className="text-red-500">Sun: Closed</p>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -306,7 +288,7 @@ export default function ContactSection() {
                         message: "Message must be at least 10 characters",
                       },
                     })}
-                    className="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[250px]"
+                    className="pl-10 w-full py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[130px]"
                     placeholder="How can we help you?"
                   />
                 </div>
@@ -318,11 +300,15 @@ export default function ContactSection() {
               </div>
 
               <div className="pt-2">
+
+                <div className="flex justify-center">
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-1/2  py-3 px-6 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
                 >
+               
+                
                   {loading ? (
                     <span className="flex items-center justify-center">
                       <svg
@@ -351,6 +337,7 @@ export default function ContactSection() {
                     "Send Message"
                   )}
                 </Button>
+                </div>
               </div>
             </form>
           </motion.div>

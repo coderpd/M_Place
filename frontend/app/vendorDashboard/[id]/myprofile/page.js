@@ -44,14 +44,20 @@ export default function ProfilePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedVendor),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to update vendor");
       }
-
+  
       setVendor(updatedVendor);
       setIsEditing(false);
-
+  
+      // Store updated vendor in localStorage
+      localStorage.setItem("vendor", JSON.stringify(updatedVendor));
+  
+      // Trigger re-render
+      window.dispatchEvent(new Event("storage"));
+  
       Swal.fire({
         title: "Success!",
         text: "Vendor details updated successfully.",
@@ -69,7 +75,7 @@ export default function ProfilePage() {
       });
     }
   };
-
+  
   if (loading) return <p className="text-center text-lg">Loading vendor details...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 

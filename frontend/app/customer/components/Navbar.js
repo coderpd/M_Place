@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, ShoppingCart, User, LogOut, Settings,Calendar } from "lucide-react";
 import Link from "next/link";
@@ -10,20 +10,37 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [customer, setCustomer] = useState(null);
+  // const [customer, setCustomer] = useState(null);
   const router = useRouter();
 
+  const [customer, setCustomer] = useState(() => {
+    return JSON.parse(localStorage.getItem("customer")) || null;
+  });
+
   // Fetch cart count from API
-  const fetchCartCount =(async (customerId) => {
+  const fetchCartCount = async (customerId) => {
     try {
       const response = await fetch(`http://localhost:5000/cart/${customerId}`);
-      console.log("hioooo")
       const data = await response.json();
       setCartCount(data.cartItems?.length || 0);
     } catch (error) {
       console.error("Error fetching cart count:", error);
     }
-  });
+  };
+
+  
+  useEffect(() => {
+    const updateCustomer = () => {
+      setCustomer(JSON.parse(localStorage.getItem("customer")));
+    };
+
+    // Listen for localStorage changes
+    window.addEventListener("storage", updateCustomer);
+
+    return () => {
+      window.removeEventListener("storage", updateCustomer);
+    };
+  }, []);
 
   // Fetch cart and customer details when component mounts
   useEffect(() => {
@@ -48,32 +65,25 @@ const Navbar = ({ setSearchQuery, setCategoryFilter, setPriceFilter, disableFilt
   useEffect(() => {
     const interval = setInterval(() => {
       if (customer) fetchCartCount(customer.id);
-    }, 500);
+    }, 3000);
     return () => clearInterval(interval);
   }, [customer]);
 
   // Logout function
   const handleLogout = () => {
     Swal.fire({
-      title: "Are you sure want to logout?",
-      imageUrl: "/logout.gif",
-      imageWidth: 127,
-      imageHeight: 151,
-      imageAlt: "Logout Image",
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085D6",
-      cancelButtonColor: "#3085D6",
-      confirmButtonText: "<b>Yes</b>",
-      cancelButtonText: "<b>Cancel</b>",
-      customClass: {
-        confirmButton: "swal-button", // Apply custom styles
-        cancelButton: "swal-button",
-      },
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("customer");
         router.push("/");
-        
+        Swal.fire("Logged Out!", "You have been successfully logged out.", "success");
       }
     });
   };

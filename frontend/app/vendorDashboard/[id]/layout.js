@@ -15,18 +15,18 @@ export default function VendorDashboardLayout({ children }) {
 
     const storedVendorId = localStorage.getItem("vendorId");
     
-    console.log("📌 Stored Vendor ID:", storedVendorId);
-    console.log("📌 URL Params ID:", params.id);
+    console.log("Stored Vendor ID:", storedVendorId);
+    console.log("URL Params ID:", params.id);
 
     if (!storedVendorId) {
-      console.warn("🚨 Vendor ID missing in localStorage. Redirecting to SignIn...");
+      console.warn("Vendor ID missing in localStorage. Redirecting to SignIn...");
       router.replace("/SignIn");
       return;
     }
 
     // Convert both to strings before comparison
     if (storedVendorId.toString().trim() !== params.id.toString().trim()) {
-      console.warn("❌ ID Mismatch! Redirecting...");
+      console.warn("ID Mismatch! Redirecting...");
       router.replace("/SignIn");
       return;
     }

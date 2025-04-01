@@ -215,6 +215,19 @@ export default function DashboardLayout({ id, children }) {
       }
     });
   };
+
+  useEffect(() => {
+    const updateVendor = () => {
+      setVendor(JSON.parse(localStorage.getItem("vendor")));
+    };
+
+    // Listen for storage change
+    window.addEventListener("storage", updateVendor);
+
+    return () => {
+      window.removeEventListener("storage", updateVendor);
+    };
+  }, []);
   
   
   

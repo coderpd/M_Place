@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserCircle, ArrowBigLeftDash } from "lucide-react";
+import { ArrowBigLeftDash } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Swal from "sweetalert2";
 import Footer from "@/app/LandingPage/Footer";
@@ -42,12 +42,12 @@ const CustomerProfile = () => {
       });
 
       if (response.ok) {
-        const updatedCustomer = await response.json();
-        console.log("Profile updated:", updatedCustomer);
-
         localStorage.setItem("customer", JSON.stringify(formData));
         setCustomer(formData);
         setIsEditing(false);
+
+        // 🔄 Trigger navbar update
+        window.dispatchEvent(new Event("storage"));
 
         Swal.fire({
           icon: "success",
@@ -66,7 +66,6 @@ const CustomerProfile = () => {
         });
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
       Swal.fire({
         icon: "error",
         title: "Something went wrong",
@@ -75,9 +74,7 @@ const CustomerProfile = () => {
     }
   };
 
-  if (!customer) {
-    return <div>Loading...</div>;
-  }
+  if (!customer) return <div>Loading...</div>;
 
   return (
     <>
@@ -86,7 +83,7 @@ const CustomerProfile = () => {
         <div className="font-sans max-w-3xl mb-6 mx-auto p-6 md:p-6 pt-20 lg:pt-20 mt-12">
           <div className="flex gap-2">
             <button onClick={() => router.push("/customer/products")} className="mt-3">
-              <ArrowBigLeftDash size={33}></ArrowBigLeftDash>
+              <ArrowBigLeftDash size={33} />
             </button>
             <h2 className="font-bold text-xl pt-3">My Profile</h2>
           </div>
@@ -101,7 +98,7 @@ const CustomerProfile = () => {
             )}
           </div>
           <div className="bg-white p-6 rounded-xl shadow-md mt-6">
-            <img src="/User_Icon.jpg" alt="hi" className="items-center mx-auto w-40 h-30"></img>
+            <img src="/User_Icon.jpg" alt="User Icon" className="items-center mx-auto w-40 h-30" />
             <h1 className="font-semibold text-lg mb-3 ml-1">Profile Details</h1>
             {isEditing ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
@@ -113,26 +110,23 @@ const CustomerProfile = () => {
                   { label: "First Name", name: "firstName" },
                   { label: "Last Name", name: "lastName" },
                   { label: "Phone Number", name: "phoneNumber" },
-                  { label: "Email", name: "email", type: "email" },
+                  { label: "Email", name: "email", type: "email", disabled: true },
                   { label: "Address", name: "address" },
                   { label: "Country", name: "country" },
                   { label: "State", name: "state" },
                   { label: "City", name: "city" },
                   { label: "Postal Code", name: "postalCode" },
-                ].map(({ label, name, type = "text" }) => (
+                ].map(({ label, name, type = "text", disabled }) => (
                   <div key={name} className="p-4 rounded-lg">
                     <label className="text-sm text-gray-400 uppercase font-semibold">{label}</label>
-                    {name === "companyName" || name === "email" ? (
-                      <p className="w-full p-2 border rounded-md mt-1 text-[16px] text-gray-900 truncate">{formData[name] || "N/A"}</p>
-                    ) : (
-                      <input
-                        type={type}
-                        name={name}
-                        value={formData[name] || ""}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded-md mt-1 text-[16px] truncate"
-                      />
-                    )}
+                    <input
+                      type={type}
+                      name={name}
+                      value={formData[name] || ""}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md mt-1 text-[16px] truncate"
+                      disabled={disabled}
+                    />
                   </div>
                 ))}
                 <div className="md:col-span-2 flex justify-end mt-4">
