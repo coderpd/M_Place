@@ -38,8 +38,7 @@ const categories = [
           "Backup Tapes DAT",
           "Backup Tapes DLT",
           "Optical Media Blank Discs",
-          "Optical Media",
-          "Optical Media RW Discs",
+          "Optical Media"
         ],
       },
       {
@@ -448,7 +447,7 @@ const CategoryMenu = ({ setCategoryFilter }) => {
             onMouseEnter={() => handleMouseEnterCategory(category.name, index)}
             onMouseLeave={handleMouseLeaveCategory}
           >
-            <button className="w-full sm:w-auto text-left text-gray-600 hover:text-black transition">
+            <button className="w-full sm:w-auto text-left text-base ">
               {category.name}
             </button>
 
@@ -459,7 +458,7 @@ const CategoryMenu = ({ setCategoryFilter }) => {
                 onMouseEnter={handleMouseEnterDropdown}
                 onMouseLeave={handleMouseLeaveDropdown}
               >
-                <ul className="py-2 text-sm text-gray-700">
+                <ul className="py-2 text-sm">
                   {category.subcategories.map((sub, subIndex) => (
                     <li
                       key={subIndex}
@@ -476,7 +475,7 @@ const CategoryMenu = ({ setCategoryFilter }) => {
                           className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
                             } max-h-[300px] overflow-y-auto`}
                         >
-                          <ul className="py-2 text-md text-gray-700 text-left">
+                          <ul className="py-2 text-md  text-left">
                             {sub.items.map((item, itemIndex) => (
                               <li key={itemIndex} className="pl-2"> {/* Ensures list items start from the left */}
                                 <button

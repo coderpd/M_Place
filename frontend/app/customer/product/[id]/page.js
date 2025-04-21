@@ -20,7 +20,7 @@ const ProductDetail = () => {
   // Fetch customer data and cart details from localStorage
   useEffect(() => {  
     if (typeof window !== "undefined") {
-      const storedCustomer = localStorage.getItem("customer");
+      const storedCustomer = localStorage.getItem("customerUser");
       const customerData = storedCustomer ? JSON.parse(storedCustomer) : null;
       if (customerData) {
         setCustomerId(customerData.id);

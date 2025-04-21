@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { InputField } from "./InputField";
 
 export const ContactDetailsSection = ({
@@ -55,6 +56,7 @@ export const ContactDetailsSection = ({
         loading={loading}
         onOtpRequest={() => handleOtpRequest(formValues.email, "vendor")}
       />
+     
     </div>
 
       <div>

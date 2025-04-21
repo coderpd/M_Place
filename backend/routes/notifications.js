@@ -37,23 +37,23 @@ router.post("/notify-vendor", async (req, res) => {
   try {
     console.log("Received Request:", req.body);
 
-    const { email, cart } = req.body;
-    if (!email || !cart || cart.length === 0) {
+    const { Email, cart } = req.body;
+    if (!Email || !cart || cart.length === 0) {
       console.error("Invalid data received:", req.body);
       return res.status(400).json({ error: "Invalid data provided" });
     }
 
     // Fetch customer ID
     const [customerResult] = await db.query(
-      "SELECT Id, firstName, email, lastName FROM customersignup WHERE email = ?",
-      [email]
+      "SELECT Id, personName, Email FROM customerusersignup WHERE Email = ?",
+      [Email]
     );
 
     if (customerResult.length === 0) {
-      console.error("Customer not found:", email);
+      console.error("Customer not found:", Email);
       return res.status(404).json({ error: "Customer not found" });
     }
-    const customerName = customerResult[0].firstName;
+    const customerName = customerResult[0].personName;
     const customer_id = customerResult[0].Id;
     
     const values = [];
@@ -86,7 +86,7 @@ router.post("/notify-vendor", async (req, res) => {
 
       // Fetch vendor email
       const [vendorResult] = await db.query(
-        "SELECT email FROM vendorsignup WHERE id = ?",
+        "SELECT email FROM vendorusersignup WHERE id = ?",
         [vendorId]
       );
 
@@ -101,7 +101,7 @@ router.post("/notify-vendor", async (req, res) => {
         customerName,
         vendorId,
         productId,
-        `Customer  ${customerName} wants to buy your product: ${productName} (x${item.quantity}). Contact: ${email}`,
+        `Customer  ${customerName} wants to buy your product: ${productName} (x${item.quantity}). Contact: ${Email}`,
       ]);
     }
 
@@ -142,5 +142,89 @@ router.put("/read/:id", async (req, res) => {
   }
 });
 
+
+router.post("/vendor-admin", async (req, res) => {
+  try {
+    const { vendorAdminID } = req.body;
+
+    if (!vendorAdminID) {
+      return res.status(400).json({ error: "Vendor Admin ID is required" });
+    }
+
+    const [notifications] = await db.execute(
+      `SELECT 
+        n.id ,
+        vu.personName,
+        vu.Email ,
+        p.productName,
+        cu.companyName,
+      REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(x[0-9]+\\)'), '(x', ''), ')', '') AS quantity,
+        p.price,
+        n.created_at,
+        n.status
+      FROM notifications n
+      JOIN products p ON n.product_id = p.id
+      JOIN vendorusersignup vu ON n.product_vendor_id = vu.id
+      JOIN customerusersignup cu ON n.customer_id = cu.id
+      WHERE vu.vendorId = ?
+      ORDER BY n.created_at DESC`,
+      [vendorAdminID]
+    );
+
+    const formattedNotifications = notifications.map((notif) => ({
+      ...notif,
+      created_at: convertToIST(notif.created_at),
+    }));
+
+    res.json({ notifications: formattedNotifications });
+  } catch (error) {
+    console.error("Error fetching vendor admin notifications:", error);
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+});
+
+
+
+//ordernotification
+router.post("/admin", async (req, res) => {
+  try {
+    const { adminID } = req.body;
+
+    if (!adminID) {
+      return res.status(400).json({ error: "Admin ID is required" });
+    }
+
+    const [notifications] = await db.execute(
+      `SELECT 
+  n.id,
+  n.customerName,
+  c.Email,
+  v.companyName,
+  p.productName,
+  n.message,
+  REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(x[0-9]+\\)'), '(x', ''), ')', '') AS quantity,
+  p.price,
+  n.created_at
+FROM notifications n
+LEFT JOIN products p ON n.product_id = p.id
+LEFT JOIN vendorusersignup v ON n.product_vendor_id = v.id
+LEFT JOIN customerusersignup c ON n.customer_id = c.id
+WHERE c.adminID = ?
+ORDER BY n.created_at DESC;
+`,
+      [adminID]
+    );
+
+    const formattedNotifications = notifications.map((notif) => ({
+      ...notif,
+      created_at: convertToIST(notif.created_at),
+    }));
+
+    res.json({ notifications: formattedNotifications });
+  } catch (error) {
+    console.error("Error fetching admin notifications:", error);
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+});
 
 module.exports = router;

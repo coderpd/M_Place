@@ -33,8 +33,8 @@ app.use("/auth", getvendor);
 const productsRouter = require("./routes/products");
 app.use("/auth/products", productsRouter);
 
-const vendorRouter = require("./routes/vendor"); 
-app.use("/auth/vendor", vendorRouter); 
+// const vendorRouter = require("./routes/vendor"); 
+// app.use("/auth/vendor", vendorRouter); 
 
 const CustomerEdit = require("./routes/Customer");
 app.use("/customer-edit", CustomerEdit);
@@ -44,6 +44,13 @@ app.use("/notification", notifyVendorRouter);
 
 const cartRouter = require("./routes/Cart");
 app.use("/cart", cartRouter);
+
+const vendorUserSignup = require("./routes/vendorUserSignup")
+app.use("/auth/vendor", vendorUserSignup); 
+
+
+const customerUserSignUp = require("./routes/customerUserSignUp");
+app.use("/auth/customerUserSignUp",customerUserSignUp);
 
 
 app.listen(port, () => {

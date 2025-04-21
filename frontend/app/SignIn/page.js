@@ -26,83 +26,100 @@ export default function LoginPage() {
   }, []);
 
   const handleLogin = useCallback(async () => {
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:5000/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const response = await fetch("http://localhost:5000/auth/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(
-          response.status === 401
-            ? "Invalid email or password. Please try again."
-            : data.message || "Login failed. Please try again."
-        );
-      }
-
-      console.log("✅ Login Successful:", data);
-
-      // Store authentication token
-      if (rememberMe) {
-        localStorage.setItem("token", data.token);
-      } else {
-        sessionStorage.setItem("token", data.token);
-      }
-
-      localStorage.setItem("userType", data.userType);
-      localStorage.setItem("userId", data.user.id.toString());
-
-      // ✅ Rounded Border for SweetAlert
-      Swal.fire({
-        title: "Login Successful!",
-        text: "You are now logged in.",
-        imageUrl: "/login.gif",
-        imageWidth: 127,
-        imageHeight: 151,
-        imageAlt: "Login Success",
-        confirmButtonColor: "#3085D6",
-        customClass: {
-          popup: "rounded-lg shadow-md", // Added rounded borders & shadow
-          confirmButton: "px-6 py-2 bg-blue-600 text-white rounded-md",
-        },
-      }).then(() => {
-        // Redirect based on user type
-        if (data.userType === "vendor") {
-          localStorage.setItem("vendorId", data.user.id);
-          router.push(`/vendorDashboard/${data.user.id}`);
-        } else if (data.userType === "customer") {
-          localStorage.setItem("customer", JSON.stringify(data.user));
-          router.push(`/customer/products`);
-        }
-      });
-    } catch (err) {
-      Swal.fire({
-        title: "Login Failed!",
-        text: err.message,
-        icon: "error",
-        confirmButtonColor: "#D33",
-      });
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(
+        response.status === 401
+          ? "Invalid email or password. Please try again."
+          : data.message || "Login failed. Please try again."
+      );
     }
-  }, [email, password, rememberMe, router]);
+
+    console.log("✅ Login Successful:", data);
+
+    // Store authentication token
+    if (rememberMe) {
+      localStorage.setItem("token", data.token);
+    } else {
+      sessionStorage.setItem("token", data.token);
+    }
+
+    localStorage.setItem("userType", data.userType);
+    localStorage.setItem("userId", data.user.id.toString());
+
+    // SweetAlert
+    Swal.fire({
+      title: "Login Successful!",
+      text: "You are now logged in.",
+      imageUrl: "/login.gif",
+      imageWidth: 127,
+      imageHeight: 151,
+      imageAlt: "Login Success",
+      confirmButtonColor: "#3085D6",
+      customClass: {
+        popup: "rounded-lg shadow-md",
+        confirmButton: "px-6 py-2 bg-blue-600 text-white rounded-md",
+      },
+    }).then(() => {
+      // Redirect based on user type
+      if (data.userType === "vendor-admin") {
+        localStorage.setItem("vendor", JSON.stringify(data.user));
+        localStorage.setItem("vendorAdminId", data.user.id.toString());// ✅ vendor admin ID
+        router.push(`/vendor-admin`);
+      
+      } else if (data.userType === "customer-admin") {
+        localStorage.setItem("customer", JSON.stringify(data.user));
+        // router.push(`/customer/products`);
+        router.push(`/customer-admin/customerAdminDashboard`);
+
+      
+      } else if (data.userType === "vendor-user") {
+        localStorage.setItem("vendorUser", JSON.stringify(data.user));
+        localStorage.setItem("vendorUserId", data.user.id.toString()); // ✅ vendor user ID
+        router.push(`/vendorDashboard`);
+      
+      }else if(data.userType=="customer-user"){
+        localStorage.setItem("customerUser", JSON.stringify(data.user));
+        localStorage.setItem("customerUserId",data.user.id.toString());
+        router.push("/customer/products")
+      }
+      else {
+        Swal.fire("Unknown User Type", "Please contact support.", "warning");
+      }
+      
+    });
+    
+  } catch (err) {
+    Swal.fire({
+      title: "Login Failed!",
+      text: err.message,
+      icon: "error",
+      confirmButtonColor: "#D33",
+    });
+  } finally {
+    setLoading(false);
+  }
+}, [email, password, rememberMe, router]);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full">
       {/* Image Slider - Fixed solution to ensure visibility */}
-      <div className="hidden lg:block lg:w-1/2 2xl:w-3/5 h-full overflow-hidden">
-        <div className="h-full w-full">
-          <ImageSlider />
-        </div>
+      <div className="hidden lg:block lg:w-1/2 h-full overflow-hidden">
+        <ImageSlider />
       </div>
       
       {/* Login Form Container */}
-      <div className="w-full lg:w-1/2 2xl:w-2/5 flex items-center justify-center bg-gray-100 px-6 py-10 2xl:py-16">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-100 px-6 py-10 2xl:py-16">
         <Card className="w-full max-w-md 2xl:max-w-lg shadow-lg p-6 2xl:p-8 bg-white rounded-lg">
           <CardHeader>
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 2xl:w-24 2xl:h-24 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">

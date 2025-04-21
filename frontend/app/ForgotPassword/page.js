@@ -146,7 +146,7 @@ export default function ForgotPassword() {
               className="flex items-start justify-start text-gray-600 mt-4 sm:mt-6 hover:text-gray-800 text-xs sm:text-sm md:text-base"
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
-              <span>Back </span>
+              <span>back </span>
             </Link>
           </CardContent>
         </Card>

@@ -9,7 +9,7 @@ import ImageSlider from "../SignIn/ImageSlider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2,ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 // Validation schema
@@ -202,10 +202,11 @@ export default function ResetPassword() {
             </form>
 
             <Link
-              href="/SignIn"
-              className="flex items-center justify-center text-gray-600 mt-4 sm:mt-6 hover:text-gray-800 text-xs sm:text-sm md:text-base"
+              href="/ForgotPassword"
+              className="flex items-start justify-start text-gray-600 mt-4 sm:mt-6 hover:text-gray-800 text-xs sm:text-sm md:text-base"
             >
-              <span>Back to Sign In</span>
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
+              <span>back </span>
             </Link>
           </CardContent>
         </Card>
