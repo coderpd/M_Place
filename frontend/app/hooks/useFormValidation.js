@@ -1,7 +1,6 @@
 export const useFormValidation = () => {
   const validateForm = (formValues, isVendor = false) => {
     let newErrors = {};
-
     if (!formValues.companyName)
       newErrors.companyName = "Company Name is required";
     if (!formValues.registrationNumber)
@@ -9,12 +8,13 @@ export const useFormValidation = () => {
     if (!formValues.companyWebsite)
       newErrors.companyWebsite = "Company Website is required";
     if (!formValues.gstNumber) newErrors.gstNumber = "GST Number is required";
+   
     if (!formValues.firstName) newErrors.firstName = "First Name is required";
     if (!formValues.lastName) newErrors.lastName = "Last Name is required";
-
     if (!formValues.phoneNumber || !/^[0-9]{7,12}$/.test(formValues.phoneNumber)) {
       newErrors.phoneNumber = "Invalid Contact Number";
     }
+   
     if (!formValues.email) {
       newErrors.email = "Email is required";
     } else if (!/^\S+@\S+\.\S+$/.test(formValues.email)) {
@@ -32,6 +32,7 @@ export const useFormValidation = () => {
     }
   }
 
+ 
   if (!formValues.otp) {
     newErrors.otp = "OTP is required";
   } else if (!/^\d{4}$/.test(formValues.otp)) {

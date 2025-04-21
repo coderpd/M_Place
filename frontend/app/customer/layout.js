@@ -8,7 +8,7 @@ export default function CustomerLayout({ children }) {
   const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
-    const storedCustomer = localStorage.getItem("customer");
+    const storedCustomer = localStorage.getItem("customerUser");
 
     if (!storedCustomer) {
       console.warn("Customer not found in local storage. Redirecting...");

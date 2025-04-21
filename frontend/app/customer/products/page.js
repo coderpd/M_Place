@@ -106,7 +106,9 @@ const ProductsPage = () => {
     if (searchQuery && !(
       p.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.productName?.toLowerCase().includes(searchQuery.toLowerCase())
+      p.productName?.toLowerCase().includes(searchQuery.toLowerCase())||
+      p.seller?.toLowerCase().includes(searchQuery.toLowerCase())
+
     )) return false;
     
     if (categoryFilter && !p.category?.trim().toLowerCase().includes(categoryFilter.trim().toLowerCase())) 

@@ -18,6 +18,7 @@ import { TermsCheckbox } from "../Components/auth/TermsCheckbox";
 const VendorSignup = () => {  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
   const [formValues, setFormValues] = useState({
     companyName: "",
     registrationNumber: "",
