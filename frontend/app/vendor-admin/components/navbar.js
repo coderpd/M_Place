@@ -54,7 +54,7 @@ export default function Navbar() {
     try {
       const response = await fetch("http://localhost:5000/notification/vendor-admin", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem('vendorToken')}`
         },
@@ -77,7 +77,7 @@ export default function Navbar() {
   useEffect(() => {
     if (!vendorAdminID) return;
     fetchNotifications();
-    
+
     // Refresh notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
@@ -151,18 +151,13 @@ export default function Navbar() {
             Vendor Product View
           </Link>
           <Link
-  href="/vendor-admin/AdminNotification"
-  className="relative flex items-center gap-2 p-2 rounded-md text-sm hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
->
-  <Bell className="w-4 h-4" />
-  <span>Orders</span>
-  
-  {unreadCount > 0 && (
-    <span className="ml-1 h-5 w-5 rounded-full bg-black text-white text-xs flex items-center justify-center">
-      {unreadCount}
-    </span>
-  )}
-</Link>
+            href="/vendor-admin/AdminNotification"
+            className="relative flex items-center gap-2 p-2 rounded-md text-sm hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
+          >
+            <Bell className="w-4 h-4" />
+            <span>Orders</span>
+
+          </Link>
 
         </div>
 

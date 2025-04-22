@@ -1,7 +1,13 @@
 "use client";
+
 import { Download, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Swal from "sweetalert2";
 import { exportToCSV, exportToExcel } from "@/lib/exportUtils";
 import { format } from "date-fns";
@@ -19,7 +25,7 @@ const ExportMenu = ({ users = [], dataType = 'notifications' }) => {
 
     let data;
     let fileName;
-    
+
     if (dataType === 'users') {
       data = users.map(user => ({
         "Company Name": user.companyName || "",
@@ -30,7 +36,16 @@ const ExportMenu = ({ users = [], dataType = 'notifications' }) => {
         "Created At": user.createdAt ? format(new Date(user.createdAt), "MMM dd, yyyy") : ""
       }));
       fileName = "users-list";
-    } 
+    } else if (dataType === 'products') {
+      data = users.map(product => ({
+        "Product Name": product.productName || "",
+        "Brand": product.brand || "",
+        "Category": product.category || "",
+        "Seller": product.seller || "",
+        "Price": product.price || ""
+      }));
+      fileName = "products-list";
+    }
     else {
       // Default to notifications format
       data = users.map(notification => ({
@@ -40,7 +55,9 @@ const ExportMenu = ({ users = [], dataType = 'notifications' }) => {
         "Company": notification.companyName || "",
         "Price": notification.price || "",
         "Quantity": notification.quantity || "",
-        "Date": notification.created_at ? format(new Date(notification.created_at), "MMM dd, yyyy HH:mm") : ""
+        "Date": notification.created_at
+          ? format(new Date(notification.created_at), "MMM dd, yyyy HH:mm")
+          : ""
       }));
       fileName = "notifications-list";
     }

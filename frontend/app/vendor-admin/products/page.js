@@ -1,14 +1,16 @@
-'use client';
-
+"use client";
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaSearch, FaFileExport } from 'react-icons/fa';
-import { Trash2, Loader2, Edit, ChevronRight, ChevronLeft } from 'lucide-react';
+import { FaSearch } from 'react-icons/fa';
+import { Trash2, Loader2, Edit, ChevronRight, ChevronLeft, Package } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import { Button } from '@/components/ui/button';
-import * as XLSX from 'xlsx';
+import Navbar from "../components/navbar";
+import ExportMenu from "@/app/Components/auth/ExportMenu";
+
+
 
 export default function VendorAdminProducts() {
   const [products, setProducts] = useState([]);
@@ -99,30 +101,9 @@ export default function VendorAdminProducts() {
     }
   };
 
-  const handleExport = () => {
-    // Prepare data for export (excluding image and actions)
-    const exportData = filteredProducts.map(product => ({
-      'Product Name': product.productName,
-      'Brand': product.brand,
-      'Category': product.category,
-      'Price': `₹${product.price}`,
-      'Seller': product.seller
-    }));
-
-    // Create worksheet
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    
-    // Create workbook
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Products");
-    
-    // Export to Excel
-    XLSX.writeFile(wb, "products_export.xlsx");
-  };
-
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>
-      `${product.product_name} ${product.brand} ${product.category} ${product.seller}`
+      `${product.productName} ${product.brand} ${product.category} ${product.seller}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     );
@@ -142,144 +123,170 @@ export default function VendorAdminProducts() {
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen max-w-screen-2xl mx-auto 2xl:px-12">
-      <ToastContainer position="top-right" autoClose={5000} />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Navbar />
+      <div className="max-w-screen-2xl mx-auto p-6 2xl:px-12">
+        <ToastContainer position="top-right" autoClose={5000} />
 
-      <div className="flex flex-col lg:flex-row justify-between items-center mb-6 gap-4">
-        <h2 className="text-2xl 2xl:text-3xl font-semibold text-gray-800">Vendor Users Products</h2>
-        <div className="flex gap-4">
-          <div className="relative w-full lg:w-[400px] xl:w-[450px]">
-            <input
-              type="text"
-              placeholder="Search by name, category, brand"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full pl-3 pr-10 py-2 2xl:py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm 2xl:text-base"
+        <div className="flex flex-col lg:flex-row justify-between items-center mb-6 gap-4">
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-xl">
+              <Package className="text-blue-600" size={28} />
+            </div>
+            <span className="pt-1">Vendor Products</span>
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="relative w-full lg:w-[400px] xl:w-[450px]">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 2xl:h-5 2xl:w-5" />
+              <input
+                type="text"
+                placeholder="Search by name, category, brand"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full pl-10 pr-4 py-2 2xl:py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm 2xl:text-base"
+              />
+            </div>
+            <ExportMenu
+              users={filteredProducts}
+              dataType="products"
             />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4 2xl:h-5 2xl:w-5" />
           </div>
-          <Button 
-            onClick={handleExport}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
-          >
-            <FaFileExport className="h-4 w-4" />
-            <span>Export</span>
-          </Button>
-        </div>
-      </div>
-
-      {message && <p className="mb-4 text-blue-600 2xl:text-lg">{message}</p>}
-
-      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Image</th>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Name</th>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Brand</th>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Category</th>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Price</th>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Seller</th>
-              <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {currentProducts.map((product) => (
-              <tr key={product.id} className="border-gray-100 hover:bg-blue-50/50">
-                <td className="px-4 py-4 2xl:py-5">
-                  <img
-                    src={`http://localhost:5000/uploads/${product.productImage}`}
-                    alt={product.productName}
-                    className="h-10 w-10 2xl:h-12 2xl:w-12 rounded object-cover"
-                    onError={(e) => e.target.src = '/placeholder-product.png'}
-                  />
-                </td>
-                <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base font-medium text-gray-900">{product.productName}</td>
-                <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">{product.brand}</td>
-                <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">{product.category}</td>
-                <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">₹{product.price}</td>
-                <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">{product.seller}</td>
-                <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(product)}
-                      className="text-blue-500 hover:text-blue-700"
-                    >
-                      <Edit className="h-4 w-4 2xl:h-5 2xl:w-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 className="h-4 w-4 2xl:h-5 2xl:w-5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-4">
-        <div className="text-sm 2xl:text-base text-gray-700">
-          Showing <span className="font-medium">{indexOfFirst + 1}</span> to{" "}
-          <span className="font-medium">{Math.min(indexOfLast, filteredProducts.length)}</span> of{" "}
-          <span className="font-medium">{filteredProducts.length}</span> results
         </div>
 
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            className="px-3 py-1 2xl:px-4 2xl:py-2 rounded-lg border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 text-sm 2xl:text-base"
-          >
-            <ChevronLeft className="h-4 w-4 2xl:h-5 2xl:w-5" />
-            <span>Previous</span>
-          </Button>
+        {message && <p className="mb-4 text-blue-600 2xl:text-lg">{message}</p>}
 
-          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            let pageNum;
-            if (totalPages <= 5) {
-              pageNum = i + 1;
-            } else if (currentPage <= 3) {
-              pageNum = i + 1;
-            } else if (currentPage >= totalPages - 2) {
-              pageNum = totalPages - 4 + i;
-            } else {
-              pageNum = currentPage - 2 + i;
-            }
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+          {filteredProducts.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="mx-auto h-12 w-12 text-gray-400 mb-3">
+                <Package className="h-full w-full" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-700">
+                No products found
+              </h3>
+              <p className="text-gray-500 mt-1">
+                {searchTerm
+                  ? "Try a different search term"
+                  : "Add your first product"}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Image</th>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Name</th>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Brand</th>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Category</th>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Price</th>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Seller</th>
+                      <th className="px-4 py-4 2xl:py-5 text-left text-sm 2xl:text-base font-medium text-gray-700 tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {currentProducts.map((product) => (
+                      <tr key={product.id} className="hover:bg-blue-50/50">
+                        <td className="px-4 py-4 2xl:py-5">
+                          <img
+                            src={`http://localhost:5000/uploads/${product.productImage}`}
+                            alt={product.productName}
+                            className="h-10 w-10 2xl:h-12 2xl:w-12 rounded object-cover"
+                            onError={(e) => e.target.src = '/placeholder-product.png'}
+                          />
+                        </td>
+                        <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base font-medium text-gray-900">{product.productName}</td>
+                        <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">{product.brand}</td>
+                        <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">{product.category}</td>
+                        <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">₹{product.price}</td>
+                        <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">{product.seller}</td>
+                        <td className="px-4 py-4 2xl:py-5 text-sm 2xl:text-base">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEdit(product)}
+                              className="text-blue-500 hover:text-blue-700"
+                            >
+                              <Edit className="h-4 w-4 2xl:h-5 2xl:w-5" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(product.id)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4 2xl:h-5 2xl:w-5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-            return (
-              <button
-                key={pageNum}
-                onClick={() => setCurrentPage(pageNum)}
-                className={`px-3 py-1 2xl:px-4 2xl:py-2 border rounded-md text-sm 2xl:text-base font-medium ${currentPage === pageNum
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
+              {/* Pagination Controls */}
+              <div className="px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-gray-100 bg-gray-50/50">
+                <div className="text-sm 2xl:text-base text-gray-700">
+                  Showing <span className="font-medium">{indexOfFirst + 1}</span> to{" "}
+                  <span className="font-medium">{Math.min(indexOfLast, filteredProducts.length)}</span> of{" "}
+                  <span className="font-medium">{filteredProducts.length}</span> products
+                </div>
+                <div className="flex gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                    className="px-3 py-1 2xl:px-4 2xl:py-2 rounded-lg border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 text-sm 2xl:text-base"
+                  >
+                    <ChevronLeft className="h-4 w-4 2xl:h-5 2xl:w-5" />
+                    <span>Previous</span>
+                  </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="px-3 py-1 2xl:px-4 2xl:py-2 rounded-lg border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 text-sm 2xl:text-base"
-          >
-            <span>Next</span>
-            <ChevronRight className="h-4 w-4 2xl:h-5 2xl:w-5" />
-          </Button>
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+
+                    return (
+                      <Button
+                        key={`page-${pageNum}`}
+                        variant={currentPage === pageNum ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-1 2xl:px-4 2xl:py-2 rounded-lg min-w-[40px] ${currentPage === pageNum
+                          ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
+                          : "border-gray-300 hover:bg-gray-100"
+                          } transition-colors text-sm 2xl:text-base`}
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    className="px-3 py-1 2xl:px-4 2xl:py-2 rounded-lg border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 text-sm 2xl:text-base"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="h-4 w-4 2xl:h-5 2xl:w-5" />
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
