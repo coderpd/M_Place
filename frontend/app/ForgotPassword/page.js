@@ -24,7 +24,7 @@ export default function ForgotPassword() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  
+
   const {
     register,
     handleSubmit,
@@ -74,32 +74,37 @@ export default function ForgotPassword() {
         <ImageSlider />
       </div>
 
-      {/* Right Side - Forgot Password Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4 sm:px-6 py-8 sm:py-10 lg:py-12">
-        <Card className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-md xl:max-w-lg 2xl:max-w-xl shadow-sm sm:shadow-md p-4 sm:p-6 md:p-8 bg-white rounded-lg sm:rounded-xl">
-          <CardHeader className="p-0 pb-4 sm:pb-6">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto rounded-lg sm:rounded-xl shadow-md bg-gradient-to-br from-blue-600 to-indigo-500 p-0.5">
-              <div className="w-full h-full bg-white rounded-lg sm:rounded-xl flex items-center justify-center border border-gray-200 shadow-inner">
+      {/* Forgot Password - Consistent Design with Login */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-100 px-6 py-10 2xl:py-16">
+        <Card className="w-full max-w-md 2xl:max-w-lg shadow-lg p-6 2xl:p-8 bg-white rounded-lg">
+          <CardHeader>
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 2xl:w-24 2xl:h-24 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
                 <img
                   src="/Logo.png"
                   alt="M-Place Logo"
-                  className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-contain"
+                  className="w-12 h-12 sm:w-16 sm:h-16 2xl:w-20 2xl:h-20 object-contain"
                 />
               </div>
             </div>
           </CardHeader>
-
-          <CardContent className="p-0">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 text-center mb-2 sm:mb-3">
+          <CardContent>
+            <h2 className="text-2xl 2xl:text-3xl font-semibold text-gray-800 text-left">
               Forgot Password
             </h2>
-            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg text-center">
+            <p className="text-gray-600 mb-4 2xl:mb-6 2xl:text-lg text-left">
               Please enter your registered email ID to receive an OTP.
             </p>
-            
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4 md:space-y-5">
+
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4 2xl:space-y-6"
+            >
               <div>
-                <label htmlFor="email" className="text-xs sm:text-sm md:text-base text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="text-sm 2xl:text-base text-gray-700"
+                >
                   Email Address
                 </label>
                 <Input
@@ -107,23 +112,23 @@ export default function ForgotPassword() {
                   type="email"
                   placeholder="Enter your email"
                   {...register("email")}
-                  className="mt-1 h-10 sm:h-11 md:h-12 text-sm sm:text-base"
+                  className="2xl:h-12 2xl:text-base"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-xs sm:text-sm md:text-base mt-1">
+                  <p className="text-red-500 text-sm 2xl:text-base mt-1">
                     {errors.email.message}
                   </p>
                 )}
               </div>
 
-              <Button 
+              <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 sm:h-11 md:h-12 rounded-md disabled:bg-gray-400 flex items-center justify-center text-sm sm:text-base"
                 disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 2xl:py-3 rounded-md disabled:bg-gray-400 flex items-center justify-center text-base 2xl:text-lg"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="animate-spin mr-2 w-4 h-4 sm:w-5 sm:h-5" />
+                    <Loader2 className="animate-spin mr-2 w-5 h-5 2xl:w-6 2xl:h-6" />
                     Sending...
                   </>
                 ) : (
@@ -132,21 +137,22 @@ export default function ForgotPassword() {
               </Button>
             </form>
 
-            {/* OTP Message */}
             {otpMessage && (
-              <p className={`mt-3 sm:mt-4 text-xs sm:text-sm md:text-base ${
-                otpSent ? "text-green-500" : "text-red-500"
-              }`}>
+              <p
+                className={`mt-3 2xl:mt-4 text-sm 2xl:text-base text-left ${
+                  otpSent ? "text-green-500" : "text-red-500"
+                }`}
+              >
                 {otpMessage}
               </p>
             )}
 
             <Link
               href="/SignIn"
-              className="flex items-start justify-start text-gray-600 mt-4 sm:mt-6 hover:text-gray-800 text-xs sm:text-sm md:text-base"
+              className="flex items-center text-gray-600 mt-4 2xl:mt-6 hover:text-gray-800 text-sm 2xl:text-base"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
-              <span>Back </span>
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Back to Sign In
             </Link>
           </CardContent>
         </Card>

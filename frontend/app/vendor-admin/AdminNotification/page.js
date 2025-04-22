@@ -80,7 +80,6 @@ const VendorAdminNotifications = () => {
 
       const data = await response.json();
       setNotifications(data.notifications);
-      console.log(data)
     } catch (error) {
       console.error("Error fetching notifications:", error);
       setError(error.message || "Failed to load notifications");
@@ -136,7 +135,6 @@ const VendorAdminNotifications = () => {
     );
   });
 
-  const unreadCount = notifications.filter((n) => n.status === "unread").length;
   const totalPages = Math.ceil(filteredNotifications.length / notificationsPerPage);
   const currentNotifications = filteredNotifications.slice(
     (currentPage - 1) * notificationsPerPage,
@@ -184,8 +182,6 @@ const VendorAdminNotifications = () => {
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Try Again
               </Button>
-
-
             </CardContent>
           </Card>
         </div>
@@ -201,14 +197,6 @@ const VendorAdminNotifications = () => {
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-full bg-primary/10">
               <Bell className="h-6 w-6 text-primary" />
-              {unreadCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
-                >
-                  {unreadCount}
-                </Badge>
-              )}
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-800">Order Notifications</h2>
@@ -218,7 +206,6 @@ const VendorAdminNotifications = () => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            {/* Search Input with Icon */}
             <div className="relative w-full md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -232,7 +219,6 @@ const VendorAdminNotifications = () => {
               />
             </div>
 
-            {/* Export Menu */}
             <div className="w-full md:w-auto">
               <ExportMenu
                 users={filteredNotifications}
@@ -240,7 +226,6 @@ const VendorAdminNotifications = () => {
               />
             </div>
           </div>
-
         </div>
 
         {filteredNotifications.length === 0 ? (
@@ -352,14 +337,6 @@ const VendorAdminNotifications = () => {
                             <User className="h-4 w-4 text-primary" />
                           </div>
                           <span className="font-medium">{notification.personName}</span>
-                          {notification.status === "unread" && (
-                            <Badge
-                              variant="default"
-                              className="ml-2 bg-blue-100 text-blue-800"
-                            >
-                              New
-                            </Badge>
-                          )}
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3">
@@ -383,7 +360,6 @@ const VendorAdminNotifications = () => {
                           <span>{notification.productName}</span>
                         </div>
                       </TableCell>
-
                       <TableCell className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="p-2 rounded-full bg-green-100">
@@ -392,7 +368,6 @@ const VendorAdminNotifications = () => {
                           <span>{notification.companyName}</span>
                         </div>
                       </TableCell>
-
                       <TableCell className="hidden lg:table-cell px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="p-2 rounded-full bg-yellow-100">

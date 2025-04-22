@@ -74,6 +74,7 @@ const AdminNotifications = () => {
       if (!response.ok) throw new Error("Failed to fetch notifications");
       const data = await response.json();
       setNotifications(data.notifications);
+      console.log(data.notifications)
     } catch (error) {
       console.error("Error fetching notifications:", error);
       setError("Failed to load notifications");
@@ -114,7 +115,8 @@ const AdminNotifications = () => {
       n.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       n.Email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       n.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      n.companyName?.toLowerCase().includes(searchTerm.toLowerCase());
+      n.companyName?.toLowerCase().includes(searchTerm.toLowerCase())||
+      n.quantity.includes(searchTerm)
 
     const matchesStatus = statusFilter === "all" || n.status === statusFilter;
 

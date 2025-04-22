@@ -3,8 +3,10 @@ const router = express.Router();
 const db = require("../db");
 
 const convertToIST = (utcDateString) => {
-  return new Date(utcDateString).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-};          
+  return new Date(utcDateString).toLocaleString("en-US", {
+    timeZone: "Asia/Kolkata",
+  });
+};
 
 router.get("/:vendorId", async (req, res) => {
   try {
@@ -31,7 +33,6 @@ router.get("/:vendorId", async (req, res) => {
   }
 });
 
-
 // Notify vendor and insert into notifications table
 router.post("/notify-vendor", async (req, res) => {
   try {
@@ -55,7 +56,7 @@ router.post("/notify-vendor", async (req, res) => {
     }
     const customerName = customerResult[0].personName;
     const customer_id = customerResult[0].Id;
-    
+
     const values = [];
 
     for (const item of cart) {
@@ -77,7 +78,11 @@ router.post("/notify-vendor", async (req, res) => {
         continue;
       }
 
-      const { id: productId, vendor_id: vendorId, productName } = productResult[0];
+      const {
+        id: productId,
+        vendor_id: vendorId,
+        productName,
+      } = productResult[0];
 
       if (!vendorId) {
         console.warn(`Vendor ID missing for product ID: ${productId}`);
@@ -95,19 +100,21 @@ router.post("/notify-vendor", async (req, res) => {
         continue;
       }
       const vendorEmail = vendorResult[0].email;
-       console.log(vendorEmail)
+      console.log(vendorEmail);
       values.push([
         customer_id,
         customerName,
         vendorId,
         productId,
-        `Customer  ${customerName} wants to buy your product: ${productName} (x${item.quantity}). Contact: ${Email}`,
+        `Customer ${customerName} wants to buy your product: ${productName} (Qty: ${item.quantity}). Contact: ${Email}`,
       ]);
     }
 
     if (values.length === 0) {
       console.warn("No valid notifications to insert");
-      return res.status(400).json({ error: "No valid notifications to insert" });
+      return res
+        .status(400)
+        .json({ error: "No valid notifications to insert" });
     }
 
     console.log("Final values to insert:", values);
@@ -123,7 +130,6 @@ router.post("/notify-vendor", async (req, res) => {
   }
 });
 
-
 router.put("/read/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -132,16 +138,20 @@ router.put("/read/:id", async (req, res) => {
     const [result] = await db.execute(query, [id]);
 
     if (result.affectedRows > 0) {
-      return res.json({ success: true, message: "Notification marked as read" });
+      return res.json({
+        success: true,
+        message: "Notification marked as read",
+      });
     } else {
-      return res.status(404).json({ success: false, message: "Notification not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found" });
     }
   } catch (error) {
     console.error("Error updating notification:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
-
 
 router.post("/vendor-admin", async (req, res) => {
   try {
@@ -158,7 +168,7 @@ router.post("/vendor-admin", async (req, res) => {
         vu.Email ,
         p.productName,
         cu.companyName,
-      REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(x[0-9]+\\)'), '(x', ''), ')', '') AS quantity,
+REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(Qty: [0-9]+\\)'), '(Qty: ', ''), ')', '') AS quantity,
         p.price,
         n.created_at,
         n.status
@@ -200,7 +210,7 @@ router.post("/admin", async (req, res) => {
   v.companyName,
   p.productName,
   n.message,
-  REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(x[0-9]+\\)'), '(x', ''), ')', '') AS quantity,
+  REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(Qty: [0-9]+\\)'), '(Qty: ', ''), ')', '') AS quantity,
   p.price,
   n.created_at
 FROM notifications n
@@ -213,7 +223,6 @@ ORDER BY n.created_at DESC;
       [adminID]
     );
     console.log("Fetched notifications:", notifications.length);
-
 
     const formattedNotifications = notifications.map((notif) => ({
       ...notif,

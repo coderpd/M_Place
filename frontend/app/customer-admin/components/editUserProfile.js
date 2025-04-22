@@ -58,47 +58,55 @@ export const EditUserForm = ({ user, onClose, onUpdate }) => {
     e.preventDefault();
     setIsSubmitting(true);
   
+    const { companyName, personName, contactNumber , Email, status } = formData;
+  
     try {
+      let userId = user?.id;
+  
+      if (!userId) {
+        throw new Error("No user ID found in user object");
+      }
+  
+      // Force userId to be number
+      userId = Number(userId);
+      if (isNaN(userId)) {
+        throw new Error(`Invalid user ID format: ${user.id}`);
+      }
+  
       const response = await fetch(
         `http://localhost:5000/auth/customerUserSignUp/users/${user.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            companyName,
+            personName,
+            contactNumber,
+            Email,
+            status,
+          }),
         }
       );
   
-      if (response.ok) {
-        await Swal.fire({
-          title: "Success!",
-          text: "User updated successfully",
-          icon: "success",
-          showConfirmButton: true,
-          timer: 1500,
-          background: "#f8fafc",
-            confirmButtonColor: "#3b82f6"
-        });
+      const data = await response.json();
   
-        
-  
-      } else {
-        throw new Error("Failed to update user");
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
       }
+  
+      Swal.fire("Success", data.message, "success");
+      onUpdate(); // Refresh the user list
+      onClose(); // Close the modal
     } catch (error) {
-      console.error("Error updating user:", error);
-      Swal.fire({
-        title: "Error",
-        text: "Failed to update user",
-        icon: "error",
-        confirmButtonColor: "#3b82f6",
-      });
+      console.error("Update error details:", error);
+      Swal.fire("Error", error.message, "error");
     } finally {
       setIsSubmitting(false);
     }
   };
-  
   return (
     <AnimatePresence>
       <motion.div

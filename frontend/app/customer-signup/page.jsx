@@ -134,7 +134,7 @@ const CustomerSignup = () => {
   return (
     <div>
       <FormHeader
-        title="Customer-Onboarding"
+        title="Customer-Admin-Onboard"
         description="Register today and gain access to a marketplace of trusted buyers."
       />
 

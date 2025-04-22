@@ -1,6 +1,6 @@
 "use client";
 import CustomerAdminNavbar from "../components/customerAdminNavbar";
-import { ContactDetailsNoOtp } from "@/app/Components/auth/contactDetailsNoOtp";
+import { CustomerAddUser } from "@/app/Components/auth/CustomerAddUser";
 import { PasswordSection } from "@/app/Components/auth/PasswordSection";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -191,7 +191,7 @@ const Page = () => {
               Basic Information
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <ContactDetailsNoOtp
+              <CustomerAddUser
                 formValues={formValues}
                 handleInputChange={handleInputChange}
                 errors={errors}

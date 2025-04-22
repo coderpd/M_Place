@@ -270,9 +270,7 @@ const CartPage = () => {
                                   </span>
                                 </div>
                                 <div className="mt-2 flex items-center gap-2">
-                                  <span className="text-sm text-gray-500">
-                                    SKU: {item.sku || "N/A"}
-                                  </span>
+                                  
                                   <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
                                     In Stock
                                   </span>

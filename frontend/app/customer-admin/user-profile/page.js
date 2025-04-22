@@ -127,19 +127,28 @@ const Page = () => {
         "http://localhost:5000/auth/customerUserSignUp/user-profile",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
           body: JSON.stringify({ adminID }),
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+
       const data = await response.json();
-      setUsers(data);
+      setUsers(data); // Use the data directly from backend
     } catch (error) {
       console.error("Error fetching users:", error);
-      Swal.fire("Error", "Failed to reload users", "error");
+      Swal.fire("Error", `Failed to reload users: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const filteredUsers = users.filter(
     (user) =>

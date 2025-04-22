@@ -1,10 +1,11 @@
 "use client";
-import { InputField } from "./InputField"; // Make sure to import your InputField component
-export const ContactDetailsNoOtp = ({
+import { InputField } from "./InputField";
+
+export const VendorAddUser = ({
   formValues,
   handleInputChange,
-  errors,
-
+  errors
+  
 }) => {
   return (
     <>
@@ -16,27 +17,26 @@ export const ContactDetailsNoOtp = ({
           onChange={handleInputChange}
           error={errors.companyName}
           disabled={true}
-          
         />
       </div>
 
       <div className="mb-4">
         <InputField
           label="Person Name"
-          name="personName"
-          value={formValues.personName}
+          name="personName" 
+          value={formValues.personName || ""} 
           onChange={handleInputChange}
-          error={errors.personName}
+          error={errors.personName} 
         />
       </div>
 
       <div className="mb-4">
         <InputField
           label="Contact Number"
-          name="contactNumber"
-          value={formValues.contactNumber}
+          name="phoneNumber"
+          value={formValues.phoneNumber || ""}
           onChange={handleInputChange}
-          error={errors.contactNumber}
+          error={errors.phoneNumber}
         />
       </div>
 
@@ -45,8 +45,7 @@ export const ContactDetailsNoOtp = ({
           label="Email"
           name="Email"
           placeholder={`abc@${
-            formValues.companyName?.toLowerCase()?.replace(/\s/g, "") ||
-            "company"
+            formValues.companyName?.toLowerCase()?.replace(/\s/g, "") || "company"
           }.com`}
           value={formValues.Email}
           onChange={handleInputChange}

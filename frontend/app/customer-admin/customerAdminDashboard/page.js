@@ -1,790 +1,3 @@
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { format, subDays, subMonths, startOfWeek, endOfWeek } from "date-fns";
-// import {
-//   Users,
-//   CheckCircle,
-//   XCircle,
-//   Activity,
-//   UserPlus,
-//   UserX,
-//   Plus,
-//   Edit,
-//   Bell,
-//   BarChart2,
-//   PieChart,
-//   TrendingUp,
-//   ShoppingCart,
-//   Search,
-//   Clock,
-// } from "lucide-react";
-// import CustomerAdminNavbar from "../components/customerAdminNavbar";
-// import Swal from "sweetalert2";
-// import { Line, Bar, Doughnut } from "react-chartjs-2";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   Title,
-//   ArcElement,
-//   Tooltip,
-//   Legend,
-//   PointElement,
-//   LineElement,
-//   Filler,
-// } from "chart.js";
-
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   Title,
-//   ArcElement,
-//   Tooltip,
-//   Legend,
-//   PointElement,
-//   LineElement,
-//   Filler
-// );
-
-// const CustomerAdminDashboard = () => {
-//   const router = useRouter();
-//   const [users, setUsers] = useState([]);
-//   const [filteredUsers, setFilteredUsers] = useState([]);
-//   const [notifications, setNotifications] = useState([]);
-//   const [adminID, setAdminID] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const [timeRange, setTimeRange] = useState("week");
-//   const [recentActivity, setRecentActivity] = useState([]);
-//   const [stats, setStats] = useState({ week: 0, month: 0 });
-//   const [notificationStats, setNotificationStats] = useState({
-//     total: 0,
-//     unread: 0,
-//     read: 0,
-//   });
-
-//   // YouTube-inspired color palette
-//   const colors = {
-//     primary: "#FF0000", // YouTube Red
-//     secondary: "#282828", // Dark Gray
-//     accent: "#3EA6FF", // YouTube Blue
-//     background: "#0F0F0F", // Dark Background
-//     card: "#212121", // Card Background
-//     text: "#FFFFFF", // White Text
-//     textSecondary: "#AAAAAA", // Gray Text
-//     success: "#00C853", // Green
-//     warning: "#FFAB00", // Amber
-//     danger: "#FF1744", // Red
-//   };
-
-//   const getTimeRangeDates = () => {
-//     const now = new Date();
-//     if (timeRange === "week") {
-//       return {
-//         start: startOfWeek(now),
-//         end: now,
-//       };
-//     } else {
-//       return {
-//         start: subMonths(now, 1),
-//         end: now,
-//       };
-//     }
-//   };
-
-//   const filterUsersByTimeRange = (users) => {
-//     const { start } = getTimeRangeDates();
-//     return users.filter((user) => {
-//       if (!user.createdAt) return false;
-//       const userDate = new Date(user.createdAt);
-//       return userDate >= start;
-//     });
-//   };
-
-//   const getDayLabels = () => {
-//     const { start, end } = getTimeRangeDates();
-//     const labels = [];
-//     let current = new Date(start);
-
-//     if (timeRange === "week") {
-//       while (current <= end) {
-//         labels.push(format(current, "EEE"));
-//         current = new Date(current.setDate(current.getDate() + 1));
-//       }
-//     } else {
-//       const weekStart = new Date(start);
-//       while (weekStart <= end) {
-//         let weekEnd = new Date(weekStart);
-//         weekEnd.setDate(weekEnd.getDate() + 6);
-//         if (weekEnd > end) weekEnd = new Date(end);
-
-//         labels.push(
-//           `Week ${format(weekStart, "d")}-${format(weekEnd, "d MMM")}`
-//         );
-//         weekStart.setDate(weekStart.getDate() + 7);
-//       }
-//     }
-//     return labels;
-//   };
-
-//   const prepareChartData = (users) => {
-//     const { start, end } = getTimeRangeDates();
-//     const labels = getDayLabels();
-//     const dataMap = {};
-
-//     labels.forEach((label) => {
-//       dataMap[label] = 0;
-//     });
-
-//     users.forEach((user) => {
-//       if (user.createdAt) {
-//         const userDate = new Date(user.createdAt);
-//         if (userDate >= start && userDate <= end) {
-//           let label;
-//           if (timeRange === "week") {
-//             label = format(userDate, "EEE");
-//           } else {
-//             const weekNumber = Math.floor(
-//               (userDate - start) / (7 * 24 * 60 * 60 * 1000)
-//             );
-//             label = labels[Math.min(weekNumber, labels.length - 1)];
-//           }
-//           dataMap[label] = (dataMap[label] || 0) + 1;
-//         }
-//       }
-//     });
-
-//     return {
-//       labels,
-//       datasets: [
-//         {
-//           label: "New Users",
-//           data: labels.map((label) => dataMap[label]),
-//           backgroundColor: "rgba(62, 166, 255, 0.2)",
-//           borderColor: colors.accent,
-//           borderWidth: 2,
-//           tension: 0.4,
-//           fill: true,
-//           pointBackgroundColor: colors.primary,
-//           pointBorderColor: "#fff",
-//           pointBorderWidth: 2,
-//           pointRadius: 5,
-//           pointHoverRadius: 7,
-//         },
-//       ],
-//     };
-//   };
-
-//   const prepareNotificationChartData = () => {
-//     const now = new Date();
-//     const days = timeRange === "week" ? 7 : 30;
-//     const labels = [];
-//     const data = [];
-
-//     for (let i = days - 1; i >= 0; i--) {
-//       const date = new Date(now);
-//       date.setDate(date.getDate() - i);
-//       labels.push(format(date, "MMM d"));
-
-//       const count = notifications.filter((n) => {
-//         const notificationDate = new Date(n.created_at);
-//         return (
-//           notificationDate.getDate() === date.getDate() &&
-//           notificationDate.getMonth() === date.getMonth() &&
-//           notificationDate.getFullYear() === date.getFullYear()
-//         );
-//       }).length;
-
-//       data.push(count);
-//     }
-
-//     return {
-//       labels,
-//       datasets: [
-//         {
-//           label: "Notifications",
-//           data,
-//           backgroundColor: labels.map(
-//             (_, i) => `hsl(${i * (360 / labels.length)}, 70%, 50%)`
-//           ),
-//           borderRadius: 6,
-//           borderWidth: 0,
-//         },
-//       ],
-//     };
-//   };
-
-//   const prepareProductDistributionData = () => {
-//     const productCounts = {};
-//     notifications.forEach((n) => {
-//       if (n.productName) {
-//         productCounts[n.productName] =
-//           (productCounts[n.productName] || 0) + (n.quantity || 1);
-//       }
-//     });
-
-//     const sortedProducts = Object.entries(productCounts)
-//       .sort((a, b) => b[1] - a[1])
-//       .slice(0, 5);
-
-//     const backgroundColors = [
-//       "rgba(255, 0, 0, 0.7)",
-//       "rgba(62, 166, 255, 0.7)",
-//       "rgba(255, 204, 0, 0.7)",
-//       "rgba(29, 185, 84, 0.7)",
-//       "rgba(255, 102, 0, 0.7)",
-//     ];
-
-//     return {
-//       labels: sortedProducts.map((p) => p[0]),
-//       datasets: [
-//         {
-//           label: "Total Quantity Ordered",
-//           data: sortedProducts.map((p) => p[1]),
-//           backgroundColor: backgroundColors,
-//           borderColor: backgroundColors.map((color) =>
-//             color.replace("0.7", "1")
-//           ),
-//           borderWidth: 1,
-//           hoverOffset: 20,
-//         },
-//       ],
-//     };
-//   };
-
-//   const fetchNotifications = async () => {
-//     try {
-//       const response = await fetch("http://localhost:5000/notification/admin", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ adminID }),
-//       });
-
-//       if (!response.ok) throw new Error("Failed to fetch notifications");
-//       const data = await response.json();
-//       setNotifications(data.notifications);
-
-//       const unreadCount = data.notifications.filter(
-//         (n) => n.status === "unread"
-//       ).length;
-//       setNotificationStats({
-//         total: data.notifications.length,
-//         unread: unreadCount,
-//         read: data.notifications.length - unreadCount,
-//       });
-//     } catch (error) {
-//       console.error("Error fetching notifications:", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const storedCustomer = localStorage.getItem("customer");
-//     if (storedCustomer) {
-//       try {
-//         const customerData = JSON.parse(storedCustomer);
-//         setAdminID(customerData.id);
-//       } catch (err) {
-//         console.error("Invalid customer data:", err);
-//       }
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     if (!adminID) return;
-
-//     const fetchUsers = async () => {
-//       try {
-//         setLoading(true);
-//         const response = await fetch(
-//           "http://localhost:5000/auth/customerUserSignUp/user-profile",
-//           {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ adminID }),
-//           }
-//         );
-
-//         if (!response.ok) throw new Error("Failed to fetch users");
-//         const data = await response.json();
-//         setUsers(data);
-//         setFilteredUsers(filterUsersByTimeRange(data));
-//       } catch (error) {
-//         console.error("Error fetching users:", error);
-//         Swal.fire("Error", "Failed to load users", "error");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     const fetchNewUserSummary = async () => {
-//       try {
-//         const response = await fetch(
-//           `http://localhost:5000/auth/customerUserSignUp/new-users-summary?adminID=${adminID}`
-//         );
-//         const data = await response.json();
-//         setStats(data);
-//       } catch (error) {
-//         console.error("Error fetching activity:", error);
-//       }
-//     };
-
-//     const fetchRecentActivity = async () => {
-//       try {
-//         const response = await fetch(
-//           `http://localhost:5000/auth/customerUserSignUp/recent-activity?adminID=${adminID}`
-//         );
-//         const data = await response.json();
-//         setRecentActivity(data);
-//       } catch (error) {
-//         console.error("Error fetching activity:", error);
-//       }
-//     };
-
-//     fetchUsers();
-//     fetchNewUserSummary();
-//     fetchRecentActivity();
-//     fetchNotifications();
-//   }, [adminID]);
-
-//   useEffect(() => {
-//     if (users.length > 0) {
-//       setFilteredUsers(filterUsersByTimeRange(users));
-//     }
-//   }, [timeRange, users]);
-
-//   const lineChartOptions = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     plugins: {
-//       legend: {
-//         display: false,
-//       },
-//       title: {
-//         display: true,
-//         text: "📈 User Growth Trend",
-//         color: colors.text,
-//         font: {
-//           size: 16,
-//           weight: "bold",
-//           family: "'Roboto', sans-serif",
-//         },
-//         padding: {
-//           top: 10,
-//           bottom: 20,
-//         },
-//       },
-//       tooltip: {
-//         backgroundColor: colors.card,
-//         titleColor: colors.text,
-//         bodyColor: colors.textSecondary,
-//         borderColor: colors.accent,
-//         borderWidth: 1,
-//         cornerRadius: 8,
-//         displayColors: false,
-//         callbacks: {
-//           label: (context) => {
-//             return ` ${context.parsed.y} new users`;
-//           },
-//         },
-//       },
-//     },
-//     scales: {
-//       x: {
-//         grid: {
-//           display: false,
-//           drawBorder: false,
-//         },
-//         ticks: {
-//           color: colors.textSecondary,
-//           font: {
-//             size: 12,
-//           },
-//         },
-//       },
-//       y: {
-//         beginAtZero: true,
-//         grid: {
-//           color: "rgba(255, 255, 255, 0.1)",
-//           drawBorder: false,
-//         },
-//         ticks: {
-//           color: colors.textSecondary,
-//           stepSize: 1,
-//           font: {
-//             size: 12,
-//           },
-//         },
-//       },
-//     },
-//   };
-
-//   const barChartOptions = {
-//     ...lineChartOptions,
-//     plugins: {
-//       ...lineChartOptions.plugins,
-//       title: {
-//         ...lineChartOptions.plugins.title,
-//         text: "📊 Notification Activity",
-//       },
-//     },
-//     scales: {
-//       ...lineChartOptions.scales,
-//       y: {
-//         ...lineChartOptions.scales.y,
-//         grid: {
-//           color: "rgba(255, 255, 255, 0.1)",
-//           drawBorder: false,
-//         },
-//       },
-//     },
-//   };
-
-//   const doughnutChartOptions = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     plugins: {
-//       legend: {
-//         position: "right",
-//         labels: {
-//           color: colors.text,
-//           font: {
-//             size: 12,
-//             family: "'Roboto', sans-serif",
-//           },
-//           padding: 20,
-//           usePointStyle: true,
-//           pointStyle: "circle",
-//         },
-//       },
-//       title: {
-//         display: true,
-//         text: "🍕 Top Ordered Products",
-//         color: colors.text,
-//         font: {
-//           size: 16,
-//           weight: "bold",
-//           family: "'Roboto', sans-serif",
-//         },
-//         padding: {
-//           top: 10,
-//           bottom: 20,
-//         },
-//       },
-//       tooltip: {
-//         backgroundColor: colors.card,
-//         titleColor: colors.text,
-//         bodyColor: colors.textSecondary,
-//         borderColor: colors.accent,
-//         borderWidth: 1,
-//         cornerRadius: 8,
-//         callbacks: {
-//           label: (context) => {
-//             const label = context.label || "";
-//             const value = context.raw || 0;
-//             const total = context.dataset.data.reduce((a, b) => a + b, 0);
-//             const percentage = Math.round((value / total) * 100);
-//             return `${label}: ${value} (${percentage}%)`;
-//           },
-//         },
-//       },
-//     },
-//     cutout: "65%",
-//     borderRadius: 8,
-//   };
-
-//   const StatCard = ({ title, value, icon, trend, percentage }) => {
-//     return (
-//       <div className="bg-gray-800 p-5 rounded-xl shadow-sm transition-all hover:scale-[1.02]">
-//         <div className="flex justify-between">
-//           <div>
-//             <p className="text-sm font-medium text-gray-400">{title}</p>
-//             <p className="text-2xl font-bold text-white mt-1">{value}</p>
-
-//           </div>
-//           <div className="h-12 w-12 rounded-full flex items-center justify-center bg-black bg-opacity-20">
-//             {React.cloneElement(icon, { className: "h-6 w-6 text-white" })}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-black">
-//       <CustomerAdminNavbar />
-
-//       <div className="p-6 max-w-7xl mx-auto">
-//         {/* Header Section */}
-//         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-//           <div>
-//             <h1 className="text-3xl font-bold text-white">
-//               Dashboard Overview
-//             </h1>
-//             <p className="text-gray-400 mt-2">
-//               Welcome back! Here's what's happening with your business.
-//             </p>
-//           </div>
-//           <div className="flex gap-3 mt-4 md:mt-0">
-//             {["week", "month"].map((range) => (
-//               <button
-//                 key={range}
-//                 onClick={() => setTimeRange(range)}
-//                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-//                   timeRange === range
-//                     ? "bg-red-600 text-white shadow-md"
-//                     : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600"
-//                 }`}
-//               >
-//                 {range.charAt(0).toUpperCase() + range.slice(1)}
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* Stat Cards */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-//           <StatCard title="Total Users" value={users.length} icon={<Users />} />
-//           <StatCard
-//             title="Active Users"
-//             value={users.filter((u) => u.status === "Active").length}
-//             icon={<Activity />}
-//           />
-//           <StatCard
-//             title="Inactive Users"
-//             value={users.filter((u) => u.status === "Inactive").length}
-//             icon={<UserX />}
-//           />
-//           <StatCard
-//             title="Total Orders"
-//             value={notificationStats.total}
-//             icon={<ShoppingCart />}
-//           />
-
-//         </div>
-
-//         {/* Charts Section */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-//           {/* User Growth Chart */}
-//           <div className="bg-gray-800 rounded-xl p-6">
-//             <div className="h-64">
-//               {users.length > 0 ? (
-//                 <Line
-//                   data={prepareChartData(users)}
-//                   options={lineChartOptions}
-//                 />
-//               ) : (
-//                 <div className="flex items-center justify-center h-full">
-//                   <Clock className="h-8 w-8 text-gray-500" />
-//                   <p className="text-gray-500 ml-2">Loading user data...</p>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//           {/* Notification Chart */}
-//           <div className="bg-gray-800 rounded-xl p-6">
-//             <div className="h-64">
-//               {notifications.length > 0 ? (
-//                 <Bar
-//                   data={prepareNotificationChartData()}
-//                   options={barChartOptions}
-//                 />
-//               ) : (
-//                 <div className="flex items-center justify-center h-full">
-//                   <Bell className="h-8 w-8 text-gray-500" />
-//                   <p className="text-gray-500 ml-2">Loading notifications...</p>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Bottom Section */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-//           {/* Product Distribution */}
-//           <div className="bg-gray-800 rounded-xl p-6">
-//             <div className="h-64">
-//               {notifications.length > 0 ? (
-//                 <Doughnut
-//                   data={prepareProductDistributionData()}
-//                   options={doughnutChartOptions}
-//                 />
-//               ) : (
-//                 <div className="flex items-center justify-center h-full">
-//                   <PieChart className="h-8 w-8 text-gray-500" />
-//                   <p className="text-gray-500 ml-2">Loading product data...</p>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//           {/* Recent Activity */}
-//           <div className="bg-gray-800 rounded-xl overflow-hidden">
-//             <div className="p-6">
-//               <h2 className="text-xl font-bold text-white mb-6">
-//                 Recent Activity
-//               </h2>
-//               <div className="space-y-4">
-//                 {recentActivity.length === 0 ? (
-//                   <div className="text-center py-8">
-//                     <Activity className="h-10 w-10 mx-auto text-gray-500" />
-//                     <p className="mt-2 text-gray-400">No recent activity</p>
-//                   </div>
-//                 ) : (
-//                   recentActivity.slice(0, 5).map((activity) => (
-//                     <div
-//                       key={activity.id}
-//                       className="flex items-start pb-4 border-b border-gray-700 last:border-0"
-//                     >
-//                       <div className="bg-blue-900 bg-opacity-30 p-2 rounded-lg mr-3">
-//                         {activity.updated_at ? (
-//                           <Edit className="h-4 w-4 text-yellow-400" />
-//                         ) : (
-//                           <UserPlus className="h-4 w-4 text-blue-400" />
-//                         )}
-//                       </div>
-//                       <div className="flex-1">
-//                         <p className="text-sm font-medium text-white">
-//                           <span className="font-semibold">
-//                             {activity.personName}
-//                           </span>{" "}
-//                           from{" "}
-//                           <span className="text-blue-400">
-//                             {activity.companyName}
-//                           </span>
-//                         </p>
-//                         <p className="text-xs text-gray-400 mt-1">
-//                           {format(
-//                             new Date(activity.activity_time),
-//                             "MMM d, h:mm a"
-//                           )}
-//                         </p>
-//                       </div>
-//                       <span className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded-full">
-//                         {activity.updated_at ? "Updated" : "Created"}
-//                       </span>
-//                     </div>
-//                   ))
-//                 )}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* User Management Table */}
-//         <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 overflow-hidden">
-//           <div className="p-6">
-//             <div className="flex justify-between items-center mb-6">
-//               <h2 className="text-lg font-semibold text-white">
-//                 User Management (
-//                 {timeRange === "week" ? "This Week" : "This Month"})
-//               </h2>
-//               <div className="flex space-x-3">
-//                 <button
-//                   onClick={() => router.push("/customer-admin/add-user")}
-//                   className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition flex items-center"
-//                 >
-//                   <Plus className="h-4 w-4 mr-1" />
-//                   Add User
-//                 </button>
-//                 <button
-//                   onClick={() => router.push("/customer-admin/user-profile")}
-//                   className="px-4 py-2 border border-gray-600 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition"
-//                 >
-//                   View All
-//                 </button>
-//               </div>
-//             </div>
-
-//             <div className="overflow-x-auto">
-//               <table className="min-w-full divide-y divide-gray-700">
-//                 <thead className="bg-gray-700">
-//                   <tr>
-//                     {["User", "Company", "Status", "Joined"].map((head) => (
-//                       <th
-//                         key={head}
-//                         className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
-//                       >
-//                         {head}
-//                       </th>
-//                     ))}
-//                   </tr>
-//                 </thead>
-//                 <tbody className="bg-gray-800 divide-y divide-gray-700">
-//                   {filteredUsers
-//                     .sort(
-//                       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-//                     )
-//                     .slice(0, 5)
-//                     .map((user) => (
-//                       <tr key={user.id} className="hover:bg-gray-700">
-//                         <td className="px-6 py-4 whitespace-nowrap">
-//                           <div className="flex items-center">
-//                             <div className="flex-shrink-0 h-10 w-10 bg-blue-900 bg-opacity-30 rounded-full flex items-center justify-center">
-//                               <span className="text-blue-400 font-medium">
-//                                 {user.personName?.charAt(0) || "U"}
-//                               </span>
-//                             </div>
-//                             <div className="ml-4">
-//                               <div className="text-sm font-medium text-white">
-//                                 {user.personName}
-//                               </div>
-//                               <div className="text-sm text-gray-400">
-//                                 {user.Email}
-//                               </div>
-//                             </div>
-//                           </div>
-//                         </td>
-//                         <td className="px-6 py-4 whitespace-nowrap">
-//                           <div className="text-sm text-white">
-//                             {user.companyName || "N/A"}
-//                           </div>
-//                         </td>
-//                         <td className="px-6 py-4 whitespace-nowrap">
-//                           <span
-//                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-//                               user.status === "Active"
-//                                 ? "bg-green-900 text-green-300"
-//                                 : "bg-red-900 text-red-300"
-//                             }`}
-//                           >
-//                             {user.status === "Active" ? (
-//                               <CheckCircle className="h-3 w-3 mr-1" />
-//                             ) : (
-//                               <XCircle className="h-3 w-3 mr-1" />
-//                             )}
-//                             {user.status}
-//                           </span>
-//                         </td>
-//                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-//                           {user.createdAt
-//                             ? format(new Date(user.createdAt), "MMM d, yyyy")
-//                             : "N/A"}
-//                         </td>
-//                       </tr>
-//                     ))}
-//                 </tbody>
-//               </table>
-//               {filteredUsers.length === 0 && (
-//                 <div className="text-center py-8">
-//                   <UserX className="h-10 w-10 mx-auto text-gray-500" />
-//                   <p className="mt-2 text-gray-400">
-//                     No users found for this time period
-//                   </p>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CustomerAdminDashboard;
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -793,7 +6,7 @@ import {
   Users,
   CheckCircle,
   XCircle,
-  Activity,  
+  Activity,
   UserPlus,
   UserX,
   Plus,
@@ -1037,12 +250,17 @@ const CustomerAdminDashboard = () => {
 
   const prepareProductDistributionData = () => {
     const productCounts = {};
+
     notifications.forEach((n) => {
       if (n.productName) {
-        productCounts[n.productName] =
-          (productCounts[n.productName] || 0) + (n.quantity || 1);
+        const qty = typeof n.quantity === 'string'
+          ? parseInt(n.quantity.replace(/[^\d]/g, '')) // extract only digits
+          : (n.quantity || 1); // fallback in case it's already a number or undefined
+    
+        productCounts[n.productName] = (productCounts[n.productName] || 0) + qty;
       }
     });
+    
 
     const sortedProducts = Object.entries(productCounts)
       .sort((a, b) => b[1] - a[1])
@@ -1050,18 +268,18 @@ const CustomerAdminDashboard = () => {
 
     const backgroundColors = darkMode
       ? [
-          "rgba(255, 0, 0, 0.7)", // Red
-          "rgba(62, 166, 255, 0.7)", // Blue
-          "rgba(255, 204, 0, 0.75)", // Yellow
-          "rgba(29, 185, 84, 0.7)", // Green
-          "rgba(255, 102, 0, 0.95)", // Orange
+          "rgba(255, 0, 0, 0.7)",
+          "rgba(62, 166, 255, 0.7)",
+          "rgba(255, 204, 0, 0.75)",
+          "rgba(29, 185, 84, 0.7)",
+          "rgba(255, 102, 0, 0.95)",
         ]
       : [
-          "rgba(234, 67, 53, 0.7)", // Red
-          "rgba(66, 133, 244, 0.7)", // Blue
-          "rgba(251, 189, 5, 0.8)", // Yellow
-          "rgba(52, 168, 83, 0.7)", // Green
-          "rgba(255, 102, 0, 0.95)", // Orange
+          "rgba(234, 67, 53, 0.7)",
+          "rgba(66, 133, 244, 0.7)",
+          "rgba(251, 189, 5, 0.8)",
+          "rgba(52, 168, 83, 0.7)",
+          "rgba(255, 102, 0, 0.95)",
         ];
 
     return {
@@ -1158,7 +376,7 @@ const CustomerAdminDashboard = () => {
       },
     },
   };
-
+//Top ordered Product
   const doughnutChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -1197,12 +415,11 @@ const CustomerAdminDashboard = () => {
         borderColor: currentColors.accent,
         borderWidth: 1,
         cornerRadius: 10,
-        
       },
     },
     cutout: "65%",
     borderRadius: 8,
-  }; 
+  };
   // StatCard component with theme support
   const StatCard = ({ title, value, icon, trend, percentage }) => {
     return (
@@ -1227,7 +444,6 @@ const CustomerAdminDashboard = () => {
             >
               {value}
             </p>
-          
           </div>
           <div
             className={`h-12 w-12 rounded-full flex items-center justify-center ${
@@ -1405,29 +621,21 @@ const CustomerAdminDashboard = () => {
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            title="Total Users"
-            value={users.length}
-            icon={<Users />}
-            
-          />
+          <StatCard title="Total Users" value={users.length} icon={<Users />} />
           <StatCard
             title="Active Users"
             value={users.filter((u) => u.status === "Active").length}
             icon={<Activity />}
-           
           />
           <StatCard
             title="Inactive Users"
             value={users.filter((u) => u.status === "Inactive").length}
             icon={<UserX />}
-            
           />
           <StatCard
             title="Total Orders"
             value={notificationStats.total}
             icon={<ShoppingCart />}
-            
           />
         </div>
 
@@ -1503,9 +711,11 @@ const CustomerAdminDashboard = () => {
             <div className="h-64">
               {notifications.length > 0 ? (
                 <Doughnut
+                
                   data={prepareProductDistributionData()}
                   options={doughnutChartOptions}
                 />
+                
               ) : (
                 <div className="flex items-center justify-center h-full">
                   <PieChart
@@ -1520,6 +730,8 @@ const CustomerAdminDashboard = () => {
                   </p>
                 </div>
               )}
+
+           
             </div>
           </div>
 

@@ -54,7 +54,7 @@ export default function Navbar() {
     try {
       const response = await fetch("http://localhost:5000/notification/vendor-admin", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem('vendorToken')}`
         },
@@ -77,7 +77,7 @@ export default function Navbar() {
   useEffect(() => {
     if (!vendorAdminID) return;
     fetchNotifications();
-    
+
     // Refresh notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
@@ -103,7 +103,7 @@ export default function Navbar() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
-        router.push("/");
+        router.push("/SignIn");
       }
     });
   };
@@ -151,18 +151,13 @@ export default function Navbar() {
             Vendor Product View
           </Link>
           <Link
-  href="/vendor-admin/AdminNotification"
-  className="relative flex items-center gap-2 p-2 rounded-md text-sm hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
->
-  <Bell className="w-4 h-4" />
-  <span>Orders</span>
-  
-  {unreadCount > 0 && (
-    <span className="ml-1 h-5 w-5 rounded-full bg-black text-white text-xs flex items-center justify-center">
-      {unreadCount}
-    </span>
-  )}
-</Link>
+            href="/vendor-admin/AdminNotification"
+            className="relative flex items-center gap-2 p-2 rounded-md text-sm hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
+          >
+            <Bell className="w-4 h-4" />
+            <span>Orders</span>
+
+          </Link>
 
         </div>
 
@@ -179,25 +174,14 @@ export default function Navbar() {
 
       {/* Right: Date, Notifications and Vendor Profile */}
       <div className="flex items-center gap-6 ml-auto">
-        {/* Notifications Bell
-        <Link href="/vendor-admin/AdminNotification" className="relative">
-          <Bell className="h-6 w-6 text-gray-700 hover:text-blue-700" />
-          {unreadCount > 0 && (
-            <Badge
-              variant="destructive"
-              className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center"
-            >
-              {unreadCount}
-            </Badge>
-          )}
-        </Link> */}
+    
 
         {/* Date */}
         <div className="hidden sm:flex items-center gap-2">
           <Calendar className="text-black-900" />
           <span className="ml-2">{currentDate}</span>
         </div>
-        <div className="w-[1px] h-10 bg-gray-200"></div>
+        <div className="h-10 w-[1px] bg-gray-300"></div>
 
         {/* Vendor Admin Name & Dropdown */}
         <div className="relative">

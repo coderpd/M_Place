@@ -1,14 +1,16 @@
 "use client";
-import { ContactDetailsNoOtp } from "@/app/Components/auth/contactDetailsNoOtp";
+import { VendorAddUser } from "@/app/Components/auth/VendorAddUser";
 import { PasswordSection } from "@/app/Components/auth/PasswordSection";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { UserPlus } from "lucide-react";
+import { useUserFormValidation } from "@/app/hooks/useUserFormValidation";
 
 const Page = () => {
   const router = useRouter();
+  const { validateForm } = useUserFormValidation();
   const [formValues, setFormValues] = useState({
     companyName: "",
     personName: "",
@@ -16,7 +18,6 @@ const Page = () => {
     Email: "",
     password: "",
     confirmPassword: "",
-    
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -25,7 +26,6 @@ const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [adminId, setAdminId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     const storedVendor = localStorage.getItem("vendor");
@@ -74,6 +74,9 @@ const Page = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "companyName" && formValues.companyName) {
+      return;
+    }
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
@@ -104,21 +107,10 @@ const Page = () => {
       return;
     }
 
-    const requiredFields = ['companyName', 'personName', 'phoneNumber', 'Email', 'password', 'confirmPassword'];
-    const newErrors = {};
-
-    requiredFields.forEach(field => {
-      if (!formValues[field]) {
-        newErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-      }
-    });
-
-    if (formValues.password !== formValues.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    // Use the validation hook
+    const { isValid, errors: validationErrors } = validateForm(formValues);
+    if (!isValid) {
+      setErrors(validationErrors);
       setIsSubmitting(false);
       return;
     }
@@ -127,12 +119,15 @@ const Page = () => {
       const payload = {
         ...formValues,
         vendorId: vendorId,
-        vendorAdminId: adminId, // ✅ Added vendorAdminId here
+        vendorAdminId: adminId,
       };
 
       const response = await fetch("http://localhost:5000/auth/vendor/add-user", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('vendorToken')}`
+        },
         body: JSON.stringify(payload),
       });
 
@@ -189,12 +184,10 @@ const Page = () => {
                 Basic Information
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <ContactDetailsNoOtp
+                <VendorAddUser
                   formValues={formValues}
                   handleInputChange={handleInputChange}
                   errors={errors}
-                  
-
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -207,12 +200,8 @@ const Page = () => {
                   showConfirmPassword={showConfirmPassword}
                   toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility}
                 />
-
               </div>
             </div>
-
-
-
 
             <div className="flex justify-end gap-4 border-t pt-5">
               <Button
