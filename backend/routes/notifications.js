@@ -101,7 +101,7 @@ router.post("/notify-vendor", async (req, res) => {
         customerName,
         vendorId,
         productId,
-        `Customer  ${customerName} wants to buy your product: ${productName} (x${item.quantity}). Contact: ${Email}`,
+        `Customer  ${customerName} wants to buy your product: ${productName} (Qty: ${item.quantity}). Contact: ${Email}`,
       ]);
     }
 
@@ -158,7 +158,7 @@ router.post("/vendor-admin", async (req, res) => {
         vu.Email ,
         p.productName,
         cu.companyName,
-      REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(x[0-9]+\\)'), '(x', ''), ')', '') AS quantity,
+     REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(Qty: [0-9]+\\)'), '(Qty: ', ''), ')', '') AS quantity,
         p.price,
         n.created_at,
         n.status
@@ -202,7 +202,7 @@ router.post("/admin", async (req, res) => {
   v.companyName,
   p.productName,
   n.message,
-  REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(x[0-9]+\\)'), '(x', ''), ')', '') AS quantity,
+  REPLACE(REPLACE(REGEXP_SUBSTR(n.message, '\\(Qty: [0-9]+\\)'), '(Qty: ', ''), ')', '') AS quantity,
   p.price,
   n.created_at
 FROM notifications n

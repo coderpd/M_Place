@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 export default function CustomerAdminNavbar() {
   const pathname = usePathname();
@@ -32,10 +33,30 @@ export default function CustomerAdminNavbar() {
 
   const isActive = (path) => pathname === path;
 
-  const handleLogout = () => {
-    localStorage.removeItem("customer");
-    router.push("/SignIn");
-  };
+ const handleLogout = () => {
+     Swal.fire({
+       title: "Are you sure want to logout?",
+       imageUrl: "/logout.gif",
+       imageWidth: 127,
+       imageHeight: 151,
+       imageAlt: "Logout Image",
+       showCancelButton: true,
+       confirmButtonColor: "#3085D6",
+       cancelButtonColor: "#3085D6",
+       confirmButtonText: "<b>Yes</b>",
+       cancelButtonText: "<b>Cancel</b>",
+       customClass: {
+         confirmButton: "swal-button",
+         cancelButton: "swal-button",
+         popup: "rounded-alert",
+       },
+     }).then((result) => {
+       if (result.isConfirmed) {
+         localStorage.clear();
+         router.push("/SignIn");
+       }
+     });
+   };
 
   const menuItems = [
     {

@@ -1,7 +1,7 @@
 "use client";
 import { InputField } from "./InputField";
 
-export const ContactDetailsNoOtp = ({
+export const VendorAddUser = ({
   formValues,
   handleInputChange,
   errors
@@ -23,10 +23,10 @@ export const ContactDetailsNoOtp = ({
       <div className="mb-4">
         <InputField
           label="Person Name"
-          name="personName" // ✅ updated to match state key
-          value={formValues.personName || ""} // ✅ updated to match state key
+          name="personName" 
+          value={formValues.personName || ""} 
           onChange={handleInputChange}
-          error={errors.personName} // ✅ updated to match state key
+          error={errors.personName} 
         />
       </div>
 
@@ -47,7 +47,7 @@ export const ContactDetailsNoOtp = ({
           placeholder={`abc@${
             formValues.companyName?.toLowerCase()?.replace(/\s/g, "") || "company"
           }.com`}
-          value={formValues.Email || ""}
+          value={formValues.Email}
           onChange={handleInputChange}
           error={errors.Email}
         />

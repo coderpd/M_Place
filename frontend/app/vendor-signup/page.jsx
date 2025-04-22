@@ -144,7 +144,7 @@ const VendorSignup = () => {
   return (
     <div>
       <FormHeader
-        title="Vendor-Onboarding"
+        title="Vendor-Admin-Onboarding"
         description="Register today and gain access to a marketplace of trusted buyers."
       />
 

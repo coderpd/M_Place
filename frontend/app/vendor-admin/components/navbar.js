@@ -103,7 +103,7 @@ export default function Navbar() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
-        router.push("/");
+        router.push("/SignIn");
       }
     });
   };
@@ -192,7 +192,7 @@ export default function Navbar() {
           <Calendar className="text-black-900" />
           <span className="ml-2">{currentDate}</span>
         </div>
-        <div className="w-[1px] h-10 bg-gray-200"></div>
+        <div className="h-10 w-[1px] bg-gray-300"></div>
 
         {/* Vendor Admin Name & Dropdown */}
         <div className="relative">

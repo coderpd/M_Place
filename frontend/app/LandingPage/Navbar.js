@@ -42,6 +42,21 @@ export default function Navbar() {
       router.push("/vendor-signup");
     }
   };
+  const navItems =
+  [
+    {
+      name: "Home",
+      icon: <Home className="h-4 w-4 sm:h-5 sm:w-5" />,
+    },
+    {
+      name: "services",
+      icon: <Settings className="h-4 w-4 sm:h-5 sm:w-5" />,
+    },
+    {
+      name: "ContactSection",
+      icon: <Mail className="h-4 w-4 sm:h-5 sm:w-5" />,
+    },
+  ]
 
   return (
     <>
@@ -60,39 +75,38 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
-
             {/* Desktop Navigation */}
-            <div className="hidden sm:flex items-center space-x-4 md:space-x-6 lg:space-x-8">
-              {["Home", "services", "ContactSection"].map((link) => (
+           
+            <div className="hidden sm:flex items-center space-x-4 md:space-x-6 lg:space-x-8"> 
+              {navItems.map((item) => (
                 <Link
-                  key={link}
-                  href={link === "Home" ? "/" : `/#${link}`}
-                  className={`text-sm md:text-[0.95rem] lg:text-base xl:text-lg font-medium text-gray-600 hover:text-blue-600 hover:border-b-2 ${activeLink === link ? "border-b-2 border-blue-600" : ""
-                    }`}
-                  onClick={() => handleLinkClick(link)}
+                  key={item.name}
+                  href={item.name === "Home" ? "/" : `/#${item.name}`}
+                  className={`flex items-center gap-1 text-sm md:text-[14px] lg:text-[14px] xl:text-[14px] font-medium hover:text-blue-600 hover:border-b-2 ${
+                    activeLink === item.name ? "border-b-2 border-blue-600" : ""
+                  }`}
+                  onClick={() => handleLinkClick(item.name)}
                 >
-                  {link === "Home"
+                  <span className="hidden sm:inline-block">{item.icon}</span>
+                  {item.name === "Home"
                     ? "Home"
-                    : link === "services"
-                      ? "Services"
-                      : "Contact Us"}
+                    : item.name === "services"
+                    ? "Services"
+                    : "Contact Us"}
                 </Link>
               ))}
-
               <button
                 className="rounded-full text-xs md:text-sm px-4 py-2 md:px-5 md:py-2.5 lg:px-6 lg:py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300"
                 onClick={openSignupCard}
               >
                 SIGN UP
               </button>
-
               <Link href="/SignIn">
                 <button className="rounded-full text-xs md:text-sm px-4 py-2 md:px-5 md:py-2.5 lg:px-6 lg:py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:opacity-80 transition duration-300">
                   SIGN IN
                 </button>
               </Link>
             </div>
-
             {/* Mobile Menu Button */}
             <div className="sm:hidden flex items-center">
               <button
@@ -100,7 +114,11 @@ export default function Navbar() {
                 className="p-1.5 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Toggle menu"
               >
-                {isSidebarOpen ? <X className="h-5 w-5" /> : <RiMenuUnfold2Fill className="h-5 w-5" />}
+                {isSidebarOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <RiMenuUnfold2Fill className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
@@ -130,27 +148,42 @@ export default function Navbar() {
               {/* Navigation Links */}
               <nav className="p-4 sm:p-5 space-y-3">
                 {[
-                  { name: "Home", icon: <Home className="h-4 w-4 sm:h-5 sm:w-5" /> },
-                  { name: "services", icon: <Settings className="h-4 w-4 sm:h-5 sm:w-5" /> },
-                  { name: "ContactSection", icon: <Mail className="h-4 w-4 sm:h-5 sm:w-5" /> },
+                  {
+                    name: "Home",
+                    icon: <Home className="h-4 w-4 sm:h-5 sm:w-5" />,
+                  },
+                  {
+                    name: "services",
+                    icon: <Settings className="h-4 w-4 sm:h-5 sm:w-5" />,
+                  },
+                  {
+                    name: "ContactSection",
+                    icon: <Mail className="h-4 w-4 sm:h-5 sm:w-5" />,
+                  },
                 ].map(({ name, icon }) => (
                   <Link
                     key={name}
                     href={name === "Home" ? "/" : `/#${name}`}
-                    className={`flex items-center space-x-3 p-2 sm:p-3 rounded-lg transition-colors ${activeLink === name
+                    className={`flex items-center space-x-3 p-2 sm:p-3 rounded-lg transition-colors ${
+                      activeLink === name
                         ? "bg-blue-50 text-blue-600"
                         : "text-gray-700 hover:bg-gray-50"
-                      }`}
+                    }`}
                     onClick={() => handleLinkClick(name)}
                   >
                     <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center ${activeLink === name ? "bg-blue-100" : "bg-gray-100"
-                        }`}
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center ${
+                        activeLink === name ? "bg-blue-100" : "bg-gray-100"
+                      }`}
                     >
                       {icon}
                     </div>
                     <span className="font-medium text-sm sm:text-base">
-                      {name === "Home" ? "Home" : name === "services" ? "Services" : "Contact"}
+                      {name === "Home"
+                        ? "Home"
+                        : name === "services"
+                        ? "Services"
+                        : "Contact"}
                     </span>
                   </Link>
                 ))}
@@ -216,32 +249,37 @@ export default function Navbar() {
               <div className="grid gap-4 sm:gap-5 md:gap-6 mt-2 sm:mt-3 md:mt-4">
                 {/* Customer Card */}
                 <div
-                  className={`relative p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl transition-all duration-300 cursor-pointer group overflow-hidden ${selectedRole === "Customer"
+                  className={`relative p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl transition-all duration-300 cursor-pointer group overflow-hidden ${
+                    selectedRole === "Customer"
                       ? "ring-2 ring-blue-500 bg-white shadow-lg"
                       : "bg-gray-50 hover:shadow-md border border-gray-100"
-                    }`}
+                  }`}
                   onClick={() => setSelectedRole("Customer")}
                 >
                   <div className="flex items-start space-x-3 sm:space-x-4">
                     <div
-                      className={`p-2 sm:p-3 rounded-lg ${selectedRole === "Customer"
+                      className={`p-2 sm:p-3 rounded-lg ${
+                        selectedRole === "Customer"
                           ? "bg-blue-100 text-blue-600"
                           : "bg-gray-200 text-gray-600 group-hover:bg-blue-50"
-                        }`}
+                      }`}
                     >
                       <User className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-sm sm:text-base md:text-[1.05rem] text-gray-900">Customer</h3>
+                      <h3 className="font-semibold text-sm sm:text-base md:text-[1.05rem] text-gray-900">
+                        Customer-Admin
+                      </h3>
                       <p className="text-xs sm:text-sm md:text-sm text-gray-500 mt-0.5 sm:mt-1">
                         Discover amazing products tailored for you
                       </p>
                     </div>
                     <div
-                      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center ${selectedRole === "Customer"
+                      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedRole === "Customer"
                           ? "border-blue-500 bg-blue-500"
                           : "border-gray-300 group-hover:border-blue-300"
-                        }`}
+                      }`}
                     >
                       {selectedRole === "Customer" && (
                         <Check className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
@@ -257,32 +295,37 @@ export default function Navbar() {
 
                 {/* Vendor Card */}
                 <div
-                  className={`relative p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl transition-all duration-300 cursor-pointer group overflow-hidden ${selectedRole === "Vendor"
+                  className={`relative p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl transition-all duration-300 cursor-pointer group overflow-hidden ${
+                    selectedRole === "Vendor"
                       ? "ring-2 ring-indigo-500 bg-white shadow-lg"
                       : "bg-gray-50 hover:shadow-md border border-gray-100"
-                    }`}
+                  }`}
                   onClick={() => setSelectedRole("Vendor")}
                 >
                   <div className="flex items-start space-x-3 sm:space-x-4">
                     <div
-                      className={`p-2 sm:p-3 rounded-lg ${selectedRole === "Vendor"
+                      className={`p-2 sm:p-3 rounded-lg ${
+                        selectedRole === "Vendor"
                           ? "bg-indigo-100 text-indigo-600"
                           : "bg-gray-200 text-gray-600 group-hover:bg-indigo-50"
-                        }`}
+                      }`}
                     >
                       <Store className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-sm sm:text-base md:text-[1.05rem] text-gray-900">Vendor</h3>
+                      <h3 className="font-semibold text-sm sm:text-base md:text-[1.05rem] text-gray-900">
+                        Vendor-Admin
+                      </h3>
                       <p className="text-xs sm:text-sm md:text-sm text-gray-500 mt-0.5 sm:mt-1">
                         Grow your business with our marketplace
                       </p>
                     </div>
                     <div
-                      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center ${selectedRole === "Vendor"
+                      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedRole === "Vendor"
                           ? "border-indigo-500 bg-indigo-500"
                           : "border-gray-300 group-hover:border-indigo-300"
-                        }`}
+                      }`}
                     >
                       {selectedRole === "Vendor" && (
                         <Check className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
@@ -299,18 +342,20 @@ export default function Navbar() {
 
               {/* Animated Continue Button */}
               <button
-                className={`w-full mt-6 sm:mt-7 md:mt-8 py-3 sm:py-3.5 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-medium text-white transition-all duration-300 flex items-center justify-center ${selectedRole
+                className={`w-full mt-6 sm:mt-7 md:mt-8 py-3 sm:py-3.5 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-medium text-white transition-all duration-300 flex items-center justify-center ${
+                  selectedRole
                     ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl"
                     : "bg-gray-300 cursor-not-allowed"
-                  }`}
+                }`}
                 disabled={!selectedRole}
                 onClick={handleContinue}
               >
                 <span className="flex items-center text-xs sm:text-sm md:text-base">
                   Continue as {selectedRole || "..."}
                   <ArrowRight
-                    className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 ml-1 sm:ml-2 transition-all ${selectedRole ? "group-hover:translate-x-1" : ""
-                      }`}
+                    className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 ml-1 sm:ml-2 transition-all ${
+                      selectedRole ? "group-hover:translate-x-1" : ""
+                    }`}
                   />
                 </span>
               </button>

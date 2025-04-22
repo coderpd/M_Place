@@ -251,8 +251,11 @@ const CustomerAdminDashboard = () => {
     const productCounts = {};
     notifications.forEach((n) => {
       if (n.productName) {
-        productCounts[n.productName] =
-          (productCounts[n.productName] || 0) + (n.quantity || 1);
+        const qty = typeof n.quantity === 'string'
+          ? parseInt(n.quantity.replace(/[^\d]/g, '')) // extract only digits
+          : (n.quantity || 1); // fallback in case it's already a number or undefined
+    
+        productCounts[n.productName] = (productCounts[n.productName] || 0) + qty;
       }
     });
 

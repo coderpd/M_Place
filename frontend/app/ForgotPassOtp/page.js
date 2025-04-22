@@ -89,30 +89,33 @@ export default function ForgotPassOtp() {
       </div>
 
       {/* Right Side - OTP Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 px-4 sm:px-6 py-8 sm:py-10 lg:py-12">
-        <Card className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-md xl:max-w-lg 2xl:max-w-xl shadow-sm sm:shadow-md p-4 sm:p-6 md:p-8 bg-white rounded-lg sm:rounded-xl">
-          <CardHeader className="p-0 pb-4 sm:pb-6">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto rounded-lg sm:rounded-xl shadow-md bg-gradient-to-br from-blue-600 to-indigo-500 p-0.5">
-              <div className="w-full h-full bg-white rounded-lg sm:rounded-xl flex items-center justify-center border border-gray-200 shadow-inner">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-100 px-6 py-10 2xl:py-16">
+        <Card className="w-full max-w-md 2xl:max-w-lg shadow-lg p-6 2xl:p-8 bg-white rounded-lg">
+          <CardHeader>
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 2xl:w-24 2xl:h-24 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
                 <img
                   src="/Logo.png"
                   alt="M-Place Logo"
-                  className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-contain"
+                  className="w-12 h-12 sm:w-16 sm:h-16 2xl:w-20 2xl:h-20 object-contain"
                 />
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="p-0">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 text-center mb-2 sm:mb-3">
+          <CardContent>
+            <h2 className="text-2xl 2xl:text-3xl font-semibold text-gray-800 text-start">
               Forgot Password
             </h2>
-            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg text-center">
+            <p className="text-gray-600 mb-4 2xl:mb-6 text-sm 2xl:text-lg text-start">
               Please enter the 4-digit OTP sent to your email
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4 md:space-y-5">
-              <div className="flex justify-between space-x-2 sm:space-x-3 md:space-x-4">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4 2xl:space-y-6"
+            >
+              <div className="flex justify-between space-x-3 2xl:space-x-4">
                 {[...Array(4)].map((_, index) => (
                   <div key={index} className="flex-1">
                     <Controller
@@ -123,7 +126,7 @@ export default function ForgotPassOtp() {
                           {...field}
                           maxLength={1}
                           type="text"
-                          className="w-full text-center border border-gray-300 rounded-md p-2 sm:p-3 text-lg sm:text-xl"
+                          className="w-full text-center border border-gray-300 rounded-md py-2 px-3 2xl:py-3 2xl:px-4 text-lg 2xl:text-xl"
                           placeholder="0"
                           onChange={(e) => {
                             const value = e.target.value;
@@ -131,7 +134,6 @@ export default function ForgotPassOtp() {
                               const newOtp = field.value.split("");
                               newOtp[index] = value;
                               field.onChange(newOtp.join(""));
-                              
                               if (value && index < 3) {
                                 const nextInput = document.querySelector(
                                   `input[name="otp-${index + 1}"]`
@@ -148,31 +150,31 @@ export default function ForgotPassOtp() {
                   </div>
                 ))}
               </div>
-              
+
               {errors.otp && (
-                <p className="text-red-500 text-xs sm:text-sm md:text-base mt-1">
+                <p className="text-red-500 text-xs 2xl:text-sm mt-1">
                   {errors.otp.message}
                 </p>
               )}
               {errorMessage && (
-                <p className="text-red-500 text-xs sm:text-sm md:text-base mt-2">
+                <p className="text-red-500 text-xs 2xl:text-sm mt-2">
                   {errorMessage}
                 </p>
               )}
               {successMessage && (
-                <p className="text-green-500 text-xs sm:text-sm md:text-base mt-2">
+                <p className="text-green-500 text-xs 2xl:text-sm mt-2">
                   {successMessage}
                 </p>
               )}
 
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 sm:h-11 md:h-12 rounded-md disabled:bg-gray-400 flex items-center justify-center text-sm sm:text-base"
                 disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 2xl:py-3 rounded-md disabled:bg-gray-400 flex items-center justify-center text-base 2xl:text-lg"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="animate-spin mr-2 w-4 h-4 sm:w-5 sm:h-5" />
+                    <Loader2 className="animate-spin mr-2 w-4 h-4 2xl:w-5 2xl:h-5" />
                     Verifying...
                   </>
                 ) : (
@@ -183,10 +185,10 @@ export default function ForgotPassOtp() {
 
             <Link
               href="/ForgotPassword"
-              className="flex items-start justify-start text-gray-600 mt-4 sm:mt-6 hover:text-gray-800 text-xs sm:text-sm md:text-base"
+              className="flex items-center text-gray-600 mt-4 2xl:mt-6 hover:text-gray-800 text-sm 2xl:text-base"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
-              <span>back</span>
+              <ArrowLeft className="w-4 h-4 2xl:w-5 2xl:h-5 mr-2" />
+              <span>Back</span>
             </Link>
           </CardContent>
         </Card>
