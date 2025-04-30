@@ -63,7 +63,6 @@ router.get("/get-products/all", async (req, res) => {
   try {
     const [products] = await db.query("SELECT * FROM products");
 
-    console.log("Retrieved Products:", products); // Debugging
 
     if (products.length === 0) {
       console.warn("No products found in the database!");

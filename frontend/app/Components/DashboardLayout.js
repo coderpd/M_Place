@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FaClipboardList } from "react-icons/fa";
-import { User, BellRing, Calendar, UserRoundPen, LogOut, X, ShoppingCart, PackagePlus, FileText } from "lucide-react";
+import { User, BellRing, Calendar, UserRoundPen, LogOut, X, ShoppingCart, PackagePlus, FileText ,FileCog } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 import Footer from "../LandingPage/Footer";
@@ -293,6 +293,13 @@ export default function DashboardLayout({ id, children }) {
       className="text-[#374151] text-[14px] flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
     >
       <FileText size={18} /> Product Details
+    </button>
+
+    <button
+      onClick={() => router.push(`/vendorDashboard/PoTracking`)}
+      className="text-[#374151] text-[14px] flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
+    >
+      <FileText size={18} /> Po Tracking
     </button>
   </nav>
 </div>

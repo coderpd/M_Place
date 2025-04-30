@@ -6,15 +6,11 @@ import {
   Minus,
   Plus,
   Bell,
-  Trash2,
-  Package,
-  CreditCard,
-  Lock,
-  ShieldCheck,
-  ArrowLeft,
   Loader2,
+  FileCog,
+  Trash2,
+  Package
 } from "lucide-react";
-
 import { toast, ToastContainer } from "react-toastify";
 import Navbar from "../components/Navbar";
 import Footer from "@/app/LandingPage/Footer";
@@ -40,13 +36,9 @@ const CartPage = () => {
     try {
       const response = await fetch(`http://localhost:5000/cart/${customerId}`);
       const data = await response.json();
-      if (response.ok) {
-        setCart(data.cartItems || []);
-      } else {
-        toast.error("Failed to load cart items");
-      }
+      if (response.ok) setCart(data.cartItems || []);
+      else toast.error("Failed to load cart items");
     } catch (error) {
-      console.error("Error fetching cart:", error);
       toast.error("Error fetching cart items");
     } finally {
       setLoading(false);
@@ -62,8 +54,8 @@ const CartPage = () => {
       });
 
       if (response.ok) {
-        setCart((prevCart) =>
-          prevCart.map((item) =>
+        setCart((prev) =>
+          prev.map((item) =>
             item.id === cartId
               ? {
                   ...item,
@@ -75,75 +67,79 @@ const CartPage = () => {
               : item
           )
         );
-      } else {
-        toast.error("Failed to update quantity");
-      }
+      } else toast.error("Failed to update quantity");
     } catch (error) {
-      console.error("Error updating cart quantity:", error);
-      toast.error("Server error");
+      toast.error("Server error while updating quantity");
     }
   };
 
   const removeFromCart = async (cartId) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/cart/delete/${cartId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:5000/cart/delete/${cartId}`, {
+        method: "DELETE",
+      });
       if (response.ok) {
         setCart(cart.filter((item) => item.id !== cartId));
         toast.success("Item removed from cart");
-      } else {
-        toast.error("Failed to remove item");
-      }
+      } else toast.error("Failed to remove item");
     } catch (error) {
-      console.error("Error removing cart item:", error);
-      toast.error("Server error");
+      toast.error("Server error while removing item");
     }
   };
 
   const notifyVendor = async (item) => {
     const storedCustomer = localStorage.getItem("customerUser");
-    if (!storedCustomer) {
-      toast.error("No customer found. Please log in.");
-      return;
-    }
+    if (!storedCustomer) return toast.error("Please log in");
 
-    const customerData = JSON.parse(storedCustomer);
-    const Email = customerData.Email;
-
+    const { Email } = JSON.parse(storedCustomer);
     setNotifying((prev) => ({ ...prev, [item.id]: true }));
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/notification/notify-vendor",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            Email,
-            cart: [
-              {
-                productId: item.product_id,
-                productName: item.productName,
-                quantity: item.quantity,
-              },
-            ],
-          }),
-        }
-      );
-
-      const responseData = await response.json();
-      if (response.ok) {
-        toast.success(`Notification sent to vendor about ${item.productName}!`);
-      } else {
-        toast.error(`Failed to notify vendor about ${item.productName}`);
-      }
-    } catch (error) {
-      console.error("Error notifying vendor:", error);
+      const res = await fetch("http://localhost:5000/notification/notify-vendor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Email,
+          cart: [{
+            productId: item.product_id,
+            productName: item.productName,
+            quantity: item.quantity,
+          }],
+        }),
+      });
+      res.ok
+        ? toast.success(`Notification sent for ${item.productName}`)
+        : toast.error(`Failed to notify vendor`);
+    } catch (err) {
       toast.error("Server error while sending notification");
+    } finally {
+      setNotifying((prev) => ({ ...prev, [item.id]: false }));
+    }
+  };
+
+  const initiatePO = async (item) => {
+    const storedCustomer = localStorage.getItem("customerUser");
+    if (!storedCustomer) return toast.error("Please log in");  
+
+    const { id } = JSON.parse(storedCustomer);
+    setNotifying((prev) => ({ ...prev, [item.id]: true }));
+
+    try {
+      const res = await fetch("http://localhost:5000/po/generate", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: id,
+          productId: item.product_id,
+          quantity: item.quantity,
+        }),
+      });
+      const data = await res.json();
+      res.ok
+        ? toast.success(`PO generated for ${item.productName}`)
+        : toast.error("Failed to generate PO");
+    } catch (err) {
+      toast.error("Server error while generating PO");
     } finally {
       setNotifying((prev) => ({ ...prev, [item.id]: false }));
     }
@@ -164,7 +160,7 @@ const CartPage = () => {
   if (!customerId)
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-white">
-        <div className="bg-white p-8 rounded-xl shadow-lg text-center max-w-md w-full mx-4 border border-gray-100">
+        <div className="bg-white p-8 rounded-xl shadow-lg text-center max-w-md">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Your Cart Awaits
           </h2>
@@ -173,7 +169,7 @@ const CartPage = () => {
           </p>
           <button
             onClick={() => (window.location.href = "/login")}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full font-medium shadow-md hover:shadow-lg"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition w-full font-medium"
           >
             Login to Continue
           </button>
@@ -181,9 +177,10 @@ const CartPage = () => {
       </div>
     );
 
+
   return (
     <>
-      <Navbar disableFilters={true} disableSearch={true} />
+      <Navbar disableFilters disableSearch />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <ToastContainer position="bottom-right" autoClose={3000} />
 
@@ -235,9 +232,7 @@ const CartPage = () => {
           ) : (
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16  relative z-20">
               {cart.length === 0 ? (
-                <div className="flex justify-center">
-                  
-                </div>
+                <div className="flex justify-center"></div>
               ) : (
                 <div className="flex justify-center">
                   <div className="w-full max-w-4xl">
@@ -270,7 +265,6 @@ const CartPage = () => {
                                   </span>
                                 </div>
                                 <div className="mt-2 flex items-center gap-2">
-                                  
                                   <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
                                     In Stock
                                   </span>
@@ -324,6 +318,26 @@ const CartPage = () => {
                                       Notify
                                     </span>
                                   </button>
+
+                                  <button
+                                    onClick={() => initiatePO(item)}
+                                    disabled={notifying[item.id]}
+                                    className={`flex items-center gap-1 px-4 py-2 rounded-lg ${
+                                      notifying[item.id]
+                                        ? "bg-gray-100 text-gray-400"
+                                        : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"
+                                    } transition-colors`}
+                                  >
+                                    {notifying[item.id] ? (
+                                      <Loader2 className="animate-spin h-4 w-4" />
+                                    ) : (
+                                      <FileCog size={16} />
+                                    )}
+                                    <span className="text-sm font-medium">
+                                      Create PO
+                                    </span>
+                                  </button>
+
                                   <button
                                     onClick={() => removeFromCart(item.id)}
                                     className="flex items-center gap-1 px-4 py-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"

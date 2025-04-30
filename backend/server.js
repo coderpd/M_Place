@@ -33,8 +33,6 @@ app.use("/auth", getvendor);
 const productsRouter = require("./routes/products");
 app.use("/auth/products", productsRouter);
 
-
-
 const CustomerEdit = require("./routes/Customer");
 app.use("/customer-edit", CustomerEdit);
 
@@ -49,6 +47,12 @@ app.use("/auth/customerUserSignUp",customerUserSignUp);
 
 const vendorUserSignup = require("./routes/VendorUserSignup")
 app.use("/auth/vendor", vendorUserSignup);
+
+const po =require("./routes/po")
+app.use("/po",po)
+
+const PoVendorUser =require("./routes/PoVendorUser")
+app.use("/PoVendorUser",PoVendorUser)
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingCart, User, LogOut, Calendar } from "lucide-react";
+import { Search, ShoppingCart, User, LogOut, Calendar,FileCog } from "lucide-react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
@@ -87,7 +87,11 @@ const Navbar = ({
         localStorage.removeItem("customerUser");
         localStorage.removeItem("token");
         router.push("/");
-        Swal.fire("Logged Out!", "You have been successfully logged out.", "success");
+        Swal.fire(
+          "Logged Out!",
+          "You have been successfully logged out.",
+          "success"
+        );
       }
     });
   };
@@ -126,6 +130,15 @@ const Navbar = ({
           />
         </div>
       )}
+
+     {
+      !disableSearch &&(<button
+        onClick={() => router.push("./PoAutomation")}
+        className="text-[#374151] text-[14px] flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
+      >
+        <FileCog size={18} /> PO Tracking
+      </button>)
+     } 
       {!disableFilters && (
         <div className="flex items-center space-x-4">
           {/* Price Filter */}
@@ -172,8 +185,10 @@ const Navbar = ({
           <div className="mt-1">
             {customerUser && (
               <span className="text-sm">
-                {customerUser.personName} 
-                <p className="text-[#999999] text-[12px] -mt-1">customer</p>
+                {customerUser.personName}
+                <p className="text-[#999999] text-[12px] -mt-1">
+                  customer User
+                </p>
               </span>
             )}
           </div>

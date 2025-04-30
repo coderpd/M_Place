@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   Calendar,
+  FileCog
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -73,17 +74,20 @@ export default function CustomerAdminNavbar() {
       icon: <Users className="h-5 w-5" />,
       label: "User Profiles",
     },
-    // {
-    //   href: "/customer-admin/activity",
-    //   icon: <Activity className="h-5 w-5" />,
-    //   label: "Customer Activity",
-    // },
+   
     {
       href: "/customer-admin/AdminNotifications",
       icon: <Bell className="h-5 w-5" />,
       label: "Orders",
    
     },
+
+    {
+      href: "/customer-admin/poAutomation",
+      icon: <FileCog className="h-5 w-5" />,
+      label: "PO Tracking",
+   
+    }
   ];
 
   const currentDate = new Date().toLocaleDateString("en-US", {
@@ -107,7 +111,7 @@ export default function CustomerAdminNavbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6 ">
+          <div className="hidden md:flex items-center gap-2 ">
             {menuItems.map((item) => (
               <Link key={item.href} href={item.href}>
                 <Button
