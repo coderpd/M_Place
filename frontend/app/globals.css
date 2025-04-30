@@ -81,3 +81,21 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.swal-button {
+  padding: 10px !important; /* Add 20px padding */
+
+  font-size: 16px !important; /* Adjust font size */
+  width: auto !important; /* Keep button width flexible */
+  min-width: 120px !important; /* Set a minimum width */
+  text-align: center !important; /* Ensure text stays centered */
+}
+
+.rounded-alert {
+  border-radius: 15px !important; /* Adjust the radius as needed */
+}
+
+.button{
+  width: 100px;
+}
+

@@ -5,8 +5,6 @@ const router = express.Router();
 require("dotenv").config();
 const {sendConfirmationEmail}=require("../utils/mailer");
 
-
-
 // API route to handle contact form submission
 router.post("/contactus", async (req, res) => {
   const { name, email, comment } = req.body;

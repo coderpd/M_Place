@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import Navbar from "@/app/customer/components/Navbar";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Link from "next/link";
-import { Search, ShoppingCart, User, LogOut, Settings, Calendar } from "lucide-react";
-import Footer from "@/app/LandingPage/Footer";
+import { useState, useEffect } from "react"; 
+import { useParams } from "next/navigation"; 
+import Navbar from "../../components/Navbar";
+import { ToastContainer, toast } from "react-toastify";  
+import "react-toastify/dist/ReactToastify.css"; 
+import Link from "next/link"; 
+import { Search, ShoppingCart, User, LogOut, Settings, Calendar } from "lucide-react"; 
+import Footer from "@/app/LandingPage/Footer"; 
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -18,9 +18,9 @@ const ProductDetail = () => {
   const [cart, setCart] = useState([]);  
 
   // Fetch customer data and cart details from localStorage
-  useEffect(() => {
+  useEffect(() => {  
     if (typeof window !== "undefined") {
-      const storedCustomer = localStorage.getItem("customer");
+      const storedCustomer = localStorage.getItem("customerUser");
       const customerData = storedCustomer ? JSON.parse(storedCustomer) : null;
       if (customerData) {
         setCustomerId(customerData.id);
@@ -84,9 +84,9 @@ const ProductDetail = () => {
         // Notify Navbar of cart update
         window.dispatchEvent(new Event("storage"));
   
-        toast.success("🛒 Product added to cart!", { position: "top-right", autoClose: 2000 });
+        toast.success("🛒 Product added to cart!", { position: "bottom-right", autoClose: 1000 });
       } else {
-        toast.error(`Failed to add product: ${data.message}`, { position: "top-right", autoClose: 2000 });
+        toast.error(`Failed to add product: ${data.message}`, { position: "top-right", autoClose: 1000 });
       }
     } catch (err) {
       console.error("Error adding product to cart:", err);
@@ -103,7 +103,7 @@ const ProductDetail = () => {
     <>
       <Navbar disableFilters={true} disableSearch={true}  />
       <ToastContainer />
-      <div className=" w-full mx-auto p-6 pt-24 bg-gray-50">
+      <div className=" w-full mx-auto p-6 pt-24 bg-gray-50 min-h-screen">
         <div className="flex mb-6 mt-6 flex-col md:flex-row items-start border border-gray-300 rounded-lg p-6 shadow-md min-h-[400px]">
           <div className="relative w-full md:w-1/2 flex flex-col items-center md:pr-6">
             <div className="relative w-80 h-80 flex items-center justify-center">

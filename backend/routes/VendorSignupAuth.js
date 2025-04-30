@@ -10,21 +10,21 @@ let otpStore = {}; // Stores OTPs with expiration
 router.post("/vendor-sendotp", async (req, res) => {
   console.log("Received Request Body:", req.body);
 
-  const { officialEmail } = req.body;
+  const { email } = req.body;
 
-  if (!officialEmail) {
+  if (!email) {
     return res.status(400).json({ error: "Email is required" });
   }
 
   const otp = Math.floor(1000 + Math.random() * 9000); // Generate 4-digit OTP
 
   try {
-    await sendOTP(officialEmail, otp);
+    await sendOTP(email, otp);
 
-    console.log(`Generated OTP for ${officialEmail}: ${otp}`);
+    console.log(`Generated OTP for ${email}: ${otp}`);
 
     // Store OTP with an expiration time
-    otpStore[officialEmail] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
+    otpStore[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // Expires in 5 minutes
 
     res.json({ success: true, message: "OTP sent successfully!" });
   } catch (error) {
@@ -39,10 +39,10 @@ router.post("/vendor-signup", async (req, res) => {
   try {
     const { 
       companyName, registrationNumber, companyWebsite, gstNumber, firstName, lastName,
-      phoneNumber, officialEmail, otp, address, country, state, city, postalCode, password 
+      phoneNumber, email, otp, address, country, state, city, postalCode, password 
     } = req.body;
 
-    const [rows] = await db.query("SELECT * FROM vendorsignup WHERE officialEmail = ?", [officialEmail]);
+    const [rows] = await db.query("SELECT * FROM vendorsignup WHERE email = ?", [email]);
     if (rows.length > 0) return res.status(400).json({ message: "Email already exists" });
 
     if (!otp) {
@@ -50,19 +50,19 @@ router.post("/vendor-signup", async (req, res) => {
     }
 
     // Validate OTP
-    if (!otpStore[officialEmail]) {
+    if (!otpStore[email]) {
       return res.status(400).json({ message: "OTP expired or not found" });
     }
 
-    console.log(`Stored OTP for ${officialEmail}: ${otpStore[officialEmail].otp}`);
+    console.log(`Stored OTP for ${email}: ${otpStore[email].otp}`);
     console.log(`Entered OTP: ${otp}`);
 
-    if (Number(otpStore[officialEmail].otp) !== Number(otp)) {
+    if (Number(otpStore[email].otp) !== Number(otp)) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
     // Delete OTP after successful verification
-    delete otpStore[officialEmail];
+    delete otpStore[email];
 
     if (!password) return res.status(400).json({ message: "Password is required" });
 
@@ -70,10 +70,10 @@ router.post("/vendor-signup", async (req, res) => {
 
     const result = await db.query(
       `INSERT INTO vendorsignup (companyName, registrationNumber, companyWebsite, gstNumber, firstName, lastName, 
-        phoneNumber, officialEmail, address, country, state, city, postalCode, password) 
+        phoneNumber, email, address, country, state, city, postalCode, password) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
       [companyName, registrationNumber, companyWebsite, gstNumber, firstName, lastName, phoneNumber,
-       officialEmail, address, country, state, city, postalCode, hashedPassword]
+       email, address, country, state, city, postalCode, hashedPassword]
     );
 
     console.log("Inserted data:", result);

@@ -15,15 +15,27 @@ const storage = multer.diskStorage({
     }
     cb(null, uploadPath);
   },
+
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);
   },
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage }); 
 
 // Add Product
 router.post("/add-product", upload.single("productImage"), async (req, res) => {
-  const { vendor_id, productName, brand, category, price, seller, description } = req.body;
+  const {
+    vendor_user_id, // frontend sends this
+    productName,
+    brand,
+    category,
+    price,
+    seller,
+    description,
+  } = req.body;
+
+  const vendor_id = vendor_user_id; // alias for DB insertion
   const productImage = req.file ? req.file.filename : null;
 
   try {
@@ -32,10 +44,17 @@ router.post("/add-product", upload.single("productImage"), async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [vendor_id, productName, brand, category, price, seller, productImage, description]
     );
-    res.status(201).json({ message: "Product added successfully", productId: result.insertId });
+
+    res.status(201).json({
+      message: "Product added successfully",
+      productId: result.insertId,
+    });
   } catch (error) {
     console.error("Add Product Error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
 });
 
@@ -129,5 +148,31 @@ router.get("/get-product/:id", async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
+
+// Get all products added by vendor users under a specific vendor admin
+router.get("/get-products/vendoradmin/:vendorId", async (req, res) => {
+  const vendorId = req.params.vendorId;
+
+  try {
+    const [products] = await db.query(
+      `SELECT p.*
+       FROM products p
+       JOIN vendorusersignup vu ON p.vendor_id = vu.id
+       WHERE vu.vendorId = ?`,
+      [vendorId]
+    );
+
+    if (products.length === 0) {
+      return res.status(200).json({ message: "No products found for this vendor admin", products: [] });
+    }
+
+    res.status(200).json({ message: "Products fetched successfully", products });
+  } catch (error) {
+    console.error("Error fetching products for vendor admin:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 
 module.exports = router;

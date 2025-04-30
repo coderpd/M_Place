@@ -1,25 +1,27 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../db"); // Ensure db connection is correct
+// const express = require("express");
+// const router = express.Router();
+// const db = require("../db"); // Ensure db connection is correct
 
-router.get("/get-vendor/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!id || isNaN(id)) {
-      return res.status(400).json({ message: "Invalid vendor ID" });
-    }
+// // POST - get vendor by ID (from body)
+// router.post("/get-vendor", async (req, res) => {
+//   try {
+//     const { id } = req.body;
 
-    const [vendor] = await db.query("SELECT * FROM vendorsignup WHERE id = ?", [id]);
+//     if (!id || isNaN(id)) {
+//       return res.status(400).json({ message: "Invalid vendor ID" });
+//     }
 
-    if (!vendor || vendor.length === 0) {
-      return res.status(404).json({ message: "Vendor not found" });
-    }
+//     const [vendor] = await db.query("SELECT * FROM vendorsignup WHERE id = ?", [id]);
 
-    res.status(200).json({ success: true, vendor: vendor[0] });
-  } catch (error) {
-    console.error("Error fetching vendor:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
+//     if (!vendor || vendor.length === 0) {
+//       return res.status(404).json({ message: "Vendor not found" });
+//     }
 
-module.exports = router;
+//     res.status(200).json({ success: true, vendor: vendor[0] });
+//   } catch (error) {
+//     console.error("Error fetching vendor:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// });
+
+// module.exports = router;
