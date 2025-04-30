@@ -15,7 +15,8 @@ import {
   UserPlus,
   UserRoundPen,
   Menu,
-  Bell
+  Bell,
+  Clipboard,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { Badge } from "@/components/ui/badge";
@@ -156,6 +157,14 @@ export default function Navbar() {
           >
             <Bell className="w-4 h-4" />
             <span>Orders</span>
+
+          </Link>
+          <Link
+            href="/vendor-admin/PoTracking"
+            className="relative flex items-center gap-2 p-2 rounded-md text-sm hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
+          >
+            <Clipboard className="w-4 h-4" />
+            <span>Po Tracking</span>
 
           </Link>
 

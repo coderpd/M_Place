@@ -71,10 +71,10 @@ export default function LoginPage() {
         confirmButton: "px-6 py-2 bg-blue-600 text-white rounded-md",
       },
     }).then(() => {
-      // Redirect based on user type
+      
       if (data.userType === "vendor-admin") {
         localStorage.setItem("vendor", JSON.stringify(data.user));
-        localStorage.setItem("vendorAdminId", data.user.id.toString());// ✅ vendor admin ID
+        localStorage.setItem("vendorAdminId", data.user.id.toString());
         router.push(`/vendor-admin`);
       
       } else if (data.userType === "customer-admin") {
@@ -85,7 +85,7 @@ export default function LoginPage() {
       
       } else if (data.userType === "vendor-user") {
         localStorage.setItem("vendorUser", JSON.stringify(data.user));
-        localStorage.setItem("vendorUserId", data.user.id.toString()); // ✅ vendor user ID
+        localStorage.setItem("vendorUserId", data.user.id.toString()); 
         router.push(`/vendorDashboard`);
       
       }else if(data.userType=="customer-user"){

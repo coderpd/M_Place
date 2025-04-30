@@ -52,6 +52,16 @@ app.use("/auth/vendor", vendorUserSignup);
 const customerUserSignUp = require("./routes/customerUserSignUp");
 app.use("/auth/customerUserSignUp",customerUserSignUp);
 
+const po =require("./routes/po")
+app.use("/po",po)
+
+
+
+const PoVendorUser =require("./routes/PoVendorUser")
+app.use("/PoVendorUser",PoVendorUser)
+
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

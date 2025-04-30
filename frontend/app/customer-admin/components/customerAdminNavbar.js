@@ -85,6 +85,12 @@ export default function CustomerAdminNavbar() {
       label: "Orders",
    
     },
+    {
+      href: "/customer-admin/PoAutomation",
+      icon: <Bell className="h-5 w-5" />,
+      label: "Orders",
+   
+    },
   ];
 
   const currentDate = new Date().toLocaleDateString("en-US", {

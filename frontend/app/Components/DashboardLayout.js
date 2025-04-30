@@ -294,6 +294,12 @@ export default function DashboardLayout({ id, children }) {
     >
       <FileText size={18} /> Product Details
     </button>
+    <button
+      onClick={() => router.push(`/vendorDashboard/PoTracking`)}
+      className="text-[#374151] text-[14px] flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors"
+    >
+      <FileText size={18} /> Po Tracking
+    </button>
   </nav>
 </div>
         </div>

@@ -21,7 +21,7 @@ router.get("/:customerId", async (req, res) => {
   }
 });
 
-// Add item to cart
+// Add item to cart 
 router.post("/add", async (req, res) => {
   const { customerId, productId, quantity } = req.body;
 
