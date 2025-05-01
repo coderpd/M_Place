@@ -90,7 +90,7 @@ Once both the frontend and backend are running:
  Open your browser and go to http://localhost:3000 (or the port specified in your frontend/package.json).
 
  ### backend
- The backend will typically run on a separate port, like http://3.109.75.252:5000 (or as configured in server.js).
+ The backend will typically run on a separate port, like /api (or as configured in server.js).
 
 
 - Visit the m-place homepage in the browser.

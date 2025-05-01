@@ -41,7 +41,7 @@ const CustomerAdminProfile = () => {
     try {
       const updatedFormData = { ...formData, id: customer.id };
 
-      const response = await fetch("http://3.109.75.252:5000/customer-edit/update-profile", {
+      const response = await fetch("/api/customer-edit/update-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedFormData),

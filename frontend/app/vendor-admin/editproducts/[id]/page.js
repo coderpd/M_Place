@@ -5,7 +5,7 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import { IoCreateOutline } from "react-icons/io5";
 
-const API_BASE_URL = "http://3.109.75.252:5000";
+const API_BASE_URL = "/api";
 
 export default function EditVendorAdminProduct() {
   const router = useRouter();

@@ -47,7 +47,7 @@ export default function DashboardLayout({ id, children }) {
 
         const { id } = JSON.parse(storedVendorUser);
 
-        const response = await fetch(`http://3.109.75.252:5000/auth/vendor/get-user/${id}`, { signal });
+        const response = await fetch(`/api/auth/vendor/get-user/${id}`, { signal });
 
         if (!response.ok) {
           throw new Error(`Failed to fetch vendor user: ${response.statusText}`);
@@ -86,7 +86,7 @@ export default function DashboardLayout({ id, children }) {
       if (!id) return;
 
       try {
-        const response = await fetch(`http://3.109.75.252:5000/notification/${id}`);
+        const response = await fetch(`/api/notification/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch notifications");
         }
@@ -148,7 +148,7 @@ export default function DashboardLayout({ id, children }) {
 
     try {
       console.log(`🔍 Marking Notification ID: ${notifId} as Read`);
-      const response = await fetch(`http://3.109.75.252:5000/notification/read/${notifId}`, {
+      const response = await fetch(`/api/notification/read/${notifId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       });

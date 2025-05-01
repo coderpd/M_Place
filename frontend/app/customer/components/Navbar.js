@@ -24,7 +24,7 @@ const Navbar = ({
   // Fetch cart count from API
   const fetchCartCount = async (userId) => {
     try {
-      const response = await fetch(`http://3.109.75.252:5000/cart/${userId}`);
+      const response = await fetch(`/api/cart/${userId}`);
       const data = await response.json();
       setCartCount(data.cartItems?.length || 0);
     } catch (error) {

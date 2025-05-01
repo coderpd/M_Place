@@ -41,7 +41,7 @@ export default function VendorAdminProducts() {
   useEffect(() => {
     const vendorAdminId = localStorage.getItem('userId');
     if (vendorAdminId) {
-      fetch(`http://3.109.75.252:5000/auth/products/get-products/vendoradmin/${vendorAdminId}`)
+      fetch(`/api/auth/products/get-products/vendoradmin/${vendorAdminId}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.products && data.products.length > 0) {
@@ -85,7 +85,7 @@ export default function VendorAdminProducts() {
     if (confirmed.isConfirmed) {
       try {
         const res = await fetch(
-          `http://3.109.75.252:5000/auth/products/delete-product/${productId}`,
+          `/api/auth/products/delete-product/${productId}`,
           { method: 'DELETE' }
         );
         if (res.ok) {
@@ -193,7 +193,7 @@ export default function VendorAdminProducts() {
                       <tr key={product.id} className="hover:bg-blue-50/50">
                         <td className="px-4 py-4 2xl:py-5">
                           <img
-                            src={`http://3.109.75.252:5000/uploads/${product.productImage}`}
+                            src={`/api/uploads/${product.productImage}`}
                             alt={product.productName}
                             className="h-10 w-10 2xl:h-12 2xl:w-12 rounded object-cover"
                             onError={(e) => e.target.src = '/placeholder-product.png'}

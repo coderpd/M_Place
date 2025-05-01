@@ -34,7 +34,7 @@ const CartPage = () => {
 
   const fetchCartItems = useCallback(async (customerId) => {
     try {
-      const response = await fetch(`http://3.109.75.252:5000/cart/${customerId}`);
+      const response = await fetch(`/api/cart/${customerId}`);
       const data = await response.json();
       if (response.ok) setCart(data.cartItems || []);
       else toast.error("Failed to load cart items");
@@ -47,7 +47,7 @@ const CartPage = () => {
 
   const updateQuantity = async (cartId, action) => {
     try {
-      const response = await fetch("http://3.109.75.252:5000/cart/update", {
+      const response = await fetch("/api/cart/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cartId, action }),
@@ -75,7 +75,7 @@ const CartPage = () => {
 
   const removeFromCart = async (cartId) => {
     try {
-      const response = await fetch(`http://3.109.75.252:5000/cart/delete/${cartId}`, {
+      const response = await fetch(`/api/cart/delete/${cartId}`, {
         method: "DELETE",
       });
       if (response.ok) {
@@ -95,7 +95,7 @@ const CartPage = () => {
     setNotifying((prev) => ({ ...prev, [item.id]: true }));
 
     try {
-      const res = await fetch("http://3.109.75.252:5000/notification/notify-vendor", {
+      const res = await fetch("/api/notification/notify-vendor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -125,7 +125,7 @@ const CartPage = () => {
     setNotifying((prev) => ({ ...prev, [item.id]: true }));
 
     try {
-      const res = await fetch("http://3.109.75.252:5000/po/generate", { 
+      const res = await fetch("/api/po/generate", { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -247,7 +247,7 @@ const CartPage = () => {
                           <div className="p-6 flex flex-col sm:flex-row gap-6">
                             <div className="relative w-full sm:w-40 h-40 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 group-hover:shadow-inner transition-shadow">
                               <img
-                                src={`http://3.109.75.252:5000/uploads/${item.productImage}`}
+                                src={`/api/uploads/${item.productImage}`}
                                 alt={item.productName}
                                 className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                               />

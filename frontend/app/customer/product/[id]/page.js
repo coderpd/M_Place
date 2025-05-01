@@ -38,7 +38,7 @@ const ProductDetail = () => {
 
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://3.109.75.252:5000/auth/products/get-product/${id}`);
+        const res = await fetch(`/api/auth/products/get-product/${id}`);
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
         setProduct(data.product);
@@ -66,7 +66,7 @@ const ProductDetail = () => {
         quantity: 1,
       };
   
-      const response = await fetch("http://3.109.75.252:5000/cart/add", {
+      const response = await fetch("/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cartItem),
@@ -108,7 +108,7 @@ const ProductDetail = () => {
           <div className="relative w-full md:w-1/2 flex flex-col items-center md:pr-6">
             <div className="relative w-80 h-80 flex items-center justify-center">
               <img
-                src={`http://3.109.75.252:5000/uploads/${product.productImage}`}
+                src={`/api/uploads/${product.productImage}`}
                 alt={product.productName}
                 className="w-80 h-80 object-cover rounded-lg shadow-md"
                 onError={(e) => (e.target.src = "https://via.placeholder.com/300?text=Image+Not+Found")}

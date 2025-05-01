@@ -46,7 +46,7 @@ const VendorPOAutomationPage = () => {
         console.log("Using vendor ID:", vendorId);
         
         const response = await fetch(
-          `http://3.109.75.252:5000/PoVendorUser/vendor/admin/${vendorId}`
+          `/api/PoVendorUser/vendor/admin/${vendorId}`
         );
   
         console.log("Response status:", response.status);
@@ -106,7 +106,7 @@ const VendorPOAutomationPage = () => {
     setDownloading((prev) => ({ ...prev, [poId]: true }));
     try {
       const response = await fetch(
-        `http://3.109.75.252:5000/PoVendorUser/generate-pdf/${poId}`
+        `/api/PoVendorUser/generate-pdf/${poId}`
       );
 
       if (response.ok) {
@@ -154,7 +154,7 @@ const VendorPOAutomationPage = () => {
   const handleSaveChanges = async () => {
     try {
       const response = await fetch(
-        `http://3.109.75.252:5000/PoVendorUser/update/${selectedPO.id}`,
+        `/api/PoVendorUser/update/${selectedPO.id}`,
         {
           method: "PUT",
           headers: {

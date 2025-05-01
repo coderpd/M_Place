@@ -163,7 +163,7 @@ const VendorDashboard = () => {
   // Fetch notifications data
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://3.109.75.252:5000/notification/vendor-admin", {
+      const response = await fetch("/api/notification/vendor-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -414,7 +414,7 @@ const VendorDashboard = () => {
       if (!vendorID) return;
       try {
         setLoading(true);
-        const response = await fetch("http://3.109.75.252:5000/auth/vendor/users", {
+        const response = await fetch("/api/auth/vendor/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ vendorId: vendorID }),
