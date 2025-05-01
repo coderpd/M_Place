@@ -33,8 +33,7 @@ app.use("/auth", getvendor);
 const productsRouter = require("./routes/products");
 app.use("/auth/products", productsRouter);
 
-// const vendorRouter = require("./routes/vendor"); 
-// app.use("/auth/vendor", vendorRouter); 
+
 
 const CustomerEdit = require("./routes/Customer");
 app.use("/customer-edit", CustomerEdit);
@@ -42,7 +41,7 @@ app.use("/customer-edit", CustomerEdit);
 const notifyVendorRouter =require("./routes/notifications")
 app.use("/notification", notifyVendorRouter);
 
-const cartRouter = require("./routes/Cart");
+const cartRouter = require("./routes/cart");
 app.use("/cart", cartRouter);
 
 const vendorUserSignup = require("./routes/vendorUserSignup")
