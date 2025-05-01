@@ -38,7 +38,7 @@ const ProductsPage = () => {
       setError("");
 
       try {
-        const response = await fetch("http://localhost:5000/auth/products/get-products/all");
+        const response = await fetch("http://3.109.75.252:5000/auth/products/get-products/all");
         if (!response.ok) throw new Error(`API error: ${response.status}`);
 
         const data = await response.json();
@@ -156,7 +156,7 @@ const ProductsPage = () => {
                 <div className="relative">
                   {product.productImage && (
                     <img
-                      src={`http://localhost:5000/uploads/${product.productImage}`}
+                      src={`http://3.109.75.252:5000/uploads/${product.productImage}`}
                       alt={product.name}
                       className="w-full h-48 object-cover rounded-lg"
                     />

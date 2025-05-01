@@ -91,7 +91,7 @@ const VendorSignup = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/auth/vendor/vendor-signup",
+        "http://3.109.75.252:5000/auth/vendor/vendor-signup",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

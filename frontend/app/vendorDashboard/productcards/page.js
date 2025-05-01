@@ -32,7 +32,7 @@ export default function EcommercePage() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/auth/products/get-products/${vendorUserId}`
+          `http://3.109.75.252:5000/auth/products/get-products/${vendorUserId}`
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.statusText}`);
@@ -105,7 +105,7 @@ export default function EcommercePage() {
                 <div className="relative">
                   {product.productImage && (
                     <img
-                      src={`http://localhost:5000/uploads/${product.productImage}`}
+                      src={`http://3.109.75.252:5000/uploads/${product.productImage}`}
                       alt={product.productName}
                       className="w-full h-40 object-cover rounded-lg"
                     />

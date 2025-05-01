@@ -71,7 +71,7 @@ const Page = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/auth/customerUserSignUp/customerUser",
+        "http://3.109.75.252:5000/auth/customerUserSignUp/customerUser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -121,7 +121,7 @@ const Page = () => {
           
           // Fetch admin's company details
           const response = await fetch(
-            `http://localhost:5000/auth/customerUserSignUp/company-name/${customerData.id}`
+            `http://3.109.75.252:5000/auth/customerUserSignUp/company-name/${customerData.id}`
           );
           
           if (response.ok) {

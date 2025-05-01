@@ -60,7 +60,7 @@ const VendorProfilePage = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/auth/update-vendor",
+        "http://3.109.75.252:5000/auth/update-vendor",
         {
           method: "POST",
           headers: {

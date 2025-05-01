@@ -74,7 +74,7 @@ const CustomerProfile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/customerUserSignUp/users/${formData.id}`,
+        `http://3.109.75.252:5000/auth/customerUserSignUp/users/${formData.id}`,
         {
           method: "PUT",
           headers: {

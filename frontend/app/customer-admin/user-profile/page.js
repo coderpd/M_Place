@@ -63,7 +63,7 @@ const Page = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "http://localhost:5000/auth/customerUserSignUp/user-profile",
+          "http://3.109.75.252:5000/auth/customerUserSignUp/user-profile",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -102,7 +102,7 @@ const Page = () => {
 
       if (result.isConfirmed) {
         const response = await fetch(
-          `http://localhost:5000/auth/customerUserSignUp/users/${userId}`,
+          `http://3.109.75.252:5000/auth/customerUserSignUp/users/${userId}`,
           { method: "DELETE" }
         );
 
@@ -123,7 +123,7 @@ const Page = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://localhost:5000/auth/customerUserSignUp/user-profile",
+        "http://3.109.75.252:5000/auth/customerUserSignUp/user-profile",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
