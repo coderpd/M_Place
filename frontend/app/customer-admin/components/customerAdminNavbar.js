@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   Calendar,
+  Clipboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -87,8 +88,8 @@ export default function CustomerAdminNavbar() {
     },
     {
       href: "/customer-admin/PoAutomation",
-      icon: <Bell className="h-5 w-5" />,
-      label: "Orders",
+      icon: <Clipboard className="h-5 w-5" />,
+      label: "PoAutomation",
    
     },
   ];
