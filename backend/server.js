@@ -5,7 +5,7 @@ const mysql = require("mysql2");
 const { sendOTP } = require("./utils/mailer"); 
 const cors = require("cors");
 const app = express();
-const port = 5000;
+
 app.use("/uploads",express.static("uploads"));
 
 app.use(cors());
@@ -62,6 +62,6 @@ app.use("/PoVendorUser",PoVendorUser)
 
 
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(() => {
+  console.log(`Server is running on http://3.109.75.252/api`);
 });
