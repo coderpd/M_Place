@@ -62,6 +62,6 @@ app.use("/PoVendorUser",PoVendorUser)
 
 
 
-app.listen(() => {
-  console.log(`Server is running on http://3.109.75.252/api`);
+app.listen(5000, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:5000`);
 });

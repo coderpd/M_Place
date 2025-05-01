@@ -74,7 +74,7 @@ export const EditUserForm = ({ user, onClose, onUpdate }) => {
       }
   
       const response = await fetch(
-        `http://localhost:5000/auth/customerUserSignUp/users/${user.id}`,
+        `http://3.109.75.252:5000/auth/customerUserSignUp/users/${user.id}`,
         {
           method: "PUT",
           headers: {

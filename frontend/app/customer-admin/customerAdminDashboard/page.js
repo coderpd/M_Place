@@ -470,7 +470,7 @@ const CustomerAdminDashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://localhost:5000/notification/admin", {
+      const response = await fetch("http://3.109.75.252:5000/notification/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adminID }),
@@ -512,7 +512,7 @@ const CustomerAdminDashboard = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "http://localhost:5000/auth/customerUserSignUp/user-profile",
+          "http://3.109.75.252:5000/auth/customerUserSignUp/user-profile",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -535,7 +535,7 @@ const CustomerAdminDashboard = () => {
     const fetchNewUserSummary = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/auth/customerUserSignUp/new-users-summary?adminID=${adminID}`
+          `http://3.109.75.252:5000/auth/customerUserSignUp/new-users-summary?adminID=${adminID}`
         );
         const data = await response.json();
         setStats(data);
@@ -547,7 +547,7 @@ const CustomerAdminDashboard = () => {
     const fetchRecentActivity = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/auth/customerUserSignUp/recent-activity?adminID=${adminID}`
+          `http://3.109.75.252:5000/auth/customerUserSignUp/recent-activity?adminID=${adminID}`
         );
         const data = await response.json();
         setRecentActivity(data);

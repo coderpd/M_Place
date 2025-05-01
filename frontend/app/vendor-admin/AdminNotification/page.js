@@ -64,7 +64,7 @@ const VendorAdminNotifications = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/notification/vendor-admin", {
+      const response = await fetch("http://3.109.75.252:5000/notification/vendor-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

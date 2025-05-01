@@ -33,7 +33,7 @@ export default function ContactSection() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/contact/contactus", {
+      const response = await fetch("http://3.109.75.252:5000/contact/contactus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

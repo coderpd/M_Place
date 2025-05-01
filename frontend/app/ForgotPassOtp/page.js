@@ -53,7 +53,7 @@ export default function ForgotPassOtp() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/forgotpassword/verify-otp",
+        "http://3.109.75.252:5000/forgotpassword/verify-otp",
         {
           method: "POST",
           headers: {

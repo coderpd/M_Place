@@ -16,7 +16,7 @@ export const useOtp = () => {
     setOtpError(""); 
     try {
       const response = await fetch(
-        `http://localhost:5000/auth/${endpoint}/${endpoint}-sendotp`,
+        `http://3.109.75.252:5000/auth/${endpoint}/${endpoint}-sendotp`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

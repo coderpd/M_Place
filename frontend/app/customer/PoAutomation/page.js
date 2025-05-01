@@ -46,7 +46,7 @@ const POAutomationPage = () => {
 
         const customerData = JSON.parse(storedCustomer);
         const response = await fetch(
-          `http://localhost:5000/po/customer/${customerData.id}`
+          `http://3.109.75.252:5000/po/customer/${customerData.id}`
         );
         const data = await response.json();
 
@@ -99,7 +99,7 @@ const POAutomationPage = () => {
     setDownloading((prev) => ({ ...prev, [poId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:5000/po/generate-pdf/${poId}`
+        `http://3.109.75.252:5000/po/generate-pdf/${poId}`
       );
 
       if (response.ok) {
@@ -146,7 +146,7 @@ const POAutomationPage = () => {
   const handleSaveShipTo = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/po/${selectedPO.id}/ship-to-address`,
+        `http://3.109.75.252:5000/po/${selectedPO.id}/ship-to-address`,
         {
           method: "PUT",
           headers: {

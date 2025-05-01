@@ -84,7 +84,7 @@ const Page = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "http://localhost:5000/auth/vendor/users",
+          "http://3.109.75.252:5000/auth/vendor/users",
           {
             method: "POST",
             headers: {
@@ -139,7 +139,7 @@ const Page = () => {
       if (!result.isConfirmed) return;
 
       // Send only userId to backend
-      const response = await fetch("http://localhost:5000/auth/vendor/delete-user", {
+      const response = await fetch("http://3.109.75.252:5000/auth/vendor/delete-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +183,7 @@ const Page = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://localhost:5000/auth/vendor/users",
+        "http://3.109.75.252:5000/auth/vendor/users",
         {
           method: "POST",
           headers: {

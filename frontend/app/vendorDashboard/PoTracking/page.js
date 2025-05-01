@@ -32,7 +32,7 @@ const VendorPOAutomationPage = () => {
 
         const vendorData = JSON.parse(storedVendor);
         const response = await fetch(
-          `http://localhost:5000/PoVendorUser/vendor/${vendorData.id}`
+          `http://3.109.75.252:5000/PoVendorUser/vendor/${vendorData.id}`
         );
         const data = await response.json();
 
@@ -81,7 +81,7 @@ const VendorPOAutomationPage = () => {
     setDownloading((prev) => ({ ...prev, [poId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:5000/PoVendorUser/generate-pdf/${poId}`
+        `http://3.109.75.252:5000/PoVendorUser/generate-pdf/${poId}`
       );
 
       if (response.ok) {
@@ -129,7 +129,7 @@ const VendorPOAutomationPage = () => {
   const handleSaveChanges = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/PoVendorUser/update/${selectedPO.id}`,
+        `http://3.109.75.252:5000/PoVendorUser/update/${selectedPO.id}`,
         {
           method: "PUT",
           headers: {

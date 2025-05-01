@@ -54,7 +54,7 @@ const POAutomationPage = () => {
   
         // Make sure this URL matches your backend route exactly
         const response = await fetch(
-          `http://localhost:5000/po/company-admin/${adminID}` // or /company-admin/ if that's your route
+          `http://3.109.75.252:5000/po/company-admin/${adminID}` // or /company-admin/ if that's your route
         );
   
         if (!response.ok) {
@@ -114,7 +114,7 @@ const POAutomationPage = () => {
     setDownloading((prev) => ({ ...prev, [poId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:5000/po/generate-pdf/${poId}`
+        `http://3.109.75.252:5000/po/generate-pdf/${poId}`
       );
 
       if (response.ok) {
@@ -161,7 +161,7 @@ const POAutomationPage = () => {
   const handleSaveShipTo = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/po/${selectedPO.id}/ship-to-address`,
+        `http://3.109.75.252:5000/po/${selectedPO.id}/ship-to-address`,
         {
           method: "PUT",
           headers: {
