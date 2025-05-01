@@ -48,7 +48,7 @@ const Page = () => {
           setAdminId(vendorData.id);
 
           const response = await fetch(
-            `http://3.109.75.252:5000/auth/vendor/company-name/${vendorData.id}`
+            `/api/auth/vendor/company-name/${vendorData.id}`
           );
 
           if (response.ok) {
@@ -122,7 +122,7 @@ const Page = () => {
         vendorAdminId: adminId,
       };
 
-      const response = await fetch("http://3.109.75.252:5000/auth/vendor/add-user", {
+      const response = await fetch("/api/auth/vendor/add-user", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

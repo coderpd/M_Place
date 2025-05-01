@@ -33,7 +33,7 @@ export default function ProductDetails() {
       }
 
       try {
-        const response = await fetch(`http://3.109.75.252:5000/auth/products/get-products/${vendorUserId}`, {
+        const response = await fetch(`/api/auth/products/get-products/${vendorUserId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -89,7 +89,7 @@ export default function ProductDetails() {
       if (result.isConfirmed) {
         setDeletingId(productId);
 
-        const response = await fetch(`http://3.109.75.252:5000/auth/products/delete-product/${productId}`, {
+        const response = await fetch(`/api/auth/products/delete-product/${productId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -203,7 +203,7 @@ export default function ProductDetails() {
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-4 py-4">
                       <img
-                        src={`http://3.109.75.252:5000/uploads/${product.productImage}`}
+                        src={`/api/uploads/${product.productImage}`}
                         alt={product.productName}
                         className="h-10 w-10 rounded object-cover"
                         onError={(e) => {

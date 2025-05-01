@@ -52,7 +52,7 @@ export default function ResetPassword() {
 
     try {
       const response = await fetch(
-        "http://3.109.75.252:5000/forgotpassword/reset-password",
+        "/api/forgotpassword/reset-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

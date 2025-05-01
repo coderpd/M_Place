@@ -74,7 +74,7 @@ export const EditUserForm = ({ user, onClose, onUpdate }) => {
       }
   
       const response = await fetch(
-        `http://3.109.75.252:5000/auth/customerUserSignUp/users/${user.id}`,
+        `/api/auth/customerUserSignUp/users/${user.id}`,
         {
           method: "PUT",
           headers: {

@@ -80,7 +80,7 @@ export default function AddProduct() {
 
     try {
       const response = await fetch(
-        "http://3.109.75.252:5000/auth/products/add-product",
+        "/api/auth/products/add-product",
         {
           method: "POST",
           body: formDataToSend,

@@ -39,7 +39,7 @@ export default function UpdateProduct() {
 
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://3.109.75.252:5000/auth/products/get-product/${id}`);
+        const response = await fetch(`/api/auth/products/get-product/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch product");
         }
@@ -47,7 +47,7 @@ export default function UpdateProduct() {
         console.log("Fetched data:", data);
         setFormData(data.product);
         if (data.product.productImage) {
-          setPreviewImage(`http://3.109.75.252:5000/uploads/${data.product.productImage}`);
+          setPreviewImage(`/api/uploads/${data.product.productImage}`);
         }
       } catch (error) {
         console.error("Error fetching:", error.message);
@@ -85,7 +85,7 @@ export default function UpdateProduct() {
 
     try {
       const response = await fetch(
-        `http://3.109.75.252:5000/auth/products/update-product/${id}`,
+        `/api/auth/products/update-product/${id}`,
         {
           method: "PUT",
           body: formDataToSend,

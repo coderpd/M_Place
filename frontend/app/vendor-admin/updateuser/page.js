@@ -44,7 +44,7 @@ const UpdateUserPage = () => {
 
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://3.109.75.252:5000/auth/vendor/get-user/${id}`);
+        const res = await fetch(`/api/auth/vendor/get-user/${id}`);
         const data = await res.json();
 
         if (res.ok && data) {
@@ -93,7 +93,7 @@ const UpdateUserPage = () => {
     }
 
     try {
-      const response = await fetch(`http://3.109.75.252:5000/auth/vendor/update-user/${vendorUserId}`, {
+      const response = await fetch(`/api/auth/vendor/update-user/${vendorUserId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

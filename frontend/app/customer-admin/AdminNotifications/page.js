@@ -65,7 +65,7 @@ const AdminNotifications = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://3.109.75.252:5000/notification/admin", {
+      const response = await fetch("/api/notification/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adminID }),

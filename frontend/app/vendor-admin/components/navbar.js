@@ -53,7 +53,7 @@ export default function Navbar() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://3.109.75.252:5000/notification/vendor-admin", {
+      const response = await fetch("/api/notification/vendor-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

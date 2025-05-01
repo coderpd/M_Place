@@ -37,7 +37,7 @@ export default function ForgotPassword() {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://3.109.75.252:5000/forgotpassword/forgot-password",
+        "/api/forgotpassword/forgot-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

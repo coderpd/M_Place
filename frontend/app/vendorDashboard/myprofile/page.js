@@ -74,7 +74,7 @@ const VendorUserProfilePage = () => {
   
     try {
       const response = await fetch(
-        `http://3.109.75.252:5000/auth/vendor/update-user/${formData.id}`,
+        `/api/auth/vendor/update-user/${formData.id}`,
         {
           method: "PUT",
           headers: {
