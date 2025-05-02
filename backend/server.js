@@ -45,7 +45,7 @@ app.use("/api/cart", cartRouter);
 const customerUserSignUp = require("./routes/customerUserSignUp");
 app.use("/api/auth/customerUserSignUp",customerUserSignUp);
 
-const vendorUserSignup = require("./routes/VendorUserSignup")
+const vendorUserSignup = require("./routes/vendorUserSignup")
 app.use("/api/auth/vendor", vendorUserSignup);
 
 const po =require("./routes/po")
