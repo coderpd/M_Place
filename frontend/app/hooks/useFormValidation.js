@@ -1,7 +1,6 @@
 export const useFormValidation = () => {
   const validateForm = (formValues, isVendor = false) => {
     let newErrors = {};
-
     if (!formValues.companyName)
       newErrors.companyName = "Company Name is required";
     if (!formValues.registrationNumber)
