@@ -59,7 +59,7 @@ export const useFormValidation = () => {
       newErrors.confirmPassword = "Passwords must match";
     }
 
-    if (!formValues.terms) newErrors.terms = "You must accept the terms";
+    if (!formValues.terms) newErrors.terms = "You must accept the term";
     if (!formValues.address) newErrors.address = "Address is required";
     if (!formValues.country) newErrors.country = "Country is required";
     if (!formValues.state) newErrors.state = "State is required";
