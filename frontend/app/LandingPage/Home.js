@@ -9,7 +9,7 @@ export default function Home() {
       {/* Centered Heading */}
       <div className="text-center mb-8 md:mb-10 lg:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.7rem] xl:text-5xl font-extrabold font-[Inter] text-gray-900 leading-tight tracking-tight">
-          Struggling with C-Class IT Procurement? Let Us Handle It for You!
+          Strugglinggggg with C-Class IT Procurement? Let Us Handle It for You!
         </h1>
       </div>
 
