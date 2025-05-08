@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 
 const Navbar = ({
   setSearchQuery,
-  setCategoryFilter,
   setPriceFilter,
   disableFilters,
   disableSearch,

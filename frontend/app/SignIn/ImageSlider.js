@@ -1,7 +1,8 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+
 
 const images = [
   { src: "/lap.jpg", alt: "Laptop", title: "Modern Laptops", description: "Sleek, fast, and lightweight laptops for professionals." },
