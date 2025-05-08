@@ -17,6 +17,7 @@ import {
   Menu,
   Bell,
   Clipboard,
+  X
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,8 @@ export default function Navbar() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [vendorAdminID, setVendorAdminID] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const router = useRouter();
 
   const currentDate = new Date().toLocaleDateString("en-US", {
