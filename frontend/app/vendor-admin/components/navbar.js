@@ -266,7 +266,7 @@ export default function Navbar() {
               {/* Navigation Links */}
               <div className="p-4 space-y-2">
                 <Link
-                  href="/vendor-admin/vendorAdminDashboard"
+                  href="/vendor-admin"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
