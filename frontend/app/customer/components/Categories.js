@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import ProductsPage from "../products/page";
+import { ChevronLeft,  ChevronRight } from "lucide-react";
 
 const categories = [
   {
@@ -379,10 +380,7 @@ const categories = [
           "Wi-Fi Extenders",
           "Wireless Antennas",
         ]
-
-      },
-
-    
+      }, 
     ],
   },
 ];
@@ -391,113 +389,251 @@ const CategoryMenu = ({ setCategoryFilter }) => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSubcategory, setActiveSubcategory] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState("left-0");
-
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
-
+  const [isMobile, setIsMobile] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  
   const categoryRefs = useRef({});
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640); // sm breakpoint
+    };
+    
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleMouseEnterCategory = (categoryName, index) => {
-    clearTimeout(timeoutId); // Clear any existing timeout
+    if (isMobile) return;
+    
+    clearTimeout(timeoutId);
     setActiveCategory(categoryName);
     setActiveSubcategory(null);
 
-    // Check dropdown position dynamically
     if (categoryRefs.current[index]) {
       const rect = categoryRefs.current[index].getBoundingClientRect();
       const windowWidth = window.innerWidth;
 
       if (rect.right + 260 > windowWidth) {
-        setDropdownPosition("right-0"); // Shift to left if overflow
+        setDropdownPosition("right-0");
       } else {
-        setDropdownPosition("left-0"); // Default to right
+        setDropdownPosition("left-0");
       }
     }
-    setDropdownVisible(true); // Show dropdown when hovered
+    setDropdownVisible(true);
   };
 
   const handleMouseLeaveCategory = () => {
+    if (isMobile) return;
+    
     const newTimeoutId = setTimeout(() => {
-      setDropdownVisible(false); // Hide dropdown after delay
-    }, 200); // Delay before hiding the dropdown
-
+      setDropdownVisible(false);
+    }, 200);
     setTimeoutId(newTimeoutId);
   };
 
   const handleMouseEnterDropdown = () => {
-    clearTimeout(timeoutId); // Clear the timeout to keep dropdown visible
+    if (isMobile) return;
+    clearTimeout(timeoutId);
   };
 
   const handleMouseLeaveDropdown = () => {
+    if (isMobile) return;
+    
     const newTimeoutId = setTimeout(() => {
-      setDropdownVisible(false); // Hide dropdown after delay
-    }, 200); // Delay before hiding the dropdown
-
+      setDropdownVisible(false);
+    }, 200);
     setTimeoutId(newTimeoutId);
+  };
+
+  const handleScroll = (direction) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = direction === "left" ? -200 : 200;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  const handleMobileCategoryClick = (categoryName) => {
+    if (!isMobile) return;
+    
+    if (activeCategory === categoryName) {
+      setActiveCategory(null);
+      setActiveSubcategory(null);
+    } else {
+      setActiveCategory(categoryName);
+      setActiveSubcategory(null);
+    }
+  };
+
+  const handleMobileSubcategoryClick = (subcategoryName) => {
+    if (!isMobile) return;
+    
+    if (activeSubcategory === subcategoryName) {
+      setActiveSubcategory(null);
+    } else {
+      setActiveSubcategory(subcategoryName);
+    }
   };
 
   return (
     <div className="relative w-full bg-gray-50 shadow-md font-sans">
-      <nav className="flex flex-wrap justify-between sm:space-x-8 px-6 py-4 text-gray-800 font-semibold">
-        {categories.map((category, index) => (
-          <div
-            key={index}
-            ref={(el) => (categoryRefs.current[index] = el)}
-            className="relative group sm:mr-4 mb-4 sm:mb-0 w-full sm:w-auto"
-            onMouseEnter={() => handleMouseEnterCategory(category.name, index)}
-            onMouseLeave={handleMouseLeaveCategory}
-          >
-            <button className="w-full sm:w-auto text-left text-base ">
-              {category.name}
-            </button>
+      {/* Desktop View */}
+      <div className="hidden sm:block">
+        <nav className="flex flex-wrap justify-between sm:space-x-8 px-6 py-4 text-gray-800 font-semibold">
+          {categories.map((category, index) => (
+            <div
+              key={index}
+              ref={(el) => (categoryRefs.current[index] = el)}
+              className="relative group sm:mr-4 mb-4 sm:mb-0 w-full sm:w-auto"
+              onMouseEnter={() => handleMouseEnterCategory(category.name, index)}
+              onMouseLeave={handleMouseLeaveCategory}
+            >
+              <button className="w-full sm:w-auto text-left text-base">
+                {category.name}
+              </button>
 
-            {/* Category Dropdown */}
-            {dropdownVisible && activeCategory === category.name && (
-              <div
-                className={`absolute top-full mt-4 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition}`}
-                onMouseEnter={handleMouseEnterDropdown}
-                onMouseLeave={handleMouseLeaveDropdown}
-              >
-                <ul className="py-2 text-sm">
-                  {category.subcategories.map((sub, subIndex) => (
-                    <li
-                      key={subIndex}
-                      className="relative"
-                      onMouseEnter={() => setActiveSubcategory(sub.name)}
-                    >
-                      <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+              {dropdownVisible && activeCategory === category.name && (
+                <div
+                  className={`absolute top-full mt-4 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition}`}
+                  onMouseEnter={handleMouseEnterDropdown}
+                  onMouseLeave={handleMouseLeaveDropdown}
+                >
+                  <ul className="py-2 text-sm">
+                    {category.subcategories.map((sub, subIndex) => (
+                      <li
+                        key={subIndex}
+                        className="relative"
+                        onMouseEnter={() => setActiveSubcategory(sub.name)}
+                      >
+                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                          {sub.name}
+                        </button>
+
+                        {activeSubcategory === sub.name && sub.items.length > 0 && (
+                          <div
+                            className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${
+                              dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
+                            } max-h-[300px] overflow-y-auto`}
+                          >
+                            <ul className="py-2 text-md text-left">
+                              {sub.items.map((item, itemIndex) => (
+                                <li key={itemIndex} className="pl-2">
+                                  <button
+                                    onClick={() => setCategoryFilter(item)}
+                                    className="block w-full text-left px-2 py-2 hover:bg-gray-100"
+                                  >
+                                    {item}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      {/* Mobile View */}
+      <div className="sm:hidden">
+        <div className="relative px-4 py-3">
+          {/* Scroll left button */}
+          <button
+            onClick={() => handleScroll("left")}
+            className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-50 to-transparent flex items-center justify-center z-10"
+            disabled={scrollPosition === 0}
+          >
+            <ChevronLeft className="text-gray-600" size={20} />
+          </button>
+
+          {/* Categories scroll container */}
+          <div
+            ref={scrollContainerRef}
+            className="flex space-x-4 overflow-x-auto scrollbar-hide px-2"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {categories.map((category, index) => (
+              <div key={index} className="flex-shrink-0">
+                <button
+                  onClick={() => handleMobileCategoryClick(category.name)}
+                  className={`px-4 py-2 rounded-lg ${
+                    activeCategory === category.name
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-white text-gray-800"
+                  } font-semibold shadow-sm`}
+                >
+                  {category.name}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Scroll right button */}
+          <button
+            onClick={() => handleScroll("right")}
+            className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-50 to-transparent flex items-center justify-center z-10"
+          >
+            <ChevronRight className="text-gray-600" size={20} />
+          </button>
+        </div>
+
+        {/* Mobile dropdown content */}
+        {activeCategory && (
+          <div className="px-4 pb-3">
+            <div className="bg-white rounded-lg shadow-sm p-3">
+              <h3 className="font-semibold text-gray-800 mb-2">
+                {activeCategory}
+              </h3>
+              <div className="space-y-2">
+                {categories
+                  .find((cat) => cat.name === activeCategory)
+                  ?.subcategories.map((sub, subIndex) => (
+                    <div key={subIndex}>
+                      <button
+                        onClick={() => handleMobileSubcategoryClick(sub.name)}
+                        className={`w-full text-left px-3 py-2 rounded ${
+                          activeSubcategory === sub.name
+                            ? "bg-blue-50 text-blue-700"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
                         {sub.name}
                       </button>
 
-
-                      {activeSubcategory === sub.name && sub.items.length > 0 && (
-                        <div
-                          className={`absolute top-0 mt-0 w-44 bg-white border rounded-md shadow-lg z-10 ${dropdownPosition === "right-0" ? "right-full mr-0" : "left-full ml-0"
-                            } max-h-[300px] overflow-y-auto`}
-                        >
-                          <ul className="py-2 text-md  text-left">
-                            {sub.items.map((item, itemIndex) => (
-                              <li key={itemIndex} className="pl-2"> {/* Ensures list items start from the left */}
-                                <button
-                                  onClick={() => setCategoryFilter(item)}
-                                  className="block w-full text-left px-2 py-2 hover:bg-gray-100"
-                                >
-                                  {item}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-
+                      {activeSubcategory === sub.name && (
+                        <div className="mt-1 ml-4">
+                          {sub.items.map((item, itemIndex) => (
+                            <button
+                              key={itemIndex}
+                              onClick={() => {
+                                setCategoryFilter(item);
+                                setActiveCategory(null);
+                                setActiveSubcategory(null);
+                              }}
+                              className="block w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 rounded"
+                            >
+                              {item}
+                            </button>
+                          ))}
                         </div>
                       )}
-                    </li>
+                    </div>
                   ))}
-                </ul>
               </div>
-            )}
+            </div>
           </div>
-        ))}
-      </nav>
+        )}
+      </div>
     </div>
   );
 };
