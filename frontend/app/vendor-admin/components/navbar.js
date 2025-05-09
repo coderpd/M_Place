@@ -56,7 +56,7 @@ export default function Navbar() {
   const fetchNotifications = async () => {
     try {
       const response = await fetch(
-        "api/notification/vendor-admin",
+        "/api/notification/vendor-admin",
         {
           method: "POST",
           headers: {

@@ -54,7 +54,7 @@ export default function DashboardLayout({ id, children }) {
         const { id } = JSON.parse(storedVendorUser);
 
         const response = await fetch(
-          `api/auth/vendor/get-user/${id}`,
+          `/api/auth/vendor/get-user/${id}`,
           { signal }
         );
 
@@ -93,7 +93,7 @@ export default function DashboardLayout({ id, children }) {
 
       try {
         const response = await fetch(
-          `api/notification/${id}`
+          `/api/notification/${id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch notifications");
@@ -150,7 +150,7 @@ export default function DashboardLayout({ id, children }) {
 
     try {
       const response = await fetch(
-        `api/notification/read/${notifId}`,
+        `/api/notification/read/${notifId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
