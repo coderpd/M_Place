@@ -87,7 +87,7 @@ export default function LoginPage() {
       } else if (data.userType === "vendor-user") {
         localStorage.setItem("vendorUser", JSON.stringify(data.user));
         localStorage.setItem("vendorUserId", data.user.id.toString()); 
-        router.push(`/vendorDashboard`);
+        router.push(`/vendorUser`);
       
       }else if(data.userType=="customer-user"){
         localStorage.setItem("customerUser", JSON.stringify(data.user));
