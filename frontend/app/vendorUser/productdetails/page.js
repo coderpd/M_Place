@@ -123,7 +123,7 @@ export default function ProductDetails() {
   };
 
   const handleEdit = (productId) => {
-    router.push(`/vendorDashboard/updateproduct/${productId}`);
+    router.push(`/vendorUser/updateproduct/${productId}`);
   };
 
 
