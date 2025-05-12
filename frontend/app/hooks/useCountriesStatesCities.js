@@ -25,7 +25,7 @@ export const useCountriesStatesCities = (selectedCountry, selectedState) => {
         console.error("Error fetching countries:", error);
       }
     };
-
+    
     fetchCountries();
   }, []);
 

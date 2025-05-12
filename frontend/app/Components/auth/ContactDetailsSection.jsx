@@ -48,8 +48,12 @@ export const ContactDetailsSection = ({
           label="Email"
           name="email"
           placeholder={`abc@${
-            formValues.companyName?.toLowerCase()?.replace(/\s/g, "") ||
-            "company"
+            formValues.companyName
+              ?.toLowerCase()
+              ?.replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
+              ?.replace(/\./g, "")
+              ?.trim()
+              ?.split(/\s+/)[0] || "company"
           }`}
           value={formValues.email}
           onChange={handleInputChange}

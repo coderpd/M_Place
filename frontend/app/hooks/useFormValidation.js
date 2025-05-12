@@ -28,7 +28,7 @@ export const useFormValidation = () => {
         .replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
         .replace(/\./g, "")
         .trim()
-        .replace(/\s+/g, "");
+        .split(/\s+/)[0];
 
       const emailDomain = formValues.email.split("@")[1]?.toLowerCase();
       const domainPrefix = emailDomain?.split(".")[0]; // Get the part before the first dot
@@ -39,7 +39,7 @@ export const useFormValidation = () => {
         } (e.g., example@${CompanyName || "companyName"})`;
       }
     }
-
+    
     if (!formValues.otp) {
       newErrors.otp = "OTP is required";
     } else if (!/^\d{4}$/.test(formValues.otp)) {
