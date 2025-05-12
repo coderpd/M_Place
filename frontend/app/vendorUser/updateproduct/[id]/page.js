@@ -111,7 +111,7 @@ export default function UpdateProduct() {
       setTimeout(() => {
         if (vendorId) {
           router.push(
-            `/vendorDashboard/productdetails?page=${encodeURIComponent(
+            `/vendorUser/productdetails?page=${encodeURIComponent(
               currentPage
             )}`
           );
