@@ -7,7 +7,8 @@ const path = require("path");
 
 // Generate PO from cart
 router.post("/generate", async (req, res) => {
-  const { customerId, productId, quantity, shipToAddress } = req.body;
+  const { customerId, productId, quantity
+  } = req.body;
 
   if (!customerId || !productId || !quantity) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -361,7 +362,7 @@ router.get("/generate-pdf/:poId", async (req, res) => {
         poi.unit_price,
         poi.total_price
       FROM purchase_orders po
-      JOIN purchase_order_items poi ON po.id = poi.po_id
+      LEFT JOIN purchase_order_items poi ON po.id = poi.po_id
       WHERE po.id = ?`,
       [poId]
     );
