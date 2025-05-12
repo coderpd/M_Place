@@ -41,7 +41,7 @@ export const useCountriesStatesCities = (selectedCountry, selectedState) => {
       const country = countries.find((c) => c.name === selectedCountry);
       if (!country) return;
       const response = await fetch(
-        `https:/api.countrystatecity.in/v1/countries/${country.code}/states`,
+        `https://api.countrystatecity.in/v1/countries/${country.code}/states`,
         { headers: { "X-CSCAPI-KEY": API_KEY } }
       );
 
@@ -68,7 +68,7 @@ export const useCountriesStatesCities = (selectedCountry, selectedState) => {
       if (!stateObj) return;
 
       const response = await fetch(
-        `https:/api.countrystatecity.in/v1/countries/${country.code}/states/${stateObj.iso2}/cities`,
+        `https://api.countrystatecity.in/v1/countries/${country.code}/states/${stateObj.iso2}/cities`,
         { headers: { "X-CSCAPI-KEY": API_KEY } }
       );
 
