@@ -326,7 +326,7 @@ export default function DashboardLayout({ id, children }) {
           </div>
 
         {dropdownOpen && (
-            <div className="absolute right-[-27] top-[80px] w-56 bg-white shadow-xl rounded-xl z-50 border border-gray-200">
+            <div className="absolute right-[-38] top-[80px] w-56 bg-white shadow-xl rounded-xl z-50 border border-gray-200">
               <ul className="py-2 text-sm text-gray-700 font-medium">
                 <li
                   onClick={() => {
