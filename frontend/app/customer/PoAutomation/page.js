@@ -99,7 +99,7 @@ const POAutomationPage = () => {
     setDownloading((prev) => ({ ...prev, [poId]: true }));
     try {
       const response = await fetch(
-      `/api/po/generate-pdf/${poId}`
+        `/api/po/generate-pdf/${poId}`
       );
 
       if (response.ok) {

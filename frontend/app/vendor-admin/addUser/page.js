@@ -48,7 +48,7 @@ const Page = () => {
           setAdminId(vendorData.id);
 
           const response = await fetch(
-            `http://localhost:5000/auth/vendor/company-name/${vendorData.id}`
+            `/api/auth/vendor/company-name/${vendorData.id}`
           );
 
           if (response.ok) {
