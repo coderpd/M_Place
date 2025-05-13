@@ -7,6 +7,7 @@ import { IoBagAdd } from "react-icons/io5";
 
 export default function AddProduct() {
   const [vendorUserId, setVendorUserId] = useState(null);
+  const [vendorUser, setVendorUser] = useState(null);
 
   const [formData, setFormData] = useState({
     category: "",
@@ -20,32 +21,39 @@ export default function AddProduct() {
   const [productImage, setProductImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
-  useEffect(() => {
-    const storedVendor = localStorage.getItem("vendorUser");
-    if (storedVendor) {
-      const parsedVendor = JSON.parse(storedVendor);
-      setVendorUserId(parsedVendor); // Now you can access .companyName
-    } else {
-      Swal.fire({
-        title: "Vendor Not Logged In!",
-        text: "Please log in again to continue adding products.",
-        icon: "warning",
-        confirmButtonColor: "#d33",
-        confirmButtonText: "OK",
-      }).then(() => {
-        window.location.href = "/vendor/login";
-      });
-    }
-  }, []);
+useEffect(() => {
+  const storedVendor = localStorage.getItem("vendorUser");
+  if (storedVendor) {
+    const parsedVendor = JSON.parse(storedVendor);
 
-  useEffect(() => {
-    if (vendorUserId?.companyName) {
-      setFormData((prev) => ({
-        ...prev,
-        seller: vendorUserId.companyName,
-      }));
-    }
-  }, [vendorUserId]);
+    // ✅ Set vendorUserId as a number (ID only)
+    setVendorUserId(parsedVendor.id);
+
+    // ✅ Set full vendor user object for things like companyName
+    setVendorUser(parsedVendor);
+  } else {
+    Swal.fire({
+      title: "Vendor Not Logged In!",
+      text: "Please log in again to continue adding products.",
+      icon: "warning",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "OK",
+    }).then(() => {
+      window.location.href = "/vendor/login";
+    });
+  }
+}, []);
+
+
+useEffect(() => {
+  if (vendorUser?.companyName) {
+    setFormData((prev) => ({
+      ...prev,
+      seller: vendorUser.companyName,
+    }));
+  }
+}, [vendorUser]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -99,7 +107,10 @@ export default function AddProduct() {
           text:
             data.message ||
             "You have reached the product limit. Please upgrade your subscription to add more products.",
-          icon: "warning",
+          imageUrl: "/subscription.gif",
+          imageWidth: 127,
+          imageHeight: 151,
+          imageAlt: "Update Success",
           confirmButtonColor: "#d33",
           confirmButtonText: "OK",
         });
