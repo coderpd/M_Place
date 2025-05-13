@@ -43,7 +43,7 @@ export const VendorAddUser = ({
      <div>
         <InputField
           label="Email"
-          name="email"
+          name="Email"
           placeholder={`abc@${
             formValues.companyName
               ?.toLowerCase()
@@ -52,11 +52,11 @@ export const VendorAddUser = ({
               ?.trim()
               ?.split(/\s+/)[0] || "company"
           }`}
-          value={formValues.email}
+          value={formValues.Email}
           onChange={handleInputChange}
           error={errors.email}
           loading={loading}
-          onOtpRequest={() => handleOtpRequest(formValues.email, "vendor")}
+        
         />
       </div>
     </>
