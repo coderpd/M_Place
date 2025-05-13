@@ -77,12 +77,10 @@ const Page = () => {
     if (name === "companyName" && formValues.companyName) {
       return;
     }
-
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
     }));
-
 
     if (errors[name]) {
       setErrors((prev) => ({
