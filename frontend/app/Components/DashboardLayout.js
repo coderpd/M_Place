@@ -29,6 +29,8 @@ export default function DashboardLayout({ id, children }) {
   const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState("all");
   const [readNotifications, setReadNotifications] = useState(new Set());
+  const [message, setMessage] = useState("");
+  
 
   const router = useRouter();
   const pathname = usePathname();
@@ -171,15 +173,45 @@ export default function DashboardLayout({ id, children }) {
     }
   };
 
-  const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({
-        ...notification,
-        status: "read",
-        read: true,
-      }))
-    );
-  };
+   // Handle mark all as read
+ const markAllAsRead = async () => {
+  const storedVendorUser = localStorage.getItem("vendorUser");
+
+  if (!storedVendorUser) {
+    console.error("Vendor user not found in localStorage.");
+    setMessage("Vendor user not found. Please log in again.");
+    return;
+  }
+
+  const vendorUser = JSON.parse(storedVendorUser);
+  const vendorId = vendorUser.id; // assuming the object has an 'id' field
+
+  try {
+    const response = await fetch(`/api/notification/read-all/${vendorId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setMessage(data.message || "All notifications marked as read.");
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) => ({
+          ...notification,
+          status: "read",
+          read: true, // optional, if you use this flag
+        }))
+      );
+    } else {
+      const errorData = await response.json();
+      console.error("Failed to mark all as read:", errorData.message);
+      setMessage(errorData.message || "Failed to mark notifications as read.");
+    }
+  } catch (error) {
+    console.error("Error marking all notifications as read:", error);
+    setMessage("An error occurred while marking notifications as read.");
+  }
+};
 
   useEffect(() => {
     setFadeIn(false);
@@ -325,7 +357,7 @@ export default function DashboardLayout({ id, children }) {
             </div>
           </div>
 
-        {dropdownOpen && (
+          {dropdownOpen && (
             <div className="absolute right-[-38] top-[80px] w-56 bg-white shadow-xl rounded-xl z-50 border border-gray-200">
               <ul className="py-2 text-sm text-gray-700 font-medium">
                 <li

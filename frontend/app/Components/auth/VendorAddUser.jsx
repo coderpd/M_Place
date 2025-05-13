@@ -4,8 +4,8 @@ import { InputField } from "./InputField";
 export const VendorAddUser = ({
   formValues,
   handleInputChange,
-  errors
-  
+  errors,
+  loading
 }) => {
   return (
     <>
@@ -40,16 +40,23 @@ export const VendorAddUser = ({
         />
       </div>
 
-      <div className="mb-4">
+     <div>
         <InputField
           label="Email"
-          name="Email"
+          name="email"
           placeholder={`abc@${
-            formValues.companyName?.toLowerCase()?.replace(/\s/g, "") || "company"
-          }.com`}
-          value={formValues.Email}
+            formValues.companyName
+              ?.toLowerCase()
+              ?.replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
+              ?.replace(/\./g, "")
+              ?.trim()
+              ?.split(/\s+/)[0] || "company"
+          }`}
+          value={formValues.email}
           onChange={handleInputChange}
-          error={errors.Email}
+          error={errors.email}
+          loading={loading}
+          onOtpRequest={() => handleOtpRequest(formValues.email, "vendor")}
         />
       </div>
     </>

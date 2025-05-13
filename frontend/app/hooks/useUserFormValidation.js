@@ -1,5 +1,4 @@
 import React from "react";
-
 export const useUserFormValidation = () => {
   const validateForm = (formValues) => {
     let newErrors = {};

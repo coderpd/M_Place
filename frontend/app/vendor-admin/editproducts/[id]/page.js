@@ -165,16 +165,16 @@ export default function EditVendorAdminProduct() {
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Seller</label>
-          <input
-            type="text"
-            name="seller"
-            value={formData.seller}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
+            <label className="block font-medium mb-2">Seller</label>
+            <input
+              type="text"
+              name="seller"
+              value={formData.seller}
+              disabled
+              className="w-full p-2 border rounded-md font-sans bg-gray-100 cursor-not-allowed"
+              placeholder="Seller Name"
+            />
+          </div>
 
         <div>
           <label className="block font-medium mb-2">Image</label>
