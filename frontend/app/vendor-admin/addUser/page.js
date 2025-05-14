@@ -11,14 +11,16 @@ import { useUserFormValidation } from "@/app/hooks/useUserFormValidation";
 const Page = () => {
   const router = useRouter();
   const { validateForm } = useUserFormValidation();
-  const [formValues, setFormValues] = useState({
-    companyName: "",
-    personName: "",
-    phoneNumber: "",
-    Email: "",
-    password: "",
-    confirmPassword: "",
-  });
+const [formValues, setFormValues] = useState({
+  personName: "",
+  phoneNumber: "",
+  Email: "",
+  password: "",
+  confirmPassword: "",
+  companyName: "",    
+  adminID: null,
+});
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -74,9 +76,7 @@ const Page = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "companyName" && formValues.companyName) {
-      return;
-    }
+  
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
@@ -91,11 +91,13 @@ const Page = () => {
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+ 
 
     if (!vendorId) {
       Swal.fire({
@@ -109,6 +111,7 @@ const Page = () => {
 
     // Use the validation hook
     const { isValid, errors: validationErrors } = validateForm(formValues);
+    console.log("📝 validation:", isValid, validationErrors);
     if (!isValid) {
       setErrors(validationErrors);
       setIsSubmitting(false);
@@ -122,14 +125,19 @@ const Page = () => {
         vendorAdminId: adminId,
       };
 
-      const response = await fetch("/api/auth/vendor/add-user", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('vendorToken')}`
-        },
-        body: JSON.stringify(payload),
-      });
+      console.log("🚀 Sending payload:", payload);
+
+      const response = await fetch(
+        "/api/auth/vendor/add-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("vendorToken")}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const result = await response.json();
 
@@ -172,8 +180,12 @@ const Page = () => {
                 <UserPlus className="text-blue-600" size={22} />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-800">Create New Vendor User</h2>
-                <p className="text-sm text-gray-500">Add a user to your vendor organization</p>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Create New Vendor User
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Add a user to your vendor organization
+                </p>
               </div>
             </div>
           </div>
@@ -188,9 +200,10 @@ const Page = () => {
                   formValues={formValues}
                   handleInputChange={handleInputChange}
                   errors={errors}
+                   
                 />
               </div>
-              <div className="grid grid-cols-2 gap-2"> 
+              <div className="grid grid-cols-2 gap-2">
                 <PasswordSection
                   formValues={formValues}
                   handleInputChange={handleInputChange}
@@ -198,7 +211,9 @@ const Page = () => {
                   showPassword={showPassword}
                   togglePasswordVisibility={togglePasswordVisibility}
                   showConfirmPassword={showConfirmPassword}
-                  toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility}
+                  toggleConfirmPasswordVisibility={
+                    toggleConfirmPasswordVisibility
+                  }
                 />
               </div>
             </div>

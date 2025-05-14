@@ -13,7 +13,7 @@ export const VendorAddUser = ({
         <InputField
           label="Company Name"
           name="companyName"
-          value={formValues.companyName}
+          value={formValues.companyName || ""}
           onChange={handleInputChange}
           error={errors.companyName}
           disabled={true}

@@ -8,11 +8,12 @@ export const useUserFormValidation = () => {
     if (!formValues.personName)
       newErrors.personName = "Person Name is required";
 
-    if (
-      !formValues.contactNumber ||
-      !/^[0-9]{7,12}$/.test(formValues.contactNumber)
-    ) {
-      newErrors.contactNumber = "Invalid Contact Number";
+     const phoneKey =
+      formValues.phoneNumber !== undefined ? "phoneNumber" : "contactNumber";
+
+    const phoneValue = formValues[phoneKey];
+    if (!phoneValue || !/^[0-9]{7,12}$/.test(phoneValue)) {
+      newErrors[phoneKey] = "Invalid Contact Number";
     }
 
     if (!formValues.Email) {
