@@ -54,7 +54,7 @@ export const VendorAddUser = ({
           }`}
           value={formValues.Email}
           onChange={handleInputChange}
-          error={errors.email}
+          error={errors.Email}
           loading={loading}
         
         />
