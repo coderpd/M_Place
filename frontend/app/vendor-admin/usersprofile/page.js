@@ -27,11 +27,13 @@ import {
   FolderSearch,
   ChevronLeft,
   ChevronRight,
+  RefreshCw
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Badge } from "@/components/ui/badge";
 import ExportMenu from "@/app/Components/auth/ExportMenu";
+import TransferProducts from "../components/transferData"; // Import the TransferProducts component
 
 const Page = () => {
   const router = useRouter();
@@ -40,6 +42,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [vendorID, setVendorID] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
+  const [showTransfer, setShowTransfer] = useState(false); // New state for transfer modal
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
   const vendorRef = useRef();
@@ -54,7 +57,7 @@ const Page = () => {
       if (storedVendor) {
         try {
           let vendorData;
-          if (storedVendor.startsWith('{')) {
+          if (storedVendor.startsWith("{")) {
             vendorData = JSON.parse(storedVendor);
           } else {
             vendorData = { id: storedVendor };
@@ -89,7 +92,7 @@ const Page = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem("token")}`
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify({ vendorId: vendorID }),
           }
@@ -100,11 +103,9 @@ const Page = () => {
         }
 
         const data = await response.json();
-
-        // ✅ Assume backend now returns the actual user `id`
         const usersWithIds = data.map((user) => ({
           ...user,
-          id: user.id  // 👈 USE actual numeric user ID from backend
+          id: user.id,
         }));
 
         setUsers(usersWithIds);
@@ -121,7 +122,11 @@ const Page = () => {
 
   const handleDelete = async (userId) => {
     if (!vendorID) {
-      Swal.fire("Error", "Vendor ID is missing. Please refresh the page.", "error");
+      Swal.fire(
+        "Error",
+        "Vendor ID is missing. Please refresh the page.",
+        "error"
+      );
       return;
     }
 
@@ -138,18 +143,20 @@ const Page = () => {
 
       if (!result.isConfirmed) return;
 
-      // Send only userId to backend
-      const response = await fetch("/api/auth/vendor/delete-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          vendorId: vendorID,
-          userId: userId, // Send userId directly, no need to differentiate by email
-        }),
-      });
+      const response = await fetch(
+        "/api/auth/vendor/delete-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            vendorId: vendorID,
+            userId: userId,
+          }),
+        }
+      );
 
       const contentType = response.headers.get("content-type");
       let data = null;
@@ -172,34 +179,31 @@ const Page = () => {
       console.error("Delete operation failed:", error);
       let errorMsg = "Failed to delete user";
       if (error.message.includes("foreign key constraint")) {
-        errorMsg = "Cannot delete user with associated records. Please remove records first.";
+        errorMsg =
+          "Cannot delete user with associated records. Please remove records first.";
       }
       Swal.fire("Error", errorMsg, "error");
     }
   };
 
-
   const handleUserUpdate = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "/api/auth/vendor/users",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
-          },
-          body: JSON.stringify({ vendorId: vendorID }),
-        }
-      );
+      const response = await fetch("/api/auth/vendor/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ vendorId: vendorID }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
 
       const data = await response.json();
-      setUsers(data); // Use the data directly from backend
+      setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
       Swal.fire("Error", `Failed to reload users: ${error.message}`, "error");
@@ -207,6 +211,7 @@ const Page = () => {
       setLoading(false);
     }
   };
+
   const filteredUsers = users.filter(
     (user) =>
       user.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -241,6 +246,15 @@ const Page = () => {
           </div>
 
           <div className="flex gap-3 w-full md:w-auto">
+            <Button
+              onClick={() => setShowTransfer(true)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span>Transfer Products</span>
+            </Button>
+            
             <div className="relative w-full md:w-[300px]">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -251,10 +265,7 @@ const Page = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <ExportMenu
-              users={filteredUsers}
-              dataType="users"
-            />
+            <ExportMenu users={filteredUsers} dataType="users" />
           </div>
         </div>
 
@@ -344,10 +355,11 @@ const Page = () => {
                       </TableCell>
                       <TableCell className="py-4">
                         <Badge
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${user.status === "Active"
-                            ? "bg-green-50 text-green-700 border border-green-100"
-                            : "bg-red-50 text-red-700 border border-red-100"
-                            } flex items-center gap-1`}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            user.status === "Active"
+                              ? "bg-green-50 text-green-700 border border-green-100"
+                              : "bg-red-50 text-red-700 border border-red-100"
+                          } flex items-center gap-1`}
                         >
                           {user.status === "Active" ? (
                             <CheckCircle2 className="h-3 w-3" />
@@ -371,11 +383,10 @@ const Page = () => {
                             size="sm"
                             variant="ghost"
                             className="hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg transition-colors h-8 w-8 p-0"
-                            onClick={() => handleDelete(user.id)}  // Pass the user ID for deletion
+                            onClick={() => handleDelete(user.id)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
-
                         </div>
                       </TableCell>
                     </TableRow>
@@ -413,10 +424,11 @@ const Page = () => {
                       variant={i + 1 === currentPage ? "default" : "outline"}
                       size="sm"
                       onClick={() => setCurrentPage(i + 1)}
-                      className={`px-3 py-1 rounded-lg min-w-[40px] ${i + 1 === currentPage
-                        ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-                        : "border-gray-300 hover:bg-gray-100"
-                        } transition-colors`}
+                      className={`px-3 py-1 rounded-lg min-w-[40px] ${
+                        i + 1 === currentPage
+                          ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
+                          : "border-gray-300 hover:bg-gray-100"
+                      } transition-colors`}
                     >
                       {i + 1}
                     </Button>
@@ -444,6 +456,20 @@ const Page = () => {
           onClose={() => setEditingUser(null)}
           onUpdate={handleUserUpdate}
         />
+      )}
+
+      {showTransfer && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 relative">
+            <button
+              onClick={() => setShowTransfer(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <XCircle className="h-6 w-6" />
+            </button>
+            <TransferProducts onClose={() => setShowTransfer(false)} />
+          </div>
+        </div>
       )}
     </div>
   );

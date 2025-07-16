@@ -124,15 +124,17 @@ export default function Navbar() {
       <nav className="hidden sm:flex fixed top-0 left-0 w-full h-20 bg-white border-b shadow-sm items-center justify-between px-4 sm:px-6 z-50">
         {/* Left: Brand Name */}
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
-              <img
-                src="/Logo.png"
-                alt="M-Place Logo"
-                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-              />
+          <Link href="/vendor-admin" passHref>
+            <div className="cursor-pointer w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+                <img
+                  src="/Logo.png"
+                  alt="M-Place Logo"
+                  className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                />
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Center: Nav Items (Desktop) */}
           <div className="hidden sm:flex items-center gap-6 text-sm text-gray-700">
@@ -226,6 +228,7 @@ export default function Navbar() {
                       <span>My Profile</span>
                     </Link>
                   </li>
+
                   <li>
                     <button
                       onClick={handleLogout}

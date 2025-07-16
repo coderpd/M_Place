@@ -89,8 +89,8 @@ router.post("/generate", async (req, res) => {
          customer_address, customer_city, customer_state, customer_country, customer_postal_code,
          customer_gst_number, customer_company_registrationNo,
          ship_to_address, ship_to_city, ship_to_state, ship_to_country, ship_to_postal_code,
-         total_amount, customer_email)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         total_amount, customer_email, delivery_notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         poNumber,
         customerId,
@@ -110,6 +110,7 @@ router.post("/generate", async (req, res) => {
         shipToAddress?.postalCode || customer[0].postalCode || "N/A",
         totalAmount,
         customer[0].Email,
+        "Delivery as soon as possible" // Default delivery notes
       ]
     );
 
@@ -166,6 +167,7 @@ router.post("/generate", async (req, res) => {
         po.order_date,
         po.total_amount,
         po.status,
+        po.delivery_notes,
         poi.product_name,
         poi.product_category,
         poi.product_description,
@@ -189,6 +191,7 @@ router.post("/generate", async (req, res) => {
 
     res.status(201).json({
       message: "Purchase order generated successfully",
+      poId: poId,
       po: {
         header: {
           poNumber: poDetails[0].po_number,
@@ -205,6 +208,7 @@ router.post("/generate", async (req, res) => {
           orderDate: poDetails[0].order_date,
           totalAmount: poDetails[0].total_amount,
           status: poDetails[0].status || "PENDING",
+          deliveryNotes: poDetails[0].delivery_notes
         },
         items: poDetails.map((item) => ({
           productName: item.product_name,
@@ -252,6 +256,31 @@ router.put("/:poId/ship-to-address", async (req, res) => {
     res.status(500).json({ error: "Failed to update ship-to address" });
   }
 });
+
+
+// GET ship-to address for a specific PO
+router.get("/:poId/ship-to-address", async (req, res) => {
+  const { poId } = req.params;
+
+  try {
+    const [rows] = await db.query(
+      `SELECT ship_to_address, ship_to_city, ship_to_state, ship_to_country, ship_to_postal_code 
+       FROM purchase_orders 
+       WHERE id = ?`,
+      [poId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Purchase Order not found" });
+    }
+
+    res.json(rows[0]);
+  } catch (error) {
+    console.error("Error fetching ship-to address:", error);
+    res.status(500).json({ error: "Failed to fetch ship-to address" });
+  }
+});
+
 
 // Get all POs for a customer
 router.get("/customer/:customerId", async (req, res) => {
@@ -312,15 +341,37 @@ router.get("/customer/:customerId", async (req, res) => {
   }
 });
 
+
+router.put("/:poId/ship-to-address", async (req, res) => {
+  const { poId } = req.params;
+  const { name, Email, address, city, state, country, postalCode } = req.body;
+
+  try {
+    await db.query(
+      `UPDATE purchase_orders 
+       SET ship_to_name = ?, ship_to_email = ?,
+       ship_to_address = ?, ship_to_city = ?, ship_to_state = ?, 
+           ship_to_country = ?, ship_to_postal_code = ?
+       WHERE id = ?`,
+      [name, Email, address, city, state, country, postalCode, poId]
+    );
+
+    res.json({ message: "Ship-to address updated successfully" });
+  } catch (error) {
+    console.error("Error updating ship-to address:", error);
+    res.status(500).json({ error: "Failed to update ship-to address" });
+  }
+});
+
 //PDF:
 
 const stateCodes = require("../utils/stateCodes");
 const PDFDocument = require("pdfkit");
 const { convertToWords } = require("../utils/convertToWords");
 const hsnCodeMap = require("../utils/hsnCodeMap");
-router.get("/generate-pdf/:poId", async (req, res) => {
+router.post('/generate-pdf/:poId', async (req, res) => {
   const { poId } = req.params;
-
+  
   try {
     const [poDetails] = await db.query(
       `SELECT 
@@ -345,6 +396,7 @@ router.get("/generate-pdf/:poId", async (req, res) => {
         po.ship_to_country,
         po.ship_to_postal_code,
         po.ship_to_gst_number,
+        po.customer_signature,
         poi.product_name,
         poi.product_category,
         poi.product_description,
@@ -367,14 +419,14 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     );
 
     if (!poDetails.length) {
-      return res.status(404).json({ error: "PO not found" });
+      return res.status(404).json({ error: 'PO not found' });
     }
 
-    const doc = new PDFDocument({ margin: 40, size: "A4", bufferPages: true });
+    const doc = new PDFDocument({ margin: 40, size: 'A4', bufferPages: true });
 
-    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
-      "Content-Disposition",
+      'Content-Disposition',
       `attachment; filename=PO_${poDetails[0].po_number}.pdf`
     );
 
@@ -397,10 +449,10 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     };
 
     const formatDate = (dateStr) =>
-      new Date(dateStr).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
+      new Date(dateStr).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
       });
 
     const data = poDetails[0];
@@ -410,39 +462,38 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     // Draw outer border
     doc.rect(left, 20, pageWidth, 770).stroke();
 
-    const path = require("path");
-    const logoPath = path.resolve(__dirname, "../uploads/logo/bidz.png");
+    const path = require('path');
+    const logoPath = path.resolve(__dirname, '../uploads/logo/bidz.jpeg');
 
     doc.image(logoPath, 30, 70, { width: 140 });
 
     // Header
     doc
       .fontSize(14)
-      .font("Helvetica-Bold")
-      .text("Purchase Order", left + 325, 35);
+      .font('Helvetica-Bold')
+      .text('Purchase Order', left + 325, 35);
     doc.moveTo(210, 55).lineTo(575, 55).stroke();
     doc.moveTo(210, 20).lineTo(210, 165).stroke();
 
     // Set customer info block starting Y position
-
     const top = 65;
-    const offsetWidth = doc.page.width * 0.9; // 90% of page width
-    const offsetX = doc.page.width * 0.22; // left offset to push everything right
+    const offsetWidth = doc.page.width * 0.9;
+    const offsetX = doc.page.width * 0.22;
 
     doc
       .fontSize(12)
-      .font("Helvetica-Bold")
+      .font('Helvetica-Bold')
       .text(data.customer_company, offsetX, top, {
         width: offsetWidth,
-        align: "center",
+        align: 'center',
       });
 
     doc
       .fontSize(10)
-      .font("Helvetica")
+      .font('Helvetica')
       .text(data.customer_address, offsetX, top + 20, {
         width: offsetWidth,
-        align: "center",
+        align: 'center',
       });
 
     doc.text(
@@ -451,13 +502,13 @@ router.get("/generate-pdf/:poId", async (req, res) => {
       top + 35,
       {
         width: offsetWidth,
-        align: "center",
+        align: 'center',
       }
     );
 
     doc.text(`Email: ${data.customer_email}`, offsetX, top + 55, {
       width: offsetWidth,
-      align: "center",
+      align: 'center',
     });
 
     // Draw horizontal line after customer details
@@ -466,36 +517,36 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     // GSTIN / CIN
     doc
       .fontSize(10)
-      .font("Helvetica-Bold")
-      .text("GSTIN:", left + 200, 150)
-      .font("Helvetica")
-      .text(data.customer_gst_number || "N/A", left + 233, 150)
-      .font("Helvetica-Bold")
-      .text("CIN NO:", left + 420, 150)
-      .font("Helvetica")
-      .text(data.customer_company_registrationNo || "N/A", left + 458, 150);
+      .font('Helvetica-Bold')
+      .text('GSTIN:', left + 200, 150)
+      .font('Helvetica')
+      .text(data.customer_gst_number || 'N/A', left + 233, 150)
+      .font('Helvetica-Bold')
+      .text('CIN NO:', left + 420, 150)
+      .font('Helvetica')
+      .text(data.customer_company_registrationNo || 'N/A', left + 458, 150);
     drawLine(165);
 
     // PO Info
     doc
       .fontSize(10)
-      .font("Helvetica-Bold")
-      .text("Purchase Order No:", left + 5, 175)
-      .font("Helvetica")
+      .font('Helvetica-Bold')
+      .text('Purchase Order No:', left + 5, 175)
+      .font('Helvetica')
       .text(data.po_number, left + 100, 175)
-      .font("Helvetica-Bold")
-      .text("Purchase Order Date:", left + 350, 175)
-      .font("Helvetica")
+      .font('Helvetica-Bold')
+      .text('Purchase Order Date:', left + 350, 175)
+      .font('Helvetica')
       .text(formatDate(data.order_date), left + 455, 175);
     drawLine(190);
 
     // Vendor, Billing, Shipping Details
     doc
       .fontSize(12)
-      .font("Helvetica-Bold")
-      .text("Vendor Details:", left + 5, 200)
-      .text("Billing Details:", left + 190, 200)
-      .text("Shipping Details:", left + 360, 200);
+      .font('Helvetica-Bold')
+      .text('Vendor Details:', left + 5, 200)
+      .text('Billing Details:', left + 190, 200)
+      .text('Shipping Details:', left + 360, 200);
     drawLine(220);
 
     // Draw vertical lines for the 3-column layout
@@ -504,50 +555,51 @@ router.get("/generate-pdf/:poId", async (req, res) => {
 
     // Vendor details
     doc
-      .font("Helvetica-Bold")
+      .font('Helvetica-Bold')
       .fontSize(10)
       .text(`${data.vendor_company}`, left + 5, 230)
-      .font("Helvetica")
+      .font('Helvetica')
       .text(`${data.vendor_address}`, left + 5, 245)
       .text(
         `${data.vendor_city}, ${data.vendor_state} - ${data.vendor_postal_code}`,
         left + 5,
         260
       )
-      .font("Helvetica-Bold")
-      .text(`GST: ${data.vendor_gst_number || "N/A"}`, left + 5, 290)
+      .font('Helvetica-Bold')
+      .text(`GST: ${data.vendor_gst_number || 'N/A'}`, left + 5, 290)
       .text(
-        `State Code: ${stateCodes[data.vendor_state] || "00"}`,
+        `State Code: ${stateCodes[data.vendor_state] || '00'}`,
         left + 5,
         305
       );
 
     // Billing details
     doc
-      .font("Helvetica-Bold")
+      .font('Helvetica-Bold')
       .fontSize(10)
       .text(`${data.customer_company}`, left + 190, 230)
-      .font("Helvetica")
+      .font('Helvetica')
       .text(`${data.customer_address}`, left + 190, 245)
       .text(
         `${data.customer_city}, ${data.customer_state} - ${data.customer_postal_code}`,
         left + 190,
         260
       )
-      .font("Helvetica-Bold")
-      .text(`GST: ${data.customer_gst_number || "N/A"}`, left + 190, 290)
+      .font('Helvetica-Bold')
+      .text(`GST: ${data.customer_gst_number || 'N/A'}`, left + 190, 290)
       .text(
-        `State Code: ${stateCodes[data.customer_state] || "00"}`,
+        `State Code: ${stateCodes[data.customer_state] || '00'}`,
         left + 190,
         305
       );
     drawLine(327);
+    
     // Shipping details
     doc
-      .font("Helvetica-Bold")
+      .font('Helvetica-Bold')
       .fontSize(10)
       .text(`${data.customer_company}`, left + 360, 230)
-      .font("Helvetica")
+      .font('Helvetica')
       .text(`${data.ship_to_address || data.customer_address}`, left + 360, 245)
       .text(
         `${data.ship_to_city || data.customer_city}, ${
@@ -556,15 +608,15 @@ router.get("/generate-pdf/:poId", async (req, res) => {
         left + 360,
         260
       )
-      .font("Helvetica-Bold")
+      .font('Helvetica-Bold')
       .text(
-        `GST: ${data.ship_to_gst_number || data.customer_gst_number || "N/A"}`,
+        `GST: ${data.ship_to_gst_number || data.customer_gst_number || 'N/A'}`,
         left + 360,
         290
       )
       .text(
         `State Code: ${
-          stateCodes[data.ship_to_state || data.customer_state] || "00"
+          stateCodes[data.ship_to_state || data.customer_state] || '00'
         }`,
         left + 360,
         305
@@ -574,28 +626,28 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     const tableTop = 340;
 
     // Table Header
-    doc.fontSize(10).font("Helvetica-Bold");
-    doc.text("Sr.No", left + 5, tableTop);
-    doc.text("Item", left + 55, tableTop);
-    doc.text("Description", left + 150, tableTop); // New Description column
-    doc.text("HSN", left + 260, tableTop);
-    doc.text("Qty", left + 305, tableTop);
-    doc.text("UOM", left + 335, tableTop);
-    doc.text("Rate", left + 375, tableTop);
-    doc.text("CGST", left + 420, tableTop);
-    doc.text("SGST", left + 460, tableTop);
-    doc.text("Amount", left + 502, tableTop);
+    doc.fontSize(10).font('Helvetica-Bold');
+    doc.text('Sr.No', left + 5, tableTop);
+    doc.text('Item', left + 55, tableTop);
+    doc.text('Description', left + 150, tableTop);
+    doc.text('HSN', left + 260, tableTop);
+    doc.text('Qty', left + 305, tableTop);
+    doc.text('UOM', left + 335, tableTop);
+    doc.text('Rate', left + 375, tableTop);
+    doc.text('CGST', left + 420, tableTop);
+    doc.text('SGST', left + 460, tableTop);
+    doc.text('Amount', left + 502, tableTop);
 
     // Draw vertical lines for table columns
-    drawVerticalLine(left + 35, tableTop - 13, tableTop + 140); // After Sr.No
-    drawVerticalLine(left + 120, tableTop - 13, tableTop + 140); // After Item
-    drawVerticalLine(left + 250, tableTop - 13, tableTop + 140); // After Description
-    drawVerticalLine(left + 300, tableTop - 13, tableTop + 235); // After HSN
-    drawVerticalLine(left + 330, tableTop - 13, tableTop + 140); // After Qty
-    drawVerticalLine(left + 365, tableTop - 13, tableTop + 140); // After UOM
-    drawVerticalLine(left + 415, tableTop - 13, tableTop + 140); // After Rate
-    drawVerticalLine(left + 455, tableTop - 13, tableTop + 235); // After CGST
-    drawVerticalLine(left + 495, tableTop - 13, tableTop + 140); // After SGST
+    drawVerticalLine(left + 35, tableTop - 13, tableTop + 140);
+    drawVerticalLine(left + 120, tableTop - 13, tableTop + 140);
+    drawVerticalLine(left + 250, tableTop - 13, tableTop + 140);
+    drawVerticalLine(left + 300, tableTop - 13, tableTop + 235);
+    drawVerticalLine(left + 330, tableTop - 13, tableTop + 140);
+    drawVerticalLine(left + 365, tableTop - 13, tableTop + 140);
+    drawVerticalLine(left + 415, tableTop - 13, tableTop + 140);
+    drawVerticalLine(left + 455, tableTop - 13, tableTop + 235);
+    drawVerticalLine(left + 495, tableTop - 13, tableTop + 140);
 
     drawLine(tableTop + 20);
 
@@ -619,16 +671,16 @@ router.get("/generate-pdf/:poId", async (req, res) => {
       totalCgst += cgst;
       totalSgst += sgst;
 
-      doc.font("Helvetica").text(idx + 1, left + 5, y);
+      doc.font('Helvetica').text(idx + 1, left + 5, y);
       doc
         .fontSize(9)
         .text(`${item.product_name} - ${item.product_category}`, left + 38, y, {
           width: 80,
         })
         .text(item.product_description, left + 123, y, { width: 120 })
-        .text(hsnCodeMap[item.product_category] || "-", left + 253, y)
+        .text(hsnCodeMap[item.product_category] || '-', left + 253, y)
         .text(item.quantity.toString(), left + 310, y)
-        .text("NOS", left + 340, y)
+        .text('NOS', left + 340, y)
         .text(parseFloat(item.unit_price).toFixed(2), left + 370, y)
         .text(`${cgstRate}%`, left + 430, y)
         .text(`${sgstRate}%`, left + 470, y)
@@ -645,34 +697,34 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     const grandTotal = subtotal + totalGst;
 
     // Subtotal
-    doc.font("Helvetica-Bold").text("Sub Total:", left + 320, y);
+    doc.font('Helvetica-Bold').text('Sub Total:', left + 320, y);
     doc.text(subtotal.toFixed(2), left + 460, y, {
-      align: "right",
-      width: 80, // adjust width for alignment area
+      align: 'right',
+      width: 80,
     });
 
     // GST
     y += 20;
-    doc.text("Total GST (CGST + SGST):", left + 320, y);
+    doc.text('Total GST (CGST + SGST):', left + 320, y);
     doc.text(totalGst.toFixed(2), left + 460, y, {
-      align: "right",
+      align: 'right',
       width: 80,
     });
 
     // Grand Total
     y += 30;
-    doc.fontSize(12).text("Grand Total:", left + 320, y + 20);
+    doc.fontSize(12).text('Grand Total:', left + 320, y + 20);
     doc.text(grandTotal.toFixed(2), left + 460, y + 20, {
-      align: "right",
+      align: 'right',
       width: 80,
     });
 
     // Amount in Words
     doc
-      .font("Helvetica-Bold")
+      .font('Helvetica-Bold')
       .fontSize(10)
-      .text("Total Amount in Words:", left + 5, y - 50)
-      .font("Helvetica")
+      .text('Total Amount in Words:', left + 5, y - 50)
+      .font('Helvetica')
       .text(
         `Rupees ${convertToWords(Math.round(grandTotal))} Only`,
         left + 5,
@@ -681,43 +733,51 @@ router.get("/generate-pdf/:poId", async (req, res) => {
       );
 
     doc
-      .font("Helvetica-Bold")
-      .text("GST Amount in Words:", left + 5, y - 10)
-      .font("Helvetica")
+      .font('Helvetica-Bold')
+      .text('GST Amount in Words:', left + 5, y - 10)
+      .font('Helvetica')
       .text(
         `Rupees ${convertToWords(Math.round(totalGst))} Only`,
         left + 5,
         y + 5,
         { width: 400 },
-
         (y += 35)
       );
 
     drawLine(y);
 
     // Status and Description
-  
-
     y += 10;
     doc
-      .font("Helvetica-Bold")
-      .text("Terms & Conditions:", left + 5, y)
-      .font("Helvetica")
-      .text("1.Payment Terms: 100% advance against P.I.", left + 5, y + 20)
-      .text("2. Validity: 30 Days.", left + 5, y + 35)
-      .text("3. Mode of Transportation: Surface", left + 5, y + 50);
+      .font('Helvetica-Bold')
+      .text('Terms & Conditions:', left + 5, y)
+      .font('Helvetica')
+      .text('1.Payment Terms: 100% advance against P.I.', left + 5, y + 20)
+      .text('2. Validity: 30 Days.', left + 5, y + 35)
+      .text('3. Mode of Transportation: Surface', left + 5, y + 50);
 
     // Authorized Signatory
+    y += 120;
     doc
-      .font("Helvetica-Bold")
-      .text("Authorized Signatory", right - 150, y + 120);
+      .font('Helvetica-Bold')
+      .text('Authorized Signatory', right - 150, y);
 
-  
+    // Add signature from database if available
+    if (data.customer_signature) {
+      try {
+        doc.image(data.customer_signature, right - 150, y - 40, {
+          width: 100,
+          height: 40,
+        });
+      } catch (error) {
+        console.error('Error adding signature to PDF:', error);
+      }
+    }
 
     doc.end();
   } catch (error) {
-    console.error("PDF Generation Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('PDF Generation Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -811,5 +871,81 @@ router.get("/company-admin/:adminId", async (req, res) => {
       details: error.message,
     });
   }
+});   
+
+
+
+
+
+// signature validation
+
+// Add this new route to save signatures
+router.put('/save-signature/:poId', async (req, res) => {
+  const { poId } = req.params;
+  const { signature } = req.body;
+
+  try {
+    const result = await db.query(
+      'UPDATE purchase_orders SET customer_signature = ? WHERE id = ?',
+      [signature, poId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'PO not found' });
+    }
+
+    res.json({ message: 'Signature saved successfully' });
+  } catch (error) {
+    console.error('Error saving signature:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
+
+
+
+// PUT /po/:poId/delivery-notes
+router.put("/:poId/delivery-notes", async (req, res) => {
+  const { poId } = req.params;
+  const { deliveryNotes } = req.body;
+
+  try {
+    await db.query(
+      `UPDATE purchase_orders 
+       SET delivery_notes = ?
+       WHERE id = ?`,
+      [deliveryNotes, poId]
+    );
+
+    res.json({ message: "Delivery notes updated successfully" });
+  } catch (error) {
+    console.error("Error updating delivery notes:", error);
+    res.status(500).json({ error: "Failed to update delivery notes" });
+  }
+});
+
+// Get delivery notes for a specific PO
+router.get("/:poId/delivery-notes", async (req, res) => {
+  const { poId } = req.params;
+
+  try {
+    const [result] = await db.query(
+      `SELECT delivery_notes FROM purchase_orders WHERE id = ?`,
+      [poId]
+    );
+
+    if (!result.length) {
+      return res.status(404).json({ error: "Purchase order not found" });
+    }
+
+    res.json({ deliveryNotes: result[0].delivery_notes });
+  } catch (error) {
+    console.error("Error fetching delivery notes:", error);
+    res.status(500).json({ error: "Failed to fetch delivery notes" });
+  }
+});
+
+
+
+
+
 module.exports = router;

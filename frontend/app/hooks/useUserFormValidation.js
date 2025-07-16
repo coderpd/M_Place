@@ -1,4 +1,5 @@
 import React from "react";
+
 export const useUserFormValidation = () => {
   const validateForm = (formValues) => {
     let newErrors = {};
@@ -8,7 +9,7 @@ export const useUserFormValidation = () => {
     if (!formValues.personName)
       newErrors.personName = "Person Name is required";
 
-     const phoneKey =
+   const phoneKey =
       formValues.phoneNumber !== undefined ? "phoneNumber" : "contactNumber";
 
     const phoneValue = formValues[phoneKey];
@@ -26,12 +27,15 @@ export const useUserFormValidation = () => {
         .replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
         .replace(/\./g, "")
         .trim()
-        .replace(/\s+/g, "");
+        .split(/\s+/)[0];
 
-      if (!formValues.Email.endsWith(`@${CompanyName || "companyName"}.com`)) {
-        newErrors.Email = `Email must be in the format example@${
-          CompanyName ? CompanyName : "companyName"
-        }.com`;
+      const emailDomain = formValues.Email.split("@")[1]?.toLowerCase();
+      const domainPrefix = emailDomain?.split(".")[0]; 
+
+      if (!domainPrefix || domainPrefix !== CompanyName) {
+        newErrors.Email = `Email domain must start with ${
+          CompanyName || "companyName"
+        } (e.g., example@${CompanyName || "companyName"})`;
       }
     }
 

@@ -120,15 +120,17 @@ const Navbar = ({
       <nav className="hidden sm:flex fixed top-0 left-0 w-full bg-white shadow-md p-4 h-20 items-center justify-between z-50">
         {/* Left Section - Logo */}
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
-              <img
-                src="/Logo.png"
-                alt="M-Place Logo"
-                className="w-10 h-10 object-contain"
-              />
+          <Link href="/customer/products" passHref>
+            <div className="cursor-pointer w-12 h-12 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+                <img
+                  src="/Logo.png"
+                  alt="M-Place Logo"
+                  className="w-10 h-10 object-contain"
+                />
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Middle Section - Search and Filters */}

@@ -275,15 +275,18 @@ export default function DashboardLayout({ id, children }) {
         {/* Left Section - Logo and Navigation */}
         <div className="flex items-center space-x-6">
           {/* Logo */}
-          <div className="w-16 h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
-              <img
-                src="/Logo.png"
-                alt="M-Place Logo"
-                className="w-12 h-12 object-contain"
-              />
+          {/* Logo */}
+          <Link href="/vendorUser" passHref>
+            <div className="cursor-pointer w-16 h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+                <img
+                  src="/Logo.png"
+                  alt="M-Place Logo"
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation Links */}
           <nav className="flex space-x-6">

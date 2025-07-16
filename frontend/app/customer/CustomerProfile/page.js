@@ -140,8 +140,8 @@ const CustomerProfile = () => {
     );
   }
 
-  const profileFields = [
-    { label: "Company Name", name: "companyName", type: "text" },
+ const profileFields = [
+    { label: "Company Name", name: "companyName", type: "text" , disabled:true },
     { label: "Contact Person", name: "personName", type: "text" },
     { label: "Email", name: "Email", type: "email" },
     { label: "Contact Number", name: "contactNumber", type: "tel" },
