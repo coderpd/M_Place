@@ -9,10 +9,8 @@ export const ContactDetailsSection = ({
   loading,
   otpMessage,
   otpSent,
-  otpError
-
+  otpError,
 }) => {
-
   return (
     <>
       <div>
@@ -45,19 +43,25 @@ export const ContactDetailsSection = ({
         />
       </div>
 
-   <div>
-      <InputField
-        label="Email"
-        name="email"
-        placeholder={`abc@${formValues.companyName?.toLowerCase()?.replace(/\s/g, '') || 'company'}.com`}
-        value={formValues.email}
-        onChange={handleInputChange}
-        error={errors.email}
-        loading={loading}
-        onOtpRequest={() => handleOtpRequest(formValues.email, "vendor")}
-      />
-     
-    </div>
+      <div>
+        <InputField
+          label="Email"
+          name="email"
+          placeholder={`abc@${
+            formValues.companyName
+              ?.toLowerCase()
+              ?.replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
+              ?.replace(/\./g, "")
+              ?.trim()
+              ?.split(/\s+/)[0] || "company"
+          }`}
+          value={formValues.email}
+          onChange={handleInputChange}
+          error={errors.email}
+          loading={loading}
+          onOtpRequest={() => handleOtpRequest(formValues.email, "vendor")}
+        />
+      </div>
 
       <div>
         <InputField

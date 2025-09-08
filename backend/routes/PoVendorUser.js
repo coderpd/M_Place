@@ -69,11 +69,12 @@ router.get("/vendor/:vendorId", async (req, res) => {
 });
 
 
-
+//PDF:
 
 const stateCodes = require("../utils/stateCodes");
 const PDFDocument = require("pdfkit");
 const { convertToWords } = require("../utils/convertToWords");
+const hsnCodeMap = require("../utils/hsnCodeMap");
 router.get("/generate-pdf/:poId", async (req, res) => {
   const { poId } = req.params;
 
@@ -91,6 +92,7 @@ router.get("/generate-pdf/:poId", async (req, res) => {
         po.customer_country,
         po.customer_postal_code,
         po.customer_gst_number,
+        po.customer_company_registrationNo,
         po.order_date,
         po.status,
         po.total_amount,
@@ -101,6 +103,7 @@ router.get("/generate-pdf/:poId", async (req, res) => {
         po.ship_to_postal_code,
         po.ship_to_gst_number,
         poi.product_name,
+        poi.product_category,
         poi.product_description,
         poi.vendor_name,
         poi.vendor_company,
@@ -113,8 +116,7 @@ router.get("/generate-pdf/:poId", async (req, res) => {
         poi.vendor_gst_number,
         poi.quantity,
         poi.unit_price,
-        poi.total_price,
-        poi.hsn_code
+        poi.total_price
       FROM purchase_orders po
       JOIN purchase_order_items poi ON po.id = poi.po_id
       WHERE po.id = ?`,
@@ -135,11 +137,22 @@ router.get("/generate-pdf/:poId", async (req, res) => {
 
     doc.pipe(res);
 
-    const left = 50;
-    const right = 550;
+    // Define constants for layout
+    const left = 15;
+    const right = 575;
+    const pageWidth = right - left;
+    const columnLeft = left;
+    const columnRight = right;
+
+    // Helper functions
     const drawLine = (y) => {
       doc.moveTo(left, y).lineTo(right, y).stroke();
     };
+
+    const drawVerticalLine = (x, startY, endY) => {
+      doc.moveTo(x, startY).lineTo(x, endY).stroke();
+    };
+
     const formatDate = (dateStr) =>
       new Date(dateStr).toLocaleDateString("en-IN", {
         day: "2-digit",
@@ -151,138 +164,197 @@ router.get("/generate-pdf/:poId", async (req, res) => {
     const cgstRate = 9;
     const sgstRate = 9;
 
+    // Draw outer border
+    doc.rect(left, 20, pageWidth, 770).stroke();
+
+    const path = require("path");
+    const logoPath = path.resolve(__dirname, "../uploads/logo/bidz.png");
+
+    doc.image(logoPath, 30, 70, { width: 140 });
+
     // Header
     doc
-      .fontSize(16)
+      .fontSize(14)
       .font("Helvetica-Bold")
-      .text("Purchase Order", left + 200, 50);
-    drawLine(70);
+      .text("Purchase Order", left + 325, 35);
+    doc.moveTo(210, 55).lineTo(575, 55).stroke();
+    doc.moveTo(210, 20).lineTo(210, 165).stroke();
 
-    // Company Details
+    // Set customer info block starting Y position
+
+    const top = 65;
+    const offsetWidth = doc.page.width * 0.9; // 90% of page width
+    const offsetX = doc.page.width * 0.22; // left offset to push everything right
+
     doc
       .fontSize(12)
       .font("Helvetica-Bold")
-      .text(data.customer_company, left + 320, 80);
+      .text(data.customer_company, offsetX, top, {
+        width: offsetWidth,
+        align: "center",
+      });
+
     doc
       .fontSize(10)
       .font("Helvetica")
-      .text(data.customer_address, left + 320, 95);
+      .text(data.customer_address, offsetX, top + 20, {
+        width: offsetWidth,
+        align: "center",
+      });
+
     doc.text(
       `${data.customer_city}, ${data.customer_state} - ${data.customer_postal_code}`,
-      left + 320,
-      110
+      offsetX,
+      top + 35,
+      {
+        width: offsetWidth,
+        align: "center",
+      }
     );
-    doc.text(`Email: ${data.customer_email}`, left + 320, 125);
-    drawLine(140);
+
+    doc.text(`Email: ${data.customer_email}`, offsetX, top + 55, {
+      width: offsetWidth,
+      align: "center",
+    });
+
+    // Draw horizontal line after customer details
+    doc.moveTo(210, 140).lineTo(575, 140).stroke();
 
     // GSTIN / CIN
     doc
-      .fontSize(9)
+      .fontSize(10)
       .font("Helvetica-Bold")
-      .text("GSTIN:", left, 150)
-      .text(data.customer_gst_number || "N/A", left + 40, 150)
-      .text("CIN NO:", left + 350, 150)
-      .text(data.customer_company_registrationNo || "N/A", left + 385, 150);
+      .text("GSTIN:", left + 200, 150)
+      .font("Helvetica")
+      .text(data.customer_gst_number || "N/A", left + 233, 150)
+      .font("Helvetica-Bold")
+      .text("CIN NO:", left + 420, 150)
+      .font("Helvetica")
+      .text(data.customer_company_registrationNo || "N/A", left + 458, 150);
     drawLine(165);
 
     // PO Info
     doc
       .fontSize(10)
-      .text("Purchase Order No:", left, 175)
+      .font("Helvetica-Bold")
+      .text("Purchase Order No:", left + 5, 175)
+      .font("Helvetica")
       .text(data.po_number, left + 100, 175)
-      .text("Order Date:", left + 350, 175)
-      .text(formatDate(data.order_date), left + 410, 175);
+      .font("Helvetica-Bold")
+      .text("Purchase Order Date:", left + 350, 175)
+      .font("Helvetica")
+      .text(formatDate(data.order_date), left + 455, 175);
     drawLine(190);
 
-    //Table Head
+    // Vendor, Billing, Shipping Details
     doc
-      .fontSize(10)
+      .fontSize(12)
       .font("Helvetica-Bold")
-      .text("Vendor Details:", left+5, 200)
-      .text("Billing Details:", left + 155, 200)
-      .text("Shipping Details:", left + 325, 200);
+      .text("Vendor Details:", left + 5, 200)
+      .text("Billing Details:", left + 190, 200)
+      .text("Shipping Details:", left + 360, 200);
     drawLine(220);
 
-    //table content
+    // Draw vertical lines for the 3-column layout
+    drawVerticalLine(200, 190, 328); // After Vendor
+    drawVerticalLine(370, 190, 328); // After Billing
+
+    // Vendor details
     doc
+      .font("Helvetica-Bold")
+      .fontSize(10)
+      .text(`${data.vendor_company}`, left + 5, 230)
       .font("Helvetica")
-      .text(`${data.vendor_company}`, left+5, 230)
-      .text(`${data.vendor_address}`, left+5, 245)
+      .text(`${data.vendor_address}`, left + 5, 245)
       .text(
         `${data.vendor_city}, ${data.vendor_state} - ${data.vendor_postal_code}`,
-        left+5,
+        left + 5,
         260
       )
       .font("Helvetica-Bold")
+      .text(`GST: ${data.vendor_gst_number || "N/A"}`, left + 5, 290)
       .text(
-        `GST: ${data.ship_to_gst_number || data.customer_gst_number || "N/A"} `,
-        left+5,
-        290
-      )
-      .text(
-        `State Code: ${
-          stateCodes[data.ship_to_state || data.customer_state] || "00"
-        }`,
-        left+5,
+        `State Code: ${stateCodes[data.vendor_state] || "00"}`,
+        left + 5,
         305
-      )
+      );
+
+    // Billing details
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(10)
+      .text(`${data.customer_company}`, left + 190, 230)
       .font("Helvetica")
-      .text(`${data.customer_company}`, left + 155, 230)
-      .text(`${data.customer_address}`, left + 155, 245)
+      .text(`${data.customer_address}`, left + 190, 245)
       .text(
         `${data.customer_city}, ${data.customer_state} - ${data.customer_postal_code}`,
-        left + 155,
+        left + 190,
         260
       )
       .font("Helvetica-Bold")
+      .text(`GST: ${data.customer_gst_number || "N/A"}`, left + 190, 290)
       .text(
-        `GST: ${data.ship_to_gst_number || data.customer_gst_number || "N/A"} `,
-        left + 155,
-        290
-      )
-      .text(
-        `State Code: ${
-          stateCodes[data.ship_to_state || data.customer_state] || "00"
-        }`,
-        left + 155,
+        `State Code: ${stateCodes[data.customer_state] || "00"}`,
+        left + 190,
         305
-      )
+      );
+    drawLine(327);
+    // Shipping details
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(10)
+      .text(`${data.customer_company}`, left + 360, 230)
       .font("Helvetica")
-      .text(`${data.customer_company}`, left + 325, 230)
-      .text(`${data.ship_to_address || data.customer_address}`, left + 325, 245)
+      .text(`${data.ship_to_address || data.customer_address}`, left + 360, 245)
       .text(
         `${data.ship_to_city || data.customer_city}, ${
           data.ship_to_state || data.customer_state
         } - ${data.ship_to_postal_code || data.customer_postal_code}`,
-        left + 325,
+        left + 360,
         260
       )
       .font("Helvetica-Bold")
       .text(
-        `GST: ${data.ship_to_gst_number || data.customer_gst_number || "N/A"} `,
-        left + 325,
+        `GST: ${data.ship_to_gst_number || data.customer_gst_number || "N/A"}`,
+        left + 360,
         290
       )
       .text(
         `State Code: ${
           stateCodes[data.ship_to_state || data.customer_state] || "00"
         }`,
-        left + 325,
+        left + 360,
         305
       );
+
+    // Items Table
+    const tableTop = 340;
+
     // Table Header
-    const tableTop = 330;
-    doc.fontSize(9).font("Helvetica-Bold");
-    doc.text("Sr.No", left, tableTop);
-    doc.text("Item", left + 35, tableTop);
-    doc.text("HSN", left + 160, tableTop);
-    doc.text("Qty", left + 210, tableTop);
-    doc.text("UOM", left + 240, tableTop);
-    doc.text("Rate", left + 280, tableTop);
-    doc.text("CGST", left + 340, tableTop);
-    doc.text("SGST", left + 390, tableTop);
-    doc.text("Total", left + 430, tableTop);
-    drawLine(tableTop + 15);
+    doc.fontSize(10).font("Helvetica-Bold");
+    doc.text("Sr.No", left + 5, tableTop);
+    doc.text("Item", left + 55, tableTop);
+    doc.text("Description", left + 150, tableTop); // New Description column
+    doc.text("HSN", left + 260, tableTop);
+    doc.text("Qty", left + 305, tableTop);
+    doc.text("UOM", left + 335, tableTop);
+    doc.text("Rate", left + 375, tableTop);
+    doc.text("CGST", left + 420, tableTop);
+    doc.text("SGST", left + 460, tableTop);
+    doc.text("Amount", left + 502, tableTop);
+
+    // Draw vertical lines for table columns
+    drawVerticalLine(left + 35, tableTop - 13, tableTop + 140); // After Sr.No
+    drawVerticalLine(left + 120, tableTop - 13, tableTop + 140); // After Item
+    drawVerticalLine(left + 250, tableTop - 13, tableTop + 140); // After Description
+    drawVerticalLine(left + 300, tableTop - 13, tableTop + 235); // After HSN
+    drawVerticalLine(left + 330, tableTop - 13, tableTop + 140); // After Qty
+    drawVerticalLine(left + 365, tableTop - 13, tableTop + 140); // After UOM
+    drawVerticalLine(left + 415, tableTop - 13, tableTop + 140); // After Rate
+    drawVerticalLine(left + 455, tableTop - 13, tableTop + 235); // After CGST
+    drawVerticalLine(left + 495, tableTop - 13, tableTop + 140); // After SGST
+
+    drawLine(tableTop + 20);
 
     // Items
     let y = tableTop + 25;
@@ -304,115 +376,101 @@ router.get("/generate-pdf/:poId", async (req, res) => {
       totalCgst += cgst;
       totalSgst += sgst;
 
+      doc.font("Helvetica").text(idx + 1, left + 5, y);
       doc
-        .font("Helvetica")
-        .text(idx + 1, left, y)
-        .text(item.product_name, left + 35, y, { width: 120 })
-        .text(item.hsn_code || "-", left + 160, y)
-        .text(item.quantity.toString(), left + 210, y)
-        .text("NOS", left + 240, y)
-        .text(parseFloat(item.unit_price).toFixed(2), left + 280, y)
-        .text(`${cgstRate}%`, left + 340, y)
-        .text(`${sgstRate}%`, left + 390, y)
-        .text(itemTotal.toFixed(2), left + 430, y);
+        .fontSize(9)
+        .text(`${item.product_name} - ${item.product_category}`, left + 38, y, {
+          width: 80,
+        })
+        .text(item.product_description, left + 123, y, { width: 120 })
+        .text(hsnCodeMap[item.product_category] || "-", left + 253, y)
+        .text(item.quantity.toString(), left + 310, y)
+        .text("NOS", left + 340, y)
+        .text(parseFloat(item.unit_price).toFixed(2), left + 370, y)
+        .text(`${cgstRate}%`, left + 430, y)
+        .text(`${sgstRate}%`, left + 470, y)
+        .text(itemTotal.toFixed(2), left + 500, y);
 
-      y += 20;
+      y += 115;
     });
 
     drawLine(y);
     y += 10;
 
-    // Assuming subtotal, totalCgst, totalSgst are already calculated
+    // Totals
     const totalGst = totalCgst + totalSgst;
     const grandTotal = subtotal + totalGst;
 
-    // Move down a bit from the previous content
-    y += 5;
+    // Subtotal
+    doc.font("Helvetica-Bold").text("Sub Total:", left + 320, y);
+    doc.text(subtotal.toFixed(2), left + 460, y, {
+      align: "right",
+      width: 80, // adjust width for alignment area
+    });
 
-    // Sub Total
-    doc.font("Helvetica-Bold").text("Sub Total:", left + 310, y);
-    doc.text(subtotal.toFixed(2), left + 440, y);
-
-    // Total GST
+    // GST
     y += 20;
-    doc.text("Total GST (CGST + SGST):", left + 310, y);
-    doc.text(totalGst.toFixed(2), left + 440, y);
+    doc.text("Total GST (CGST + SGST):", left + 320, y);
+    doc.text(totalGst.toFixed(2), left + 460, y, {
+      align: "right",
+      width: 80,
+    });
 
     // Grand Total
-    y += 20;
-    doc.fontSize(12).text("Grand Total:", left + 310, y);
-    doc.text(grandTotal.toFixed(2), left + 440, y);
+    y += 30;
+    doc.fontSize(12).text("Grand Total:", left + 320, y + 20);
+    doc.text(grandTotal.toFixed(2), left + 460, y + 20, {
+      align: "right",
+      width: 80,
+    });
 
-    y += 25;
+    // Amount in Words
     doc
       .font("Helvetica-Bold")
       .fontSize(10)
-      .text("Total Amount in Words:", left, 385)
-      .text("GST Amount in Words:", left, 420)
+      .text("Total Amount in Words:", left + 5, y - 50)
       .font("Helvetica")
-      .text(`Rupees ${convertToWords(Math.round(grandTotal))} Only`, left, 400)
+      .text(
+        `Rupees ${convertToWords(Math.round(grandTotal))} Only`,
+        left + 5,
+        y - 35,
+        { width: 400 }
+      );
 
+    doc
+      .font("Helvetica-Bold")
+      .text("GST Amount in Words:", left + 5, y - 10)
       .font("Helvetica")
-      .text(`Rupees ${convertToWords(Math.round(totalGst))} Only`, left, 435);
+      .text(
+        `Rupees ${convertToWords(Math.round(totalGst))} Only`,
+        left + 5,
+        y + 5,
+        { width: 400 },
 
-    y += 10;
+        (y += 35)
+      );
+
     drawLine(y);
 
-    let statusYPos = doc.y;
+    // Status and Description
+  
 
-    // Label for Status
-    doc.font("Helvetica-Bold").text("Status:", left + 350, statusYPos + 30);
-
-    // Value for Status, aligned to the right of the label
-    doc
-      .font("Helvetica")
-      .text(poDetails[0].status || "PENDING", left + 390, statusYPos + 30);
-
-    // Move to the next line for Description, adjusting yPos accordingly
-    statusYPos += 20;
-
-    // Label for Product Description
+    y += 10;
     doc
       .font("Helvetica-Bold")
-      .text("Product Description:", left, statusYPos +10);
-
-    // Value for Product Description, aligned to the right of the label
-    doc
+      .text("Terms & Conditions:", left + 5, y)
       .font("Helvetica")
-      .text(poDetails[0].product_description, left + 100, statusYPos+10 );
+      .text("1.Payment Terms: 100% advance against P.I.", left + 5, y + 20)
+      .text("2. Validity: 30 Days.", left + 5, y + 35)
+      .text("3. Mode of Transportation: Surface", left + 5, y + 50);
 
+    // Authorized Signatory
     doc
       .font("Helvetica-Bold")
-      .text("Terms & Conditions :", left, statusYPos + 115);
+      .text("Authorized Signatory", right - 150, y + 120);
 
-    // Value for Product Description, aligned to the right of the label
-    doc.font("Helvetica").text("", left + 100, statusYPos + 35);
+  
 
-    // --- Footer ---
-    drawLine(doc.page.height - 60);
-
-    doc
-      .font("Helvetica")
-      .fontSize(9)
-      .text("Authorized Signatory", right - 100, y + 300);
-      drawLine(325);
-    //Vertical Line
-
-    doc
-      .moveTo(48, 35) // Start point
-      .lineTo(50, 780) // End point (same X, different Y)
-      .stroke();
-    doc.moveTo(200, 190).lineTo(200, 375).stroke();
-
-    doc.moveTo(370, 190).lineTo(370, 375).stroke();
-   
-    doc.moveTo(550, 35).lineTo(550, 780).stroke();
-    
-    doc.moveTo(50, 35).lineTo(550, 35).stroke();
-   
-    doc.moveTo(350,375).lineTo(350,465).stroke();
-
-    doc.moveTo(480,375).lineTo(480,465).stroke();
     doc.end();
   } catch (error) {
     console.error("PDF Generation Error:", error);
@@ -420,43 +478,6 @@ router.get("/generate-pdf/:poId", async (req, res) => {
   }
 });
 
-  router.put("/update/:poId", async (req, res) => {
-    const { poId } = req.params;
-    const { status, billing_address } = req.body;
-  
-    try {
-      // Validate at least one field is being updated
-      if (!status && !billing_address) {
-        return res.status(400).json({ error: "No fields to update" });
-      }
-  
-      // Build the update query dynamically
-      let updateFields = [];
-      let queryParams = [];
-  
-      if (status) {
-        updateFields.push("status = ?");
-        queryParams.push(status);
-      }
-  
-      if (billing_address) {
-        updateFields.push("billing_address = ?");
-        queryParams.push(billing_address);
-      }
-  
-      queryParams.push(poId);
-  
-      const query = `UPDATE purchase_orders SET ${updateFields.join(", ")} WHERE id = ?`;
-  
-      await db.query(query, queryParams);
-  
-      res.json({ message: "PO updated successfully" });
-    } catch (error) {
-      console.error("Error updating PO:", error);
-      res.status(500).json({ error: "Failed to update PO" });
-    }
-  });
-  
   
 
   router.get("/vendor/admin/:vendorId", async (req, res) => {

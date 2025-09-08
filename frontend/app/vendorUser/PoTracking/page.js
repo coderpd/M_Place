@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import {
   FileText,
   Download,
@@ -30,7 +29,6 @@ const DetailField = ({ label, value }) => (
 );
 
 const VendorPOAutomationPage = () => {
-  const router = useRouter();
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPO, setSelectedPO] = useState(null);
@@ -38,75 +36,48 @@ const VendorPOAutomationPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [editing, setEditing] = useState(false);
+  const [showCustomerAddress, setShowCustomerAddress] = useState(false);
+  const [showVendorAddress, setShowVendorAddress] = useState(false);
+  const [showShipToAddress, setShowShipToAddress] = useState(false);
+  const [editingShipTo, setEditingShipTo] = useState(false);
+  const [shipToForm, setShipToForm] = useState({});
+  const [deliveryNotes, setDeliveryNotes] = useState("");
+
   const [editData, setEditData] = useState({
     status: "",
   });
-  const [deliveryNotes, setDeliveryNotes] = useState("");
-  const [companyName, setCompanyName] = useState('');
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const fetchVendorOrders = async () => {
+    const fetchPurchaseOrders = async () => {
       try {
-        console.log("Fetching vendor purchase orders...");
-        const storedVendor = localStorage.getItem("vendor");
-
+        const storedVendor = localStorage.getItem("vendorUser");
         if (!storedVendor) {
-          router.push("/SignIn");
+          setLoading(false);
           return;
         }
 
-        let vendorData;
-        try {
-          vendorData = JSON.parse(storedVendor);
-        } catch (err) {
-          console.error("Invalid vendor data:", err);
-          router.push("/SignIn");
-          return;
-        }
-
-        console.log("Vendor data from localStorage:", vendorData);
-
-        const vendorId = vendorData.id || vendorData.vendorId;
-
-        if (!vendorId) {
-          console.error("Vendor ID not found in vendor data");
-          router.push("/SignIn");
-          return;
-        }
-
-        console.log("Using vendor ID:", vendorId);
-
+        const vendorData = JSON.parse(storedVendor);
         const response = await fetch(
-          `/api/PoVendorUser/vendor/admin/${vendorId}`
+          `/api/PoVendorUser/vendor/${vendorData.id}`
         );
-
-        console.log("Response status:", response.status);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || "Failed to fetch vendor orders");
-        }
-
         const data = await response.json();
-        console.log("API response data:", data);
 
-        if (!data.success) {
-          throw new Error(data.error || "Request failed");
+        if (response.ok) {
+          setPurchaseOrders(data.purchaseOrders || []);
+        } else {
+          toast.error("Failed to load purchase orders");
         }
-
-        setPurchaseOrders(data.purchaseOrders || []);
-        setCompanyName(data.companyName || "");
       } catch (error) {
-        console.error("Error in fetchVendorOrders:", error);
-        toast.error(error.message);
+        console.error("Error fetching purchase orders:", error);
+        toast.error("Error fetching purchase orders");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVendorOrders();
-  }, [router]);
+    fetchPurchaseOrders();
+  }, []);
 
   const filteredPOs = useMemo(() => {
     if (!searchTerm) return purchaseOrders;
@@ -264,8 +235,10 @@ const VendorPOAutomationPage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen  bg-gradient-to-br from-gray-50 to-gray-100">
         <ToastContainer position="bottom-right" autoClose={3000} />
+
+       
 
         {/* Main Content */}
         {selectedPO ? (

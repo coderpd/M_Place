@@ -17,6 +17,7 @@ import {
   Menu,
   Bell,
   Clipboard,
+  X,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,7 @@ export default function Navbar() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [vendorAdminID, setVendorAdminID] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
 
   const currentDate = new Date().toLocaleDateString("en-US", {
@@ -53,14 +55,17 @@ export default function Navbar() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("/api/notification/vendor-admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('vendorToken')}`
-        },
-        body: JSON.stringify({ vendorAdminID }),
-      });
+      const response = await fetch(
+        "/api/notification/vendor-admin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("vendorToken")}`,
+          },
+          body: JSON.stringify({ vendorAdminID }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -69,7 +74,9 @@ export default function Navbar() {
 
       const data = await response.json();
       setNotifications(data.notifications);
-      setUnreadCount(data.notifications.filter(n => n.status === "unread").length);
+      setUnreadCount(
+        data.notifications.filter((n) => n.status === "unread").length
+      );
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
@@ -117,11 +124,17 @@ export default function Navbar() {
       <nav className="hidden sm:flex fixed top-0 left-0 w-full h-20 bg-white border-b shadow-sm items-center justify-between px-4 sm:px-6 z-50">
         {/* Left: Brand Name */}
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
-            <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
-              <img src="/Logo.png" alt="M-Place Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+          <Link href="/vendor-admin" passHref>
+            <div className="cursor-pointer w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-lg bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center border border-gray-300 shadow-inner">
+                <img
+                  src="/Logo.png"
+                  alt="M-Place Logo"
+                  className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                />
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Center: Nav Items (Desktop) */}
           <div className="hidden sm:flex items-center gap-6 text-sm text-gray-700">
@@ -185,7 +198,10 @@ export default function Navbar() {
               className="group flex items-center gap-2 p-2 rounded-md hover:bg-blue-50 hover:text-blue-700 hover:border hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <User size={32} className="text-gray-800 group-hover:text-blue-700 transition-colors" />
+              <User
+                size={32}
+                className="text-gray-800 group-hover:text-blue-700 transition-colors"
+              />
               <div className="hidden sm:block text-[14px]">
                 {loading && <span>Loading...</span>}
                 {error && <span className="text-red-500">{error}</span>}
@@ -201,21 +217,28 @@ export default function Navbar() {
 
             {/* Dropdown Menu */}
             {dropdownOpen && (
-              <div className="absolute right-0 top-[68px] bg-white shadow-lg rounded-md w-48 z-50 p-2 border">
-                <Link
-                  href="/vendor-admin/myProfile"
-                  className="p-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  <UserRoundPen size={20} /> My Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="p-3 hover:bg-red-100 text-red-600 cursor-pointer flex items-center gap-3 w-full text-left"
-                >
-                  <LogOut size={20} />
-                  Logout
-                </button>
+              <div className="absolute right-0 left-2 top-full mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
+                <ul className="py-2 text-sm text-gray-700 font-medium">
+                  <li>
+                    <Link
+                      href="/vendor-admin/myProfile"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition-colors"
+                    >
+                      <User size={20} className="text-gray-600" />
+                      <span>My Profile</span>
+                    </Link>
+                  </li>
+
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 text-red-600 transition-colors"
+                    >
+                      <LogOut size={20} className="text-red-500" />
+                      <span>Logout</span>
+                    </button>
+                  </li>
+                </ul>
               </div>
             )}
           </div>
@@ -228,7 +251,11 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-lg shadow-md bg-gradient-to-br from-blue-600 to-indigo-500 p-1">
             <div className="w-full h-full bg-white rounded-lg flex items-center justify-center border border-gray-300 shadow-inner">
-              <img src="/Logo.png" alt="M-Place Logo" className="w-7 h-7 object-contain" />
+              <img
+                src="/Logo.png"
+                alt="M-Place Logo"
+                className="w-7 h-7 object-contain"
+              />
             </div>
           </div>
 
@@ -245,8 +272,14 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 mt-16 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}>
-            <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 mt-16 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div
+              className="absolute right-0 top-0 h-full w-72 bg-white shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Profile Info */}
               <div className="flex items-center gap-4 p-4 border-b">
                 <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
@@ -263,8 +296,8 @@ export default function Navbar() {
               {/* Navigation Links */}
               <div className="p-4 space-y-2">
                 <Link
-                  href="/vendor-admin/vendorAdminDashboard"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+                  href="/vendor-admin"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <LayoutDashboard size={20} />
@@ -272,7 +305,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/vendor-admin/addUser"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <UserPlus size={20} />
@@ -280,7 +313,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/vendor-admin/usersprofile"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Users size={20} />
@@ -288,7 +321,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/vendor-admin/products"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <List size={20} />
@@ -296,7 +329,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/vendor-admin/AdminNotification"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Bell size={20} />
@@ -304,7 +337,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/vendor-admin/PoTracking"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Clipboard size={20} />
@@ -314,8 +347,6 @@ export default function Navbar() {
 
               {/* Bottom Section */}
               <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
-                
-                
                 <div className="space-y-2">
                   <Link
                     href="/vendor-admin/myProfile"
@@ -341,9 +372,6 @@ export default function Navbar() {
           </div>
         )}
       </nav>
-
-      {/* Spacer to account for fixed navbar */}
-      
     </>
   );
 }

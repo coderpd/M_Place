@@ -4,7 +4,7 @@ export const CustomerAddUser = ({
   formValues,
   handleInputChange,
   errors,
-
+ loading
 }) => {
   return (
     <>
@@ -41,17 +41,23 @@ export const CustomerAddUser = ({
       </div>
       
 
-      <div className="mb-4">
+      <div>
         <InputField
           label="Email"
           name="Email"
           placeholder={`abc@${
-            formValues.companyName?.toLowerCase()?.replace(/\s/g, "") ||
-            "company"
-          }.com`}
-          value={formValues.Email}
+            formValues.companyName
+              ?.toLowerCase()
+              ?.replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
+              ?.replace(/\./g, "")
+              ?.trim()
+              ?.split(/\s+/)[0] || "company"
+          }`}
+          value={formValues.email}
           onChange={handleInputChange}
           error={errors.Email}
+          loading={loading}
+         
         />
       </div>
     </>

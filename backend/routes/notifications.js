@@ -3,8 +3,10 @@ const router = express.Router();
 const db = require("../db");
 
 const convertToIST = (utcDateString) => {
-  return new Date(utcDateString).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-};          
+  return new Date(utcDateString).toLocaleString("en-US", {
+    timeZone: "Asia/Kolkata",
+  });
+};
 
 router.get("/:vendorId", async (req, res) => {
   try {
@@ -31,7 +33,6 @@ router.get("/:vendorId", async (req, res) => {
   }
 });
 
-
 // Notify vendor and insert into notifications table
 router.post("/notify-vendor", async (req, res) => {
   try {
@@ -55,7 +56,7 @@ router.post("/notify-vendor", async (req, res) => {
     }
     const customerName = customerResult[0].personName;
     const customer_id = customerResult[0].Id;
-    
+
     const values = [];
 
     for (const item of cart) {
@@ -77,7 +78,11 @@ router.post("/notify-vendor", async (req, res) => {
         continue;
       }
 
-      const { id: productId, vendor_id: vendorId, productName } = productResult[0];
+      const {
+        id: productId,
+        vendor_id: vendorId,
+        productName,
+      } = productResult[0];
 
       if (!vendorId) {
         console.warn(`Vendor ID missing for product ID: ${productId}`);
@@ -95,7 +100,7 @@ router.post("/notify-vendor", async (req, res) => {
         continue;
       }
       const vendorEmail = vendorResult[0].email;
-       console.log(vendorEmail)
+      console.log(vendorEmail);
       values.push([
         customer_id,
         customerName,
@@ -107,7 +112,9 @@ router.post("/notify-vendor", async (req, res) => {
 
     if (values.length === 0) {
       console.warn("No valid notifications to insert");
-      return res.status(400).json({ error: "No valid notifications to insert" });
+      return res
+        .status(400)
+        .json({ error: "No valid notifications to insert" });
     }
 
     console.log("Final values to insert:", values);
@@ -123,7 +130,6 @@ router.post("/notify-vendor", async (req, res) => {
   }
 });
 
-
 router.put("/read/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -132,9 +138,14 @@ router.put("/read/:id", async (req, res) => {
     const [result] = await db.execute(query, [id]);
 
     if (result.affectedRows > 0) {
-      return res.json({ success: true, message: "Notification marked as read" });
+      return res.json({
+        success: true,
+        message: "Notification marked as read",
+      });
     } else {
-      return res.status(404).json({ success: false, message: "Notification not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found" });
     }
   } catch (error) {
     console.error("Error updating notification:", error);
@@ -142,6 +153,31 @@ router.put("/read/:id", async (req, res) => {
   }
 });
 
+router.put("/read-all/:vendorId", async (req, res) => {
+  const { vendorId } = req.params; // The vendor ID will be passed in the request parameters
+
+  try {
+    // Query to update all unread notifications for a specific vendor
+    const query =
+      "UPDATE notifications SET status = 'read' WHERE product_vendor_id = ? AND status = 'unread'";
+    const [result] = await db.execute(query, [vendorId]);
+
+    if (result.affectedRows > 0) {
+      return res.json({
+        success: true,
+        message: "All notifications for this vendor marked as read",
+      });
+    } else {
+      return res.json({
+        success: true,
+        message: "No unread notifications found for this vendor",
+      });
+    }
+  } catch (error) {
+    console.error("Error updating notifications:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
 
 router.post("/vendor-admin", async (req, res) => {
   try {
@@ -182,8 +218,6 @@ router.post("/vendor-admin", async (req, res) => {
     res.status(500).json({ error: "Server error", details: error.message });
   }
 });
-
-
 
 //ordernotification
 router.post("/admin", async (req, res) => {

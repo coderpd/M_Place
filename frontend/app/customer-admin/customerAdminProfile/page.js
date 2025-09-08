@@ -90,7 +90,7 @@ const CustomerAdminProfile = () => {
   }
 
   const profileFields = [
-    { label: "Company Name", name: "companyName" },
+    { label: "Company Name", name: "companyName", disabled: true },
     { label: "Registration Number", name: "registrationNumber" },
     { label: "Company Website", name: "companyWebsite" },
     { label: "GST Number", name: "gstNumber" },

@@ -4,8 +4,8 @@ import { InputField } from "./InputField";
 export const VendorAddUser = ({
   formValues,
   handleInputChange,
-  errors
-  
+  errors,
+  loading
 }) => {
   return (
     <>
@@ -13,7 +13,7 @@ export const VendorAddUser = ({
         <InputField
           label="Company Name"
           name="companyName"
-          value={formValues.companyName}
+          value={formValues.companyName || ""}
           onChange={handleInputChange}
           error={errors.companyName}
           disabled={true}
@@ -40,16 +40,23 @@ export const VendorAddUser = ({
         />
       </div>
 
-      <div className="mb-4">
+     <div>
         <InputField
           label="Email"
           name="Email"
           placeholder={`abc@${
-            formValues.companyName?.toLowerCase()?.replace(/\s/g, "") || "company"
-          }.com`}
+            formValues.companyName
+              ?.toLowerCase()
+              ?.replace(/\s?(pvt|ltd|limited|inc|llp|corp|co)\b/gi, "")
+              ?.replace(/\./g, "")
+              ?.trim()
+              ?.split(/\s+/)[0] || "company"
+          }`}
           value={formValues.Email}
           onChange={handleInputChange}
           error={errors.Email}
+          loading={loading}
+        
         />
       </div>
     </>

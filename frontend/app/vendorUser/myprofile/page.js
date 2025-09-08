@@ -131,7 +131,7 @@ const VendorUserProfilePage = () => {
   }
 
   const profileFields = [
-    { label: "Company Name", name: "companyName", type: "text" },
+    { label: "Company Name", name: "companyName", type: "text" , disabled: true },
     { label: "Contact Person", name: "personName", type: "text" },
     { label: "Phone Number", name: "phoneNumber", type: "tel" },
     { label: "Email", name: "Email", type: "email", disabled: true },
@@ -145,7 +145,7 @@ const VendorUserProfilePage = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center mb-8">
             <button
-              onClick={() => router.push("/vendor/products")}
+              onClick={() => router.push("/vendorUser")}
               className="mr-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Back to products"
             >

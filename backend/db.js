@@ -8,7 +8,4 @@ const pool = mysql.createPool({
   waitForConnections: true,
   
 });
-
-
-
 module.exports = pool;
